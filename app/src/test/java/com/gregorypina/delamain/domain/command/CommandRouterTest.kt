@@ -46,7 +46,7 @@ class CommandRouterTest {
     }
 
     @Test
-    fun `normalizes case accents spacing and terminal punctuation`() {
+    fun `normalizes case accents spacing and safe terminal punctuation`() {
         assertEquals(DelamainCommand.MediaNext, router.route("  PRÓXIMA   MÚSICA!!!  "))
         assertEquals(DelamainCommand.CurrentTime, router.route("Que HORAS são???"))
         assertEquals(
@@ -64,8 +64,21 @@ class CommandRouterTest {
             "volume para 25%" to 25,
             "volume em 7 por cento" to 7,
             "som de 42" to 42,
+            "volume 20%" to 20,
+            "volume 20%!!!" to 20,
         ).forEach { (phrase, percent) ->
             assertEquals(DelamainCommand.SetVolume(percent), router.route(phrase))
+        }
+    }
+
+    @Test
+    fun `preserves invalid numeric syntax instead of cleaning it into a valid command`() {
+        listOf(
+            "volume 20/",
+            "volume 20-",
+            "volume 20%%",
+        ).forEach { phrase ->
+            assertSame("phrase=$phrase", DelamainCommand.Unknown, router.route(phrase))
         }
     }
 
