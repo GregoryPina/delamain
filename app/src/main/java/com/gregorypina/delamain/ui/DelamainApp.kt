@@ -4,8 +4,8 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -27,7 +27,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextStyle
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.gregorypina.delamain.R
 import kotlinx.coroutines.delay
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.sin
 
 private enum class UiState {
@@ -50,8 +50,6 @@ private val Background = Color(0xFF14181D)
 private val Cyan = Color(0xFF2E8BFF)
 private val ErrorRed = Color(0xFFFF3B5C)
 
-// Os 5 sprites ficam em res/drawable-nodpi/.
-// BOOT reutiliza IDLE até termos uma imagem específica de boot.
 private fun imageResFor(state: UiState): Int = when (state) {
     UiState.BOOT -> R.drawable.face_idle
     UiState.IDLE -> R.drawable.face_idle
@@ -61,7 +59,6 @@ private fun imageResFor(state: UiState): Int = when (state) {
     UiState.ERROR -> R.drawable.face_error
 }
 
-// Intensidade do efeito de flicker/glitch por estado (0 = imagem limpa).
 private fun glitchIntensityFor(state: UiState): Float = when (state) {
     UiState.BOOT -> 0.55f
     UiState.IDLE -> 0.05f
@@ -117,11 +114,11 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
             .background(Background)
             .pointerInput(Unit) { detectTapGestures { onTap() } }
     ) {
-        Crossfade(targetState = state, label = "face-crossfade") { s ->
+        Crossfade(targetState = state, label = "face-crossfade") { currentState ->
             GlitchFace(
-                imageRes = imageResFor(s),
-                intensity = glitchIntensityFor(s),
-                tint = if (s == UiState.ERROR) ErrorRed else Cyan,
+                imageRes = imageResFor(currentState),
+                intensity = glitchIntensityFor(currentState),
+                tint = if (currentState == UiState.ERROR) ErrorRed else Cyan,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -156,13 +153,6 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
     }
 }
 
-/**
- * Desenha [imageRes] ajustada (fit, centralizada) e aplica por cima:
- * - scanlines animadas
- * - flicker de opacidade (tremular tipo tela antiga)
- * - glitch de fatias: corta a imagem em tiras horizontais e desloca
- *   algumas lateralmente de forma pseudo-aleatória, no ritmo de [intensity]
- */
 @Composable
 private fun GlitchFace(
     imageRes: Int,
@@ -215,7 +205,6 @@ private fun GlitchFace(
                 val srcH = if (i == sliceCount - 1) image.height - srcY else sliceH
                 val dstSliceY = baseY + srcY.toFloat() / image.height * dstH
                 val dstSliceH = srcH.toFloat() / image.height * dstH
-
                 val trigger = pseudoRandom(i, phase)
                 val shiftX = if (trigger > 1f - intensity * 0.55f) {
                     (pseudoRandom(i + 500, phase) - 0.5f) * dstW * 0.10f * intensity
@@ -232,7 +221,8 @@ private fun GlitchFace(
                 )
             }
 
-            // Aberração cromática leve nas fatias deslocadas.
+            // Extra tinted ghost pass. Uses the default SrcOver mode so it is
+            // compatible across Compose graphics versions; no SrcATop needed.
             for (i in 0 until sliceCount) {
                 val srcY = i * sliceH
                 val srcH = if (i == sliceCount - 1) image.height - srcY else sliceH
@@ -249,11 +239,13 @@ private fun GlitchFace(
                         srcSize = IntSize(image.width, srcH),
                         dstOffset = IntOffset((baseX + shift * 1.6f).toInt(), dstSliceY.toInt()),
                         dstSize = IntSize(dstW.toInt(), maxOf(1, dstSliceH.toInt())),
-                        alpha = 0.35f * intensity,
-                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                            tint,
-                            androidx.compose.ui.graphics.BlendMode.SrcATop
-                        )
+                        alpha = 0.18f * intensity
+                    )
+
+                    drawRect(
+                        color = tint.copy(alpha = 0.08f * intensity),
+                        topLeft = Offset(0f, dstSliceY),
+                        size = Size(size.width, maxOf(1f, dstSliceH))
                     )
                 }
             }
@@ -261,15 +253,13 @@ private fun GlitchFace(
 
         drawScanlines(phase, tint, intensity)
 
-        // Flicker global de opacidade.
         val flickerAlpha = 0.02f +
-                0.10f * intensity * abs(
-                    sin(fastFlicker * Math.PI.toFloat() + phase * 30f)
-                )
+            0.10f * intensity * abs(
+                sin(fastFlicker * Math.PI.toFloat() + phase * 30f)
+            )
         drawRect(Color.White.copy(alpha = flickerAlpha))
 
         if (intensity > 0.6f && pseudoRandom(999, phase) > 0.88f) {
-            // Corte de tela ocasional nos estados mais agitados.
             val y = pseudoRandom(1000, phase) * size.height
             drawRect(
                 Color.Black.copy(alpha = 0.5f),
@@ -280,7 +270,11 @@ private fun GlitchFace(
     }
 }
 
-private fun DrawScope.drawScanlines(phase: Float, color: Color, intensity: Float) {
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawScanlines(
+    phase: Float,
+    color: Color,
+    intensity: Float
+) {
     val spacing = 5f
     var y = (phase * spacing * 3f) % spacing
     val alpha = 0.03f + 0.05f * intensity
@@ -296,8 +290,7 @@ private fun DrawScope.drawScanlines(phase: Float, color: Color, intensity: Float
     }
 }
 
-/** Pseudo-aleatório determinístico (sem alocar Random a cada frame). */
 private fun pseudoRandom(seed: Int, phase: Float): Float {
     val x = sin(seed * 12.9898f + phase * 78.233f) * 43758.5453f
-    return x - kotlin.math.floor(x)
+    return x - floor(x)
 }
