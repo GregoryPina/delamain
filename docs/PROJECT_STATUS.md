@@ -60,3 +60,7 @@ TASK-003 foi concluída sem patch ou alterações: revisão estática, CHANGES R
 Próxima entrega obrigatoriamente contém código: TASK-004 corrige falsos positivos no roteador remoto ainda inativo; TASK-005 aplica VEXA no nome exibido e na chamada digitada, sem renomear identificadores técnicos. Um executor externo pode agrupar as duas em uma branch/PR com commits separados. Não foi iniciado automaticamente.
 
 Preferência atual: proprietário executa builds/testes locais; Astra não os executa automaticamente. Resultados antigos continuam históricos. Agente com acesso autorizado pode abrir PR em branch própria, nunca push em main ou merge. Sem escrita, deve retornar unified diff. Roteiro de validação acompanha a entrega.
+
+## Revisão do PR #1
+
+TASK-004/005 entregues no PR draft #1, HEAD `8351703787b01fe598e31307d3dab43ffdefa902`, base confirmada. Revisão estática Astra: CHANGES REQUIRED por normalização excessiva de pontuação em percentual. Identidade VEXA sem impedimentos encontrados na leitura. Nenhum build/teste executado; nenhum merge realizado. Próximo passo: correção localizada no mesmo PR, conforme [revisão](handoffs/PR-001-REVIEW.md); depois validação pelo proprietário.

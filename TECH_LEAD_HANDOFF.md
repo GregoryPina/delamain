@@ -21,11 +21,11 @@ TASK-003 concluída: revisão estática CHANGES REQUIRED, nenhum código ou test
 
 ## In progress
 
-Despacho preparado; nenhum agente iniciado automaticamente.
+PR #1 recebido; HEAD 8351703787b01fe598e31307d3dab43ffdefa902 revisado estaticamente. CHANGES REQUIRED: normalização remove sintaxe inválida de percentual; aguardar ajuste no mesmo PR.
 
 ## Waiting / blocked
 
-Retorno externo e teste real de volume. Proprietário assumiu execução de builds/testes locais; não executar automaticamente no Work.
+Correção do PR #1 e depois builds/testes pelo proprietário. Nenhum build/teste executado por Astra nesta revisão.
 
 ## Current agent assignments
 
@@ -45,7 +45,7 @@ Parser remoto com falsos positivos (TASK-004); executor remoto sem confirmação
 
 ## Next recommended action
 
-Encaminhar despacho Wave 2. Ao receber: conferir commit-base e patch/PR, revisar, fornecer roteiro e aguardar teste do proprietário antes de merge.
+Encaminhar PATCH REQUEST de docs/handoffs/PR-001-REVIEW.md ao executor. Conferir novo HEAD; depois fornecer roteiro e aguardar teste do proprietário antes de merge.
 
 ## Warnings
 
