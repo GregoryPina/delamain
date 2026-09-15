@@ -24,7 +24,8 @@ A documentação do repositório é a fonte de verdade do projeto. Não substitu
 - Astra é o Tech Lead e integrador local. Work é exclusivo do Astra: não criar ou reativar subagentes internos, workers ou instâncias paralelas. Esta regra substitui a divisão anterior com GPT-SOL interno.
 - Trabalho externo é preparado como TASKs e prompts copiáveis; o proprietário abre os modelos fora do Work. Não presumir acesso deles ao filesystem local, execução de testes ou Git.
 - Antes de despachar, sincronizar trabalho local válido com GitHub, sem descartar mudanças. Cada wave usa repositório, branch e BASE COMMIT exatos; nunca fornecer branch móvel como única referência.
-- Cada executor externo recebe objetivo, arquivos permitidos, dependências e aceite. Retorna preferencialmente unified diff e resumo de testes/riscos. Astra revisa, aplica, testa, integra, faz commit e push.
+- Cada executor externo recebe objetivo, arquivos permitidos, dependências e aceite. Tarefas de implementação exigem PR ou unified diff. Se tiver acesso autorizado de escrita, trabalhar em branch própria e abrir PR; nunca push em main ou merge por conta própria. Sem acesso, devolver patch.
+- Astra revisa e aplica; o proprietário executa builds e testes locais e informa resultados. Não executar testes automaticamente no Work. Até confirmação, registrar “implementado, aguardando teste”; não confundir revisão estática com validação funcional.
 - Registrar entregas em `docs/handoffs/`; Astra mantém `docs/PROJECT_STATUS.md`, decisões e `TECH_LEAD_HANDOFF.md`. Usar os caminhos existentes, sem duplicar documentos de estado.
 - Preservar código funcional e trabalho local. Não usar reset/clean/restore destrutivos para resolver divergências. Correções maiores voltam como PATCH REQUEST externo.
 - Não marcar tarefa como concluída só porque o código foi escrito. Distinguir implementação, testes automáticos e validação do proprietário.
@@ -40,7 +41,7 @@ A documentação do repositório é a fonte de verdade do projeto. Não substitu
 - Não implementar acesso irrestrito ao sistema. Ações do assistente devem passar por comandos/ações permitidos.
 - Não adicionar chaves de API, tokens, senhas ou credenciais ao repositório.
 - Não colocar segredos em código-fonte, `local.properties` versionado ou recursos do app.
-- Testar build após mudanças relevantes.
+- Fornecer roteiro e comando de build após mudanças relevantes para execução pelo proprietário.
 - Se algo não puder ser testado no ambiente, declarar isso claramente em vez de afirmar que funciona.
 
 ## Estilo de código

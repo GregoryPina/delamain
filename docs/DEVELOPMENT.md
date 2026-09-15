@@ -24,18 +24,18 @@ Construir o projeto em pequenos incrementos. Cada incremento deve deixar o repos
 
 ### Coordenação e economia de tokens
 
-O GPT-Astra é responsável por planejamento, contratos, revisão, aplicação local, builds, testes e Git. Por instrução posterior do proprietário, Work é exclusivo do Astra: não criar ou reativar agentes internos. Os registros de GPT-SOL em handoffs anteriores são históricos.
+O GPT-Astra é responsável por planejamento, contratos, revisão, aplicação local e Git; o proprietário executa builds e testes locais. Por instrução posterior do proprietário, Work é exclusivo do Astra: não criar ou reativar agentes internos. Os registros de GPT-SOL em handoffs anteriores são históricos.
 
 O quadro fica em [PROJECT_STATUS.md](PROJECT_STATUS.md); a retomada começa em [TECH_LEAD_HANDOFF.md](../TECH_LEAD_HANDOFF.md). Agentes externos são abertos pelo proprietário e normalmente só leem GitHub. Não presumir acesso local nem resultados de testes.
 
 Fluxo de cada incremento:
 
-1. Astra preserva alterações, valida, cria checkpoint, faz commit/push e registra baseline exata.
+1. Astra preserva alterações, revisa, registra validação disponível e cria checkpoint, faz commit/push e registra baseline exata.
 2. Define TASKs em `tasks/` e waves por dependência; agrupa tarefas com arquivos compartilhados.
 3. Entrega EXTERNAL AGENT DISPATCH copiável com repositório, branch, BASE COMMIT, TASKs e saída esperada.
 4. Executor externo devolve patch/arquivos e limitações. O proprietário traz a solução para Astra.
-5. Astra confere baseline e diff, aplica e testa. Correções pequenas podem ser locais; mudanças relevantes viram PATCH REQUEST.
-6. Após validação, commit/push e atualização de baseline e handoff. Nenhuma implementação pesada é enviada a agentes internos.
+5. Astra confere baseline e diff e aplica. O proprietário executa builds/testes e traz os resultados. Correções pequenas podem ser locais; mudanças relevantes viram PATCH REQUEST.
+6. Após validação relatada pelo proprietário, commit/push e atualização de baseline e handoff. Documentação pode ser publicada após revisão; código não testado deve permanecer identificado em branch/PR. Nenhuma implementação pesada é enviada a agentes internos.
 
 Cada passagem deve incluir: status; resumo; arquivos alterados; interfaces e exemplos de uso; comandos de validação e resultados; limitações; decisões; próximo responsável. Se teste não foi executado, informar o motivo. Aprovação funcional do proprietário é evidência válida, identificada como relato, sem atribuir ao agente um teste que ele não fez.
 

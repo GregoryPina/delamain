@@ -52,3 +52,11 @@ Conferir a baseline em TECH_LEAD_HANDOFF.md e encaminhar TASK-003 a um modelo ex
 ## Checkpoint publicado
 
 Baseline fixa da Wave 1: `06bf60d73d38ac4acf76c9684082572590a606f4`, publicada em `origin/main`. Inclui checkpoint local `6972820` e contribuição remota `2894e76`, sem descarte de trabalho. Validação após merge: BUILD SUCCESSFUL em 22s; 18 testes sem falhas/erros/ignorados. [Despacho externo](../tasks/WAVE-001-DISPATCH.md) pronto para o proprietário encaminhar.
+
+## Wave 2 — implementação após revisão externa
+
+TASK-003 foi concluída sem patch ou alterações: revisão estática, CHANGES REQUIRED para ativar contribuição remota. Achados registrados em handoffs/TASK-003.md. O fluxo ativo permanece canônico.
+
+Próxima entrega obrigatoriamente contém código: TASK-004 corrige falsos positivos no roteador remoto ainda inativo; TASK-005 aplica VEXA no nome exibido e na chamada digitada, sem renomear identificadores técnicos. Um executor externo pode agrupar as duas em uma branch/PR com commits separados. Não foi iniciado automaticamente.
+
+Preferência atual: proprietário executa builds/testes locais; Astra não os executa automaticamente. Resultados antigos continuam históricos. Agente com acesso autorizado pode abrir PR em branch própria, nunca push em main ou merge. Sem escrita, deve retornar unified diff. Roteiro de validação acompanha a entrega.

@@ -78,3 +78,10 @@ Ideias adicionais estão em [IDEAS.md](IDEAS.md), sem compromisso de implementa�
 - [ ] Testar monitor automotivo 7"
 - [ ] Integrar tela externa
 - [ ] Otimizar consumo e estabilidade
+
+## Wave 2 — preparada
+
+- [x] Receber revisão estática TASK-003, sem alterações de código
+- [ ] TASK-004: corrigir falsos positivos no roteador remoto, sem ativá-lo
+- [ ] TASK-005: aplicar nome VEXA em textos e chamada digitada
+- [ ] Proprietário executar build/testes e informar resultado das próximas entregas

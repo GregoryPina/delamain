@@ -4,49 +4,49 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Base commit da Wave 1: 06bf60d73d38ac4acf76c9684082572590a606f4 (publicado em origin/main).
-Esta baseline fixa contém código e TASK-003. Commits posteriores apenas de documentação não alteram a base desta wave.
+Última baseline publicada observada: 3d3884d67686f37cac86e141cf0f8025c17539d3.
+Wave 2: documentos em publicação; liberar despacho somente com hash que contenha TASK-004 e TASK-005.
 
 ## Current objective
 
-Preservar V0.2-B, sincronizar contribuições remotas e adotar execução externa via proprietário.
+Receber implementação de correções do roteador remoto e identidade VEXA, preservando fluxo ativo.
 
 ## Current wave
 
-Wave 1 / TASK-003 pronta para encaminhamento externo pelo proprietário.
+Wave 2: TASK-004 + TASK-005, um executor externo. Entrega obrigatória PR ou patch; não apenas análise.
 
 ## Completed
 
-Interface e digitação aprovadas pelo proprietário; aliases informais e volume implementados. Astra validou builds debug/release e 18 testes JVM.
+TASK-003 concluída: revisão estática CHANGES REQUIRED, nenhum código ou teste executado pelo revisor. Interface/digitação anteriores aprovadas pelo proprietário; builds anteriores e 18 testes são evidência histórica.
 
 ## In progress
 
-Nenhuma implementação em execução; aguardando retorno externo e teste de volume pelo proprietário.
+Preparação/publicação do despacho; nenhum agente iniciado automaticamente.
 
 ## Waiting / blocked
 
-Teste físico do volume e revisão externa pendentes. Baseline publicada; despacho disponível em tasks/WAVE-001-DISPATCH.md.
+Retorno externo e teste real de volume. Proprietário assumiu execução de builds/testes locais; não executar automaticamente no Work.
 
 ## Current agent assignments
 
-Nenhum agente interno ativo ou permitido. Proprietário abrirá um executor externo para tasks/TASK-003.md.
+Executor externo a ser aberto pelo proprietário; pode usar branch própria e PR se tiver escrita autorizada. Nunca main/merge direto. Sem escrita, unified diff.
 
 ## Important decisions
 
-Work exclusivo do Astra. Domínio ativo continua LocalCommandEngine + porta tipada; preservar código remoto sem conectá-lo automaticamente. Ver docs/DECISIONS.md.
+Work exclusivo Astra. LocalCommandEngine é canônico. Contribuição remota não deve ser ativada. VEXA muda textos/gatilho; identificadores técnicos permanecem. Ver docs/DECISIONS.md.
 
 ## Open decisions
 
-Consolidação de domain/command/ + platform/ com o fluxo local testado; não decidir por reescrita automática.
+Migração futura de apps/mídia/percentual depende de contratos e revisão posteriores.
 
 ## Known problems
 
-Roteadores sobrepostos; contribuições remotas sem ligação à UI e sem validação funcional de mídia/apps. Volume depende da rota/fabricante. Catálogo fechado.
+Parser remoto com falsos positivos (TASK-004); executor remoto sem confirmação robusta e pausa como toggle (ainda inativo). Volume real depende do aparelho.
 
 ## Next recommended action
 
-Proprietário encaminha tasks/WAVE-001-DISPATCH.md ao modelo externo. Astra confere a baseline do retorno, revisa o patch, aplica e testa antes de integrar.
+Encaminhar despacho Wave 2. Ao receber: conferir commit-base e patch/PR, revisar, fornecer roteiro e aguardar teste do proprietário antes de merge.
 
 ## Warnings
 
-Não criar/reativar subagentes internos. Não descartar assets ou código existente. Não afirmar testes em aparelho. Release gerado é não assinado. Ler TEMP_LEAD_HANDOFF.md se existir ao retomar.
+Não criar/reativar agentes internos. Não executar builds/testes automaticamente. Não afirmar que TASK-003 implementou código. Não renomear repo, applicationId ou pacotes para VEXA. Ler TEMP_LEAD_HANDOFF.md se existir.

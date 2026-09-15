@@ -13,3 +13,9 @@ Instrução do proprietário em 2026-09-15 substitui a política de SOL interno.
 O remoto avançou de `5d0be25` a `2894e76` com `domain/command/CommandRouter` e `platform/AndroidCommandExecutor`, enquanto o trabalho local introduziu `LocalCommandEngine` e `LocalActionPort`. Preservar ambas as contribuições no checkpoint. O painel continua usando apenas o motor local validado. O código remoto não deve ser conectado antes de revisar reconhecimento por substring, negações e confirmação de resultados.
 
 Uma TASK externa deverá propor consolidação incremental, aproveitando comportamentos úteis sem duplicar caminhos ativos. Mídia, abertura de apps e volume percentual presentes no remoto não são considerados integrados/validados pelo simples merge.
+
+## ADR-004 — validação pelo proprietário e identidade VEXA
+
+O proprietário assumiu builds/testes locais para economizar uso do Work. Astra faz revisão estática e integração, fornece roteiro e registra resultados informados. Não executar testes automaticamente. Código aguardando validação permanece identificado como tal.
+
+A companion passa a se chamar VEXA. TASK-005 altera apenas nome exibido, textos e gatilho digitado; repositório, applicationId, pacotes/classes e assets são preservados. O nome antigo permanece somente como referência histórica/técnica, não como gatilho.
