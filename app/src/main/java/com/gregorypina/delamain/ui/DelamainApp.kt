@@ -1,0 +1,301 @@
+package com.gregorypina.delamain.ui
+
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
+
+private enum class UiState {
+    BOOT, IDLE, LISTENING, THINKING, SPEAKING, ERROR
+}
+
+private val Background = Color(0xFF020608)
+private val Cyan = Color(0xFF64D8FF)
+private val DimCyan = Color(0xFF16475A)
+private val SoftWhite = Color(0xFFD9F5FF)
+private val ErrorRed = Color(0xFFFF315A)
+
+@Composable
+fun DelamainApp() {
+    MaterialTheme {
+        Surface(color = Background, modifier = Modifier.fillMaxSize()) {
+            var state by remember { mutableStateOf(UiState.BOOT) }
+
+            LaunchedEffect(Unit) {
+                delay(3200)
+                state = UiState.IDLE
+            }
+
+            // Development shortcut: tap the screen to cycle through visual states.
+            DelamainScreen(
+                state = state,
+                onTap = {
+                    state = when (state) {
+                        UiState.BOOT -> UiState.IDLE
+                        UiState.IDLE -> UiState.LISTENING
+                        UiState.LISTENING -> UiState.THINKING
+                        UiState.THINKING -> UiState.SPEAKING
+                        UiState.SPEAKING -> UiState.ERROR
+                        UiState.ERROR -> UiState.IDLE
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
+    val transition = rememberInfiniteTransition(label = "delamain")
+    val pulse by transition.animateFloat(
+        initialValue = 0.88f,
+        targetValue = 1.08f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
+    val phase by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(2400), RepeatMode.Restart),
+        label = "phase"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .pointerInput(Unit) { detectTapGestures { onTap() } }
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val cx = size.width / 2f
+            val cy = size.height * 0.47f
+            val scale = minOf(size.width / 900f, size.height / 520f)
+            val faceW = 270f * scale
+            val faceH = 350f * scale
+            val activeColor = if (state == UiState.ERROR) ErrorRed else Cyan
+            val energy = when (state) {
+                UiState.BOOT -> 0.55f
+                UiState.IDLE -> 0.72f
+                UiState.LISTENING -> 1.0f
+                UiState.THINKING -> 1.15f
+                UiState.SPEAKING -> 1.08f
+                UiState.ERROR -> 1.25f
+            }
+
+            drawScanlines(phase, activeColor, 0.09f)
+            drawFace(
+                center = Offset(cx, cy),
+                width = faceW * pulse,
+                height = faceH * pulse,
+                color = activeColor,
+                state = state,
+                energy = energy
+            )
+            drawGlitch(phase, cx, cy, faceW, faceH, activeColor, state)
+            drawHud(state, activeColor)
+        }
+    }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
+    center: Offset,
+    width: Float,
+    height: Float,
+    color: Color,
+    state: UiState,
+    energy: Float
+) {
+    val stroke = (1.7f * energy).coerceAtLeast(1f)
+    val left = center.x - width / 2f
+    val top = center.y - height / 2f
+
+    // Outer holographic silhouette.
+    drawOval(
+        color = color.copy(alpha = 0.08f),
+        topLeft = Offset(left, top),
+        size = Size(width, height)
+    )
+    drawOval(
+        color = color.copy(alpha = 0.68f),
+        topLeft = Offset(left, top),
+        size = Size(width, height),
+        style = Stroke(stroke)
+    )
+
+    val eyeY = center.y - height * 0.10f
+    val eyeSpacing = width * 0.23f
+    val eyeW = width * 0.20f
+    val eyeH = height * 0.045f
+    val eyeAlpha = if (state == UiState.LISTENING) 0.98f else 0.82f
+
+    drawEye(center.x - eyeSpacing, eyeY, eyeW, eyeH, color, eyeAlpha, stroke)
+    drawEye(center.x + eyeSpacing, eyeY, eyeW, eyeH, color, eyeAlpha, stroke)
+
+    // Nose bridge: deliberately geometric rather than photorealistic.
+    val nose = Path().apply {
+        moveTo(center.x, eyeY + eyeH)
+        lineTo(center.x - width * 0.035f, center.y + height * 0.10f)
+        lineTo(center.x + width * 0.035f, center.y + height * 0.10f)
+    }
+    drawPath(nose, color.copy(alpha = 0.68f), style = Stroke(stroke, join = StrokeJoin.Round))
+
+    // Mouth changes subtly in SPEAKING.
+    val mouthY = center.y + height * 0.25f
+    val mouthOpen = if (state == UiState.SPEAKING) height * 0.018f else height * 0.004f
+    val mouth = Path().apply {
+        moveTo(center.x - width * 0.15f, mouthY)
+        cubicTo(
+            center.x - width * 0.07f, mouthY + mouthOpen,
+            center.x + width * 0.07f, mouthY + mouthOpen,
+            center.x + width * 0.15f, mouthY
+        )
+    }
+    drawPath(mouth, color.copy(alpha = 0.9f), style = Stroke(stroke, cap = StrokeCap.Round))
+
+    // Facial contour fragments create the synthetic/CRT identity.
+    val contourAlpha = when (state) {
+        UiState.THINKING, UiState.ERROR -> 0.55f
+        else -> 0.32f
+    }
+    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .15f, center.y - height * .30f), Offset(left + width * .07f, center.y), strokeWidth = stroke)
+    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .07f, center.y), Offset(left + width * .15f, center.y + height * .30f), strokeWidth = stroke)
+    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .85f, center.y - height * .30f), Offset(left + width * .93f, center.y), strokeWidth = stroke)
+    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .93f, center.y), Offset(left + width * .85f, center.y + height * .30f), strokeWidth = stroke)
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawEye(
+    x: Float,
+    y: Float,
+    width: Float,
+    height: Float,
+    color: Color,
+    alpha: Float,
+    stroke: Float
+) {
+    drawOval(
+        color = color.copy(alpha = alpha),
+        topLeft = Offset(x - width / 2f, y - height / 2f),
+        size = Size(width, height),
+        style = Stroke(stroke)
+    )
+    drawCircle(color.copy(alpha = alpha), radius = height * 0.34f, center = Offset(x, y))
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawScanlines(
+    phase: Float,
+    color: Color,
+    alpha: Float
+) {
+    val spacing = 5f
+    var y = (phase * spacing * 3f) % spacing
+    while (y < size.height) {
+        drawLine(color.copy(alpha = alpha), Offset(0f, y), Offset(size.width, y), 1f)
+        y += spacing
+    }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawGlitch(
+    phase: Float,
+    cx: Float,
+    cy: Float,
+    faceW: Float,
+    faceH: Float,
+    color: Color,
+    state: UiState
+) {
+    val intensity = when (state) {
+        UiState.BOOT -> 0.35f
+        UiState.THINKING -> 1f
+        UiState.ERROR -> 1.4f
+        UiState.SPEAKING -> 0.55f
+        else -> 0.18f
+    }
+
+    for (i in 0 until 5) {
+        val t = phase * 6f + i * 1.73f
+        val trigger = abs(sin(t * 2.1f))
+        if (trigger > 0.88f) {
+            val y = cy - faceH / 2f + ((i * 0.19f + phase * 0.13f) % 1f) * faceH
+            val shift = sin(t * 3.2f) * faceW * 0.10f * intensity
+            val length = faceW * (0.25f + trigger * 0.55f) * intensity
+            drawRect(
+                color = color.copy(alpha = 0.20f * intensity),
+                topLeft = Offset(cx - length / 2f + shift, y),
+                size = Size(length, maxOf(2f, 2.5f * intensity))
+            )
+        }
+    }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHud(
+    state: UiState,
+    color: Color
+) {
+    val label = when (state) {
+        UiState.BOOT -> "INITIALIZING"
+        UiState.IDLE -> "ONLINE"
+        UiState.LISTENING -> "LISTENING"
+        UiState.THINKING -> "THINKING"
+        UiState.SPEAKING -> "SPEAKING"
+        UiState.ERROR -> "ERROR"
+    }
+
+    val style = TextStyle(
+        color = color.copy(alpha = 0.78f),
+        fontSize = 11.sp,
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 2.sp
+    )
+
+    // Text is intentionally minimal; the first UI build prioritizes the face.
+    drawContext.canvas.nativeCanvas.apply {
+        val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = style.color.hashCode()
+            textSize = 11.sp.toPx()
+            typeface = android.graphics.Typeface.MONOSPACE
+            letterSpacing = 0.18f
+        }
+        drawText(label, 28f, size.height - 28f, paint)
+        paint.alpha = 90
+        drawText("DELAMAIN // V0.1", size.width - 150f, 28f, paint)
+    }
+}
+
+private fun Float.toPx(): Float = this
