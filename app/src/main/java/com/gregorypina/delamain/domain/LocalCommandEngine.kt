@@ -104,7 +104,7 @@ class LocalCommandEngine(
         .replace(WHITESPACE, " ")
 
     private companion object {
-        const val ASSISTANT_NAME = "delamain"
+        const val ASSISTANT_NAME = "vexa"
 
         val PRESENCE_PHRASES = setOf(
             "esta ai",

@@ -1,6 +1,8 @@
-# DELAMAIN
+# VEXA
 
-Projeto pessoal de um companion de viagem Android inspirado na estética de inteligência artificial veicular de Cyberpunk 2077, desenvolvido para uso privado. O Delamain terá personalidade própria: cortês, calmo, atento e com humor seco discreto.
+Projeto pessoal de um companion de viagem Android inspirado na estética de inteligência artificial veicular de Cyberpunk 2077, desenvolvido para uso privado. A companion se chama VEXA e tem personalidade própria: cortês, calma, atenta e com humor seco discreto.
+
+O repositório continua em `GregoryPina/delamain` e os identificadores técnicos existentes (`applicationId`, namespace, pacotes, classes, tema e assets com nomes Delamain) são preservados para manter compatibilidade e histórico do projeto.
 
 ## Objetivo
 
@@ -39,9 +41,9 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 **Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
 
-O código inclui fullscreen, boot, imagens do rosto por estado e efeitos em Compose/Canvas. A V0.2-B inclui reflexos locais, hora, presença informal (“tá aí?”) e controle de volume de mídia pelo painel debug. Builds debug/release e 18 testes unitários passaram. O proprietário validou o fluxo digitado anterior; o ajuste real de volume ainda precisa de teste no aparelho. Voz e IA continuam planejadas.
+O código inclui fullscreen, boot, imagens do rosto por estado e efeitos em Compose/Canvas. A V0.2-B inclui reflexos locais, hora, presença informal (“tá aí?”) e controle de volume de mídia pelo painel debug. Builds debug/release e 18 testes unitários passaram na baseline anterior. O proprietário validou o fluxo digitado anterior; o ajuste real de volume ainda precisa de teste no aparelho. Voz e IA continuam planejadas.
 
-Para testar, instale o APK debug, abra `DEV` e envie “ta ai?”, “que horas são?”, “aumente o volume” ou “abaixe o volume”. O painel começa fechado e não existe na variante release. Contribuições remotas de mídia/apps ainda não estão ligadas ao fluxo ativo.
+Para testar, instale o APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “Vexa, aumente o volume” ou “abaixe o volume”. O painel começa fechado e não existe na variante release. Contribuições remotas de mídia/apps ainda não estão ligadas ao fluxo ativo.
 
 ## Como o companion responderá
 
@@ -49,7 +51,7 @@ Para testar, instale o APK debug, abra `DEV` e envie “ta ai?”, “que horas 
 - **Conversa por IA:** perguntas abertas e pedidos complexos usam uma API opcional, mantendo a mesma personalidade.
 - **Controle local:** a IA pode propor uma ação, mas o app valida sua permissão, parâmetros e disponibilidade antes de executar.
 
-Exemplo: “Delamain, está aí?” → “Sempre a postos, Gregory.” “Que horas são?” → resposta com a hora do aparelho. “Me ajude a organizar uma viagem de três dias” → conversa via IA, se habilitada.
+Exemplo: “Vexa, está aí?” → “Sempre a postos, Gregory.” “Que horas são?” → resposta com a hora do aparelho. “Me ajude a organizar uma viagem de três dias” → conversa via IA, se habilitada.
 
 A personalidade aparece desde as respostas prontas. Internet não é requisito para dar identidade ao personagem; reconhecimento e síntese de voz offline precisam ser validados separadamente.
 

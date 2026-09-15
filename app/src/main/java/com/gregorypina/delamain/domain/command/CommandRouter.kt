@@ -15,66 +15,101 @@ class CommandRouter {
 
         parseVolume(input)?.let { return it }
 
-        when {
-            input in setOf("aumentar volume", "aumenta o volume", "volume mais", "mais volume") ->
-                return DelamainCommand.VolumeUp
-
-            input in setOf("diminuir volume", "diminui o volume", "volume menos", "menos volume") ->
-                return DelamainCommand.VolumeDown
-
-            input.contains("pausar musica") || input.contains("pausa musica") ||
-                input == "pausar" || input == "pause" || input == "play pause" ->
-                return DelamainCommand.MediaPlayPause
-
-            input.contains("proxima musica") || input.contains("proxima faixa") ||
-                input == "proxima" || input == "next" || input == "next song" ->
-                return DelamainCommand.MediaNext
-
-            input.contains("musica anterior") || input.contains("faixa anterior") ||
-                input == "anterior" || input == "previous" || input == "previous song" ->
-                return DelamainCommand.MediaPrevious
-
-            input.contains("que horas") || input.contains("horas sao") ||
-                input == "hora" || input == "what time is it" ->
-                return DelamainCommand.CurrentTime
+        return when (input) {
+            in VOLUME_UP_PHRASES -> DelamainCommand.VolumeUp
+            in VOLUME_DOWN_PHRASES -> DelamainCommand.VolumeDown
+            in MEDIA_PLAY_PAUSE_PHRASES -> DelamainCommand.MediaPlayPause
+            in MEDIA_NEXT_PHRASES -> DelamainCommand.MediaNext
+            in MEDIA_PREVIOUS_PHRASES -> DelamainCommand.MediaPrevious
+            in CURRENT_TIME_PHRASES -> DelamainCommand.CurrentTime
+            else -> parseOpenApp(input) ?: DelamainCommand.Unknown
         }
-
-        parseOpenApp(input)?.let { return it }
-
-        return DelamainCommand.Unknown
     }
 
     private fun parseVolume(input: String): DelamainCommand? {
-        val match = Regex("(?:volume|som)\\s*(?:para|em|de)?\\s*(100|[1-9]?[0-9])\\s*(?:%|por cento)?\\b")
-            .find(input)
-            ?: return null
-
-        val percent = match.groupValues[1].toIntOrNull()?.coerceIn(0, 100) ?: return null
+        val match = VOLUME_PERCENT_PATTERN.matchEntire(input) ?: return null
+        val percent = match.groupValues[1].toIntOrNull() ?: return null
+        if (percent !in 0..100) return null
         return DelamainCommand.SetVolume(percent)
     }
 
     private fun parseOpenApp(input: String): DelamainCommand? {
-        val apps = listOf(
-            "youtube" to ("com.google.android.youtube" to "YouTube"),
-            "chrome" to ("com.android.chrome" to "Chrome"),
-            "google maps" to ("com.google.android.apps.maps" to "Google Maps"),
-            "maps" to ("com.google.android.apps.maps" to "Google Maps"),
-            "spotify" to ("com.spotify.music" to "Spotify"),
-            "whatsapp" to ("com.whatsapp" to "WhatsApp")
-        )
-
-        val asksToOpen = input.startsWith("abrir ") || input.startsWith("abra ") ||
-            input.startsWith("open ") || input.startsWith("abre ")
-
-        if (!asksToOpen) return null
-
-        return apps.firstOrNull { (name, _) -> input.contains(name) }
-            ?.let { (_, app) -> DelamainCommand.OpenApp(app.first, app.second) }
+        OPEN_APP_PHRASES[input]?.let { app ->
+            return DelamainCommand.OpenApp(app.first, app.second)
+        }
+        return null
     }
 
     private fun normalize(value: String): String {
         val withoutAccents = Normalizer.normalize(value.trim().lowercase(Locale.ROOT), Normalizer.Form.NFD)
             .replace("\\p{Mn}+".toRegex(), "")
-        return withoutAccents.replace(Regex("\\s+"), " ")
+        return withoutAccents
+            .replace(TERMINAL_PUNCTUATION, "")
+            .trim()
+            .replace(WHITESPACE, " ")
+    }
+
+    private companion object {
+        val VOLUME_UP_PHRASES = setOf(
+            "aumentar volume",
+            "aumenta o volume",
+            "volume mais",
+            "mais volume",
+        )
+        val VOLUME_DOWN_PHRASES = setOf(
+            "diminuir volume",
+            "diminui o volume",
+            "volume menos",
+            "menos volume",
+        )
+        val MEDIA_PLAY_PAUSE_PHRASES = setOf(
+            "pausar musica",
+            "pausa musica",
+            "pausar",
+            "pause",
+            "play pause",
+        )
+        val MEDIA_NEXT_PHRASES = setOf(
+            "proxima musica",
+            "proxima faixa",
+            "proxima",
+            "next",
+            "next song",
+        )
+        val MEDIA_PREVIOUS_PHRASES = setOf(
+            "musica anterior",
+            "faixa anterior",
+            "anterior",
+            "previous",
+            "previous song",
+        )
+        val CURRENT_TIME_PHRASES = setOf(
+            "que horas",
+            "que horas sao",
+            "horas sao",
+            "hora",
+            "what time is it",
+        )
+
+        val OPEN_APP_PHRASES: Map<String, Pair<String, String>> = buildMap {
+            val verbs = listOf("abrir", "abra", "open", "abre")
+            val apps = listOf(
+                "youtube" to ("com.google.android.youtube" to "YouTube"),
+                "chrome" to ("com.android.chrome" to "Chrome"),
+                "google maps" to ("com.google.android.apps.maps" to "Google Maps"),
+                "maps" to ("com.google.android.apps.maps" to "Google Maps"),
+                "spotify" to ("com.spotify.music" to "Spotify"),
+                "whatsapp" to ("com.whatsapp" to "WhatsApp"),
+            )
+            verbs.forEach { verb ->
+                apps.forEach { (name, app) -> put("$verb $name", app) }
+            }
+        }
+
+        val VOLUME_PERCENT_PATTERN = Regex(
+            "^(?:volume|som)\\s*(?:para|em|de)?\\s*(100|[1-9]?[0-9])\\s*(?:%|por cento)?$",
+        )
+        val TERMINAL_PUNCTUATION = Regex("[!?.]+$")
+        val WHITESPACE = Regex("\\s+")
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -141,7 +142,7 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
         )
 
         Text(
-            text = "DELAMAIN // V0.1",
+            text = "${stringResource(R.string.app_name)} // V0.1",
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(end = 28.dp, top = 20.dp),

@@ -12,14 +12,14 @@ import org.junit.Test
 class LocalCommandEngineTest {
     @Test
     fun `recognizes bare assistant name as call`() {
-        val result = LocalCommandEngine().process("Delamain!")
+        val result = LocalCommandEngine().process("Vexa!")
 
         assertRecognized(result, LocalIntent.CALL)
     }
 
     @Test
     fun `normalizes accents case spacing and punctuation`() {
-        val result = LocalCommandEngine().process("  DELAMAIN,   Você ESTÁ aí?!  ")
+        val result = LocalCommandEngine().process("  VEXA,   Você ESTÁ aí?!  ")
 
         assertRecognized(result, LocalIntent.PRESENCE)
     }
@@ -28,9 +28,9 @@ class LocalCommandEngineTest {
     fun `accepts optional assistant prefix for supported phrases`() {
         val engine = LocalCommandEngine()
 
-        assertRecognized(engine.process("Delamain, bom dia."), LocalIntent.GREETING)
-        assertRecognized(engine.process("Delamain: muito obrigado!"), LocalIntent.THANKS)
-        assertRecognized(engine.process("Delamain, que horas são?"), LocalIntent.TIME)
+        assertRecognized(engine.process("Vexa, bom dia."), LocalIntent.GREETING)
+        assertRecognized(engine.process("Vexa: muito obrigado!"), LocalIntent.THANKS)
+        assertRecognized(engine.process("Vexa, que horas são?"), LocalIntent.TIME)
     }
 
     @Test
@@ -65,7 +65,18 @@ class LocalCommandEngineTest {
         assertSame(LocalCommandResult.Unknown, engine.process(""))
         assertSame(LocalCommandResult.Unknown, engine.process("Como está o trânsito?"))
         assertSame(LocalCommandResult.Unknown, engine.process("horas"))
-        assertSame(LocalCommandResult.Unknown, engine.process("Delamain, abra o mapa"))
+        assertSame(LocalCommandResult.Unknown, engine.process("Vexa, abra o mapa"))
+    }
+
+    @Test
+    fun `rejects old assistant name as call or prefix`() {
+        val port = RecordingActionPort()
+        val engine = LocalCommandEngine(actionPort = port)
+
+        assertSame(LocalCommandResult.Unknown, engine.process("Delamain"))
+        assertSame(LocalCommandResult.Unknown, engine.process("Delamain, bom dia"))
+        assertSame(LocalCommandResult.Unknown, engine.process("Delamain, aumente o volume"))
+        assertTrue(port.actions.isEmpty())
     }
 
     @Test
@@ -74,7 +85,7 @@ class LocalCommandEngineTest {
 
         assertSame(LocalCommandResult.Unknown, engine.process("Não, obrigado"))
         assertSame(LocalCommandResult.Unknown, engine.process("Não quero saber que horas são"))
-        assertSame(LocalCommandResult.Unknown, engine.process("Delamain, não está aí?"))
+        assertSame(LocalCommandResult.Unknown, engine.process("Vexa, não está aí?"))
     }
 
     @Test
@@ -82,7 +93,7 @@ class LocalCommandEngineTest {
         val engine = LocalCommandEngine()
 
         assertSame(LocalCommandResult.Unknown, engine.process("Bom dia e que horas são?"))
-        assertSame(LocalCommandResult.Unknown, engine.process("Delamain, obrigado e bom dia"))
+        assertSame(LocalCommandResult.Unknown, engine.process("Vexa, obrigado e bom dia"))
         assertSame(LocalCommandResult.Unknown, engine.process("Está aí ou não?"))
     }
 
@@ -105,9 +116,9 @@ class LocalCommandEngineTest {
     fun `avoids immediate repetition while alternatives exist`() {
         val engine = LocalCommandEngine()
 
-        val first = assertRecognized(engine.process("Delamain"), LocalIntent.CALL).response
-        val second = assertRecognized(engine.process("Delamain"), LocalIntent.CALL).response
-        val third = assertRecognized(engine.process("Delamain"), LocalIntent.CALL).response
+        val first = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
+        val second = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
+        val third = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
 
         assertNotEquals(first, second)
         assertEquals(first, third)
@@ -188,7 +199,7 @@ class LocalCommandEngineTest {
     fun `accepts assistant prefix for a volume command and executes once`() {
         val port = RecordingActionPort()
         val result = LocalCommandEngine(actionPort = port)
-            .process("Delamain, aumente o volume")
+            .process("Vexa, aumente o volume")
 
         assertRecognized(result, LocalIntent.VOLUME_UP)
         assertEquals(listOf(LocalAction.VOLUME_UP), port.actions)

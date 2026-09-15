@@ -28,7 +28,7 @@ Um comando conhecido que falha não deve virar tentativa pela IA. “Não apagar
 | “Me explique…” | Conversa aberta | API de IA habilitada | V0.4 |
 | Início de sessão de viagem | Evento | Saudação local opcional, uma vez por sessão | V0.5 |
 
-Saudações, presença, agradecimento e hora foram implementados na V0.2-A; volume de mídia e formas “tá aí?”, “vc tá aí?” e “cê tá aí?” na V0.2-B. Prefixo “Delamain”, caixa, acentos e pontuação são normalizados. Apenas frases cadastradas são aceitas, sem reconhecimento aproximado para ações. As demais linhas são planejadas; código remoto de mídia/apps ainda precisa de consolidação e integração.
+Saudações, presença, agradecimento e hora foram implementados na V0.2-A; volume de mídia e formas “tá aí?”, “vc tá aí?” e “cê tá aí?” na V0.2-B. Prefixo “Vexa”, caixa, acentos e pontuação são normalizados. Apenas frases cadastradas são aceitas, sem reconhecimento aproximado para ações. “Delamain” não é mais gatilho de chamada; permanece apenas em identificadores técnicos e registros históricos. As demais linhas são planejadas; código remoto de mídia/apps ainda precisa de consolidação e integração.
 
 ## Modelo mínimo
 
