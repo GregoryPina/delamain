@@ -22,7 +22,7 @@ Wave 2: TASK-004 + TASK-005 integradas pelo PR #1. Roteador remoto passou a reco
 
 ## In progress
 
-TASK-006 implementada na branch `codex/open-app-local`. Proprietário confirmou abertura do YouTube após correção de visibilidade de pacotes no manifesto. Demais apps da allowlist e testes automáticos ainda não validados. Nenhum agente externo ativo atribuído.
+TASK-006 commitada em `codex/open-app-local` (`0260d6b`), publicada em `origin`. PR pendente de abertura/merge: https://github.com/GregoryPina/delamain/compare/main...codex/open-app-local Proprietário validou YouTube no aparelho. Demais apps da allowlist e `testDebugUnitTest` ainda pendentes. TASK-007 (mídia faixa anterior/próxima) redigida; aguarda merge da Wave 3.
 
 ## Waiting / blocked
 
@@ -46,7 +46,9 @@ Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá
 
 ## Next recommended action
 
-Executar `testDebugUnitTest` e validar os demais apps da allowlist no aparelho. Se ok, integrar branch `codex/open-app-local` via PR. Não ativar roteador remoto.
+1. Abrir/mergear PR de TASK-006 (`codex/open-app-local` → `main`).
+2. Executar `testDebugUnitTest` e validar demais apps da allowlist.
+3. Despachar TASK-007 (faixa anterior/próxima) após baseline publicada. Não ativar roteador remoto nem play/pause como toggle nesta etapa.
 
 ## Warnings
 

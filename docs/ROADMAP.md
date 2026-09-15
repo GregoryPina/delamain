@@ -40,7 +40,8 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] Contribuição remota de mídia, abertura de apps e volume percentual preservada no código
 - [ ] Consolidar motores e revisar contribuição remota (TASK-003)
 - [ ] Integrar e validar controle de mídia
-- [ ] Integrar e validar abertura de aplicativos
+- [x] Integrar abertura de aplicativos no fluxo local (TASK-006; PR pendente)
+- [ ] Validar abertura de aplicativos no aparelho (YouTube ok; demais apps pendentes)
 - [x] Consulta de hora local
 - [ ] Status do sistema
 - [ ] Navegação/câmera como intents

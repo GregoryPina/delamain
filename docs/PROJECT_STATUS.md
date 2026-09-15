@@ -74,3 +74,7 @@ HEAD `39d9fce03943760eb722bd31b557596653a15798` revisado somente contra o HEAD a
 Proprietário respondeu “teste ok” ao roteiro do HEAD `39d9fce03943760eb722bd31b557596653a15798`. Validação aceita como relato, sem logs/contagem/aparelho inferidos. Astra não executou testes. PR #1 integrado em `85d249df33d5722cec74532bcee8dd6a58d2b3af`; checkout local retornou a main.
 
 TASK-004 e TASK-005 concluídas. Nome/gatilho oficiais: VEXA. Parser remoto corrigido, mas permanece inativo. Não há executor ativo. Próximo recorte recomendado: abertura controlada de aplicativo via porta tipada; preparar TASK antes de implementar. Este fechamento substitui os estados pendentes da Wave 2 registrados acima.
+
+## Wave 3 — TASK-006
+
+Implementação em `codex/open-app-local` (`0260d6b`): abertura de apps allowlisted no fluxo local, `<queries>` no manifesto, validação manual do YouTube pelo proprietário (“funcionou”). Branch publicada; PR pendente em https://github.com/GregoryPina/delamain/compare/main...codex/open-app-local Testes automáticos não executados pelo Acting Tech Lead. Próximo recorte preparado: TASK-007 (faixa anterior/próxima).
