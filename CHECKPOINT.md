@@ -1,1 +1,1 @@
-V0.1 scaffold checkpoint.
+Checkpoint V0.2-B integrado e publicado. Baseline da Wave 1: 06bf60d73d38ac4acf76c9684082572590a606f4. Estado e retomada: TECH_LEAD_HANDOFF.md e docs/PROJECT_STATUS.md. Não criar agentes internos; despacho externo em tasks/WAVE-001-DISPATCH.md.

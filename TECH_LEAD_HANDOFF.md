@@ -4,8 +4,8 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Commit compartilhado observado: 2894e76 (origin/main; checkpoint local ainda em preparação).
-Não despachar trabalho externo até o checkpoint ser publicado e o hash atualizado aqui.
+Base commit da Wave 1: 06bf60d73d38ac4acf76c9684082572590a606f4 (publicado em origin/main).
+Esta baseline fixa contém código e TASK-003. Commits posteriores apenas de documentação não alteram a base desta wave.
 
 ## Current objective
 
@@ -13,7 +13,7 @@ Preservar V0.2-B, sincronizar contribuições remotas e adotar execução extern
 
 ## Current wave
 
-Checkpoint de integração. Próxima: Wave 1 / TASK-003, revisão dos dois motores.
+Wave 1 / TASK-003 pronta para encaminhamento externo pelo proprietário.
 
 ## Completed
 
@@ -21,11 +21,11 @@ Interface e digitação aprovadas pelo proprietário; aliases informais e volume
 
 ## In progress
 
-Checkpoint, integração de origin/main e publicação.
+Nenhuma implementação em execução; aguardando retorno externo e teste de volume pelo proprietário.
 
 ## Waiting / blocked
 
-Teste físico do volume pendente. Modelo externo aguarda baseline publicada.
+Teste físico do volume e revisão externa pendentes. Baseline publicada; despacho disponível em tasks/WAVE-001-DISPATCH.md.
 
 ## Current agent assignments
 
@@ -45,7 +45,7 @@ Roteadores sobrepostos; contribuições remotas sem ligação à UI e sem valida
 
 ## Next recommended action
 
-Concluir checkpoint e push; liberar EXTERNAL AGENT DISPATCH com hash exato para TASK-003.
+Proprietário encaminha tasks/WAVE-001-DISPATCH.md ao modelo externo. Astra confere a baseline do retorno, revisa o patch, aplica e testa antes de integrar.
 
 ## Warnings
 

@@ -4,7 +4,7 @@ Atualizado em 2026-09-15. Documento canônico de estado; não duplicar como PROJ
 
 ## Objetivo atual
 
-Publicar baseline que preserve o trabalho local V0.2-B e os commits remotos, depois consolidar os dois motores com revisão externa.
+Baseline publicada; receber revisão externa para consolidar os dois motores preservados.
 
 ## Concluído
 
@@ -20,7 +20,7 @@ Astra é o único agente no Work: planejamento, revisão, aplicação local, tes
 
 ## Wave atual
 
-Checkpoint e sincronização com origin/main. O remoto avançou a 2894e76 com domain/command/ e platform/; preservar esse código sem conectá-lo ao painel antes da revisão. O fluxo ativo continua LocalCommandEngine + LocalActionPort + AndroidMediaVolumeActionPort.
+Checkpoint e sincronização concluídos. A contribuição remota 2894e76 trouxe domain/command/ e platform/; código preservado sem conexão ao painel antes da revisão. O fluxo ativo continua LocalCommandEngine + LocalActionPort + AndroidMediaVolumeActionPort.
 
 ## Próxima wave
 
@@ -48,3 +48,7 @@ Wave 1, um executor externo: tasks/TASK-003.md, revisão de consolidação. Depe
 ## Próximo passo
 
 Conferir a baseline em TECH_LEAD_HANDOFF.md e encaminhar TASK-003 a um modelo externo. Não ativar mais recursos até receber e revisar a proposta de consolidação. Em paralelo, proprietário pode testar o APK V0.2-B.
+
+## Checkpoint publicado
+
+Baseline fixa da Wave 1: `06bf60d73d38ac4acf76c9684082572590a606f4`, publicada em `origin/main`. Inclui checkpoint local `6972820` e contribuição remota `2894e76`, sem descarte de trabalho. Validação após merge: BUILD SUCCESSFUL em 22s; 18 testes sem falhas/erros/ignorados. [Despacho externo](../tasks/WAVE-001-DISPATCH.md) pronto para o proprietário encaminhar.
