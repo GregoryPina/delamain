@@ -3,7 +3,7 @@
 Status: validado pelo proprietário em aparelho (abertura do YouTube confirmada após correção de `<queries>` no manifesto).
 Base: `85d249df33d5722cec74532bcee8dd6a58d2b3af`.
 Branch: `codex/open-app-local`.
-Testes automáticos: não executados pelo Acting Tech Lead nesta sessão. Validação manual: relato “funcionou” para YouTube.
+Testes automáticos: `testDebugUnitTest` — 32 testes, 0 falhas (após correção do `RecordingActionPort` em `aba7a35`). Validação manual: relato “funcionou” para YouTube.
 
 ## Resumo
 
