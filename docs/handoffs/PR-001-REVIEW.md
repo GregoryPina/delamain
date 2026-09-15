@@ -19,3 +19,12 @@ Restringir remoção à pontuação de encerramento explicitamente aceita, prese
 ## Próximo passo
 
 Executor atualiza o mesmo PR/branch e retorna novo HEAD, arquivos, resumo e testes criados/não executados. Astra revisa o ajuste; proprietário executa build/testes. Não integrar antes disso. A revisão estática de identidade VEXA não encontrou impedimentos, mas ainda depende de teste local.
+
+## Reavaliação — correção recebida
+
+HEAD: `39d9fce03943760eb722bd31b557596653a15798`.
+Resultado: APPROVED na revisão estática; aguardando builds/testes e validação visual pelo proprietário. Nenhum merge autorizado por esta aprovação estática.
+
+Comparação com 8351703: somente CommandRouter.kt e CommandRouterTest.kt mudaram. A normalização remove apenas !, ? e ponto final; %, / e - permanecem para validação integral. Regressões negativas e positivas solicitadas foram adicionadas. TASK-005, executor Android e fluxo ativo não sofreram alterações adicionais.
+
+Testes/builds executados por Astra: nenhum. Próximo passo: proprietário testar este HEAD exato e informar resultado; integrar somente após a validação.

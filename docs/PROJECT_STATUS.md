@@ -64,3 +64,7 @@ Preferência atual: proprietário executa builds/testes locais; Astra não os ex
 ## Revisão do PR #1
 
 TASK-004/005 entregues no PR draft #1, HEAD `8351703787b01fe598e31307d3dab43ffdefa902`, base confirmada. Revisão estática Astra: CHANGES REQUIRED por normalização excessiva de pontuação em percentual. Identidade VEXA sem impedimentos encontrados na leitura. Nenhum build/teste executado; nenhum merge realizado. Próximo passo: correção localizada no mesmo PR, conforme [revisão](handoffs/PR-001-REVIEW.md); depois validação pelo proprietário.
+
+## PR #1 — correção aprovada estaticamente
+
+HEAD `39d9fce03943760eb722bd31b557596653a15798` revisado somente contra o HEAD anterior. APPROVED na revisão estática; agora aguardando execução dos builds/testes e verificação de VEXA pelo proprietário. Não houve merge nem teste automático no Work. A correção ficou restrita aos dois arquivos de roteador/testes pedidos.

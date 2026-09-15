@@ -21,11 +21,11 @@ TASK-003 concluída: revisão estática CHANGES REQUIRED, nenhum código ou test
 
 ## In progress
 
-PR #1 recebido; HEAD 8351703787b01fe598e31307d3dab43ffdefa902 revisado estaticamente. CHANGES REQUIRED: normalização remove sintaxe inválida de percentual; aguardar ajuste no mesmo PR.
+PR #1: correção no HEAD 39d9fce03943760eb722bd31b557596653a15798 aprovada estaticamente (APPROVED). Aguardando teste pelo proprietário; não integrado.
 
 ## Waiting / blocked
 
-Correção do PR #1 e depois builds/testes pelo proprietário. Nenhum build/teste executado por Astra nesta revisão.
+Builds/testes e validação VEXA no HEAD 39d9fce pelo proprietário. Nenhum build/teste executado por Astra nesta revisão.
 
 ## Current agent assignments
 
@@ -45,7 +45,7 @@ Parser remoto com falsos positivos (TASK-004); executor remoto sem confirmação
 
 ## Next recommended action
 
-Encaminhar PATCH REQUEST de docs/handoffs/PR-001-REVIEW.md ao executor. Conferir novo HEAD; depois fornecer roteiro e aguardar teste do proprietário antes de merge.
+Proprietário testa HEAD 39d9fce03943760eb722bd31b557596653a15798; registrar resultados antes de integrar PR #1. Conferir se HEAD mudou antes de merge.
 
 ## Warnings
 
