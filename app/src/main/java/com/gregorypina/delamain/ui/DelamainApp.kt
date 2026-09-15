@@ -1,5 +1,7 @@
 package com.gregorypina.delamain.ui
 
+import android.graphics.Paint
+import android.graphics.Typeface
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -27,12 +29,11 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.sin
@@ -56,7 +57,6 @@ fun DelamainApp() {
                 state = UiState.IDLE
             }
 
-            // Development shortcut: tap the screen to cycle through visual states.
             DelamainScreen(
                 state = state,
                 onTap = {
@@ -89,7 +89,10 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
     val phase by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(2400), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(
+            animation = tween(2400),
+            repeatMode = RepeatMode.Restart
+        ),
         label = "phase"
     )
 
@@ -130,7 +133,7 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
     }
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
+private fun DrawScope.drawFace(
     center: Offset,
     width: Float,
     height: Float,
@@ -186,13 +189,33 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
         UiState.THINKING, UiState.ERROR -> 0.55f
         else -> 0.32f
     }
-    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .15f, center.y - height * .30f), Offset(left + width * .07f, center.y), strokeWidth = stroke)
-    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .07f, center.y), Offset(left + width * .15f, center.y + height * .30f), strokeWidth = stroke)
-    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .85f, center.y - height * .30f), Offset(left + width * .93f, center.y), strokeWidth = stroke)
-    drawLine(color.copy(alpha = contourAlpha), Offset(left + width * .93f, center.y), Offset(left + width * .85f, center.y + height * .30f), strokeWidth = stroke)
+    drawLine(
+        color.copy(alpha = contourAlpha),
+        Offset(left + width * 0.15f, center.y - height * 0.30f),
+        Offset(left + width * 0.07f, center.y),
+        strokeWidth = stroke
+    )
+    drawLine(
+        color.copy(alpha = contourAlpha),
+        Offset(left + width * 0.07f, center.y),
+        Offset(left + width * 0.15f, center.y + height * 0.30f),
+        strokeWidth = stroke
+    )
+    drawLine(
+        color.copy(alpha = contourAlpha),
+        Offset(left + width * 0.85f, center.y - height * 0.30f),
+        Offset(left + width * 0.93f, center.y),
+        strokeWidth = stroke
+    )
+    drawLine(
+        color.copy(alpha = contourAlpha),
+        Offset(left + width * 0.93f, center.y),
+        Offset(left + width * 0.85f, center.y + height * 0.30f),
+        strokeWidth = stroke
+    )
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawEye(
+private fun DrawScope.drawEye(
     x: Float,
     y: Float,
     width: Float,
@@ -210,7 +233,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawEye(
     drawCircle(color.copy(alpha = alpha), radius = height * 0.34f, center = Offset(x, y))
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawScanlines(
+private fun DrawScope.drawScanlines(
     phase: Float,
     color: Color
 ) {
@@ -222,7 +245,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawScanlines(
     }
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawGlitch(
+private fun DrawScope.drawGlitch(
     phase: Float,
     cx: Float,
     cy: Float,
@@ -255,7 +278,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawGlitch(
     }
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHud(
+private fun DrawScope.drawHud(
     state: UiState,
     color: Color
 ) {
@@ -268,23 +291,27 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHud(
         UiState.ERROR -> "ERROR"
     }
 
-    val style = TextStyle(
-        color = color.copy(alpha = 0.78f),
-        fontSize = 11.sp,
-        fontFamily = FontFamily.Monospace,
-        fontWeight = FontWeight.Medium,
-        letterSpacing = 2.sp
-    )
-
-    drawContext.canvas.nativeCanvas.apply {
-        val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
-            color = style.color.toArgb()
-            textSize = 11f * density
-            typeface = android.graphics.Typeface.MONOSPACE
+    drawIntoCanvas { canvas ->
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = color.copy(alpha = 0.78f).toArgb()
+            textSize = with(this@drawHud) { 11.sp.toPx() }
+            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
             letterSpacing = 0.18f
         }
-        drawText(label, 28f, size.height - 28f, paint)
+
+        canvas.nativeCanvas.drawText(
+            label,
+            28f,
+            size.height - 28f,
+            paint
+        )
+
         paint.alpha = 90
-        drawText("DELAMAIN // V0.1", size.width - 150f, 28f, paint)
+        canvas.nativeCanvas.drawText(
+            "DELAMAIN // V0.1",
+            size.width - 150f,
+            28f,
+            paint
+        )
     }
 }
