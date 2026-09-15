@@ -2,7 +2,7 @@
 
 ## Fase 0 — Fundação
 
-Situação em 15 de setembro de 2026: interface V0.1 e funcionamento digitado da V0.2-A aceitos pelo proprietário. Wrapper restaurado; builds debug/release e 10 testes do motor local passaram pelos agentes. Variação informal “ta ai?” reportada como não reconhecida; correção e controle de volume em execução na V0.2-B.
+Situação em 15 de setembro de 2026: interface V0.1 e digitação V0.2-A aceitas pelo proprietário. V0.2-B implementa presença informal e volume; builds debug/release e 18 testes passaram. Volume no aparelho ainda pendente. Código remoto de mídia/apps preservado, ainda sem ligação à UI.
 
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios
@@ -10,13 +10,14 @@ Situação em 15 de setembro de 2026: interface V0.1 e funcionamento digitado da
 - [x] Especificar personalidade, reflexos locais e contrato de integração com IA
 - [x] Fundação Android presente e interface funcional segundo o proprietário
 - [x] Reproduzir build neste checkout pelos agentes
+- [x] Primeiro build em dispositivo
 
 ## V0.1 — Interface
 - [x] Fullscreen horizontal
 - [x] Tela de boot
 - [x] Rosto/personagem com estética cyberpunk presente
 - [x] Glitch/flicker/scanlines
-- [x] Estados IDLE, LISTENING, THINKING, SPEAKING
+- [x] Estados IDLE, LISTENING, THINKING, SPEAKING/ERROR
 - [x] Transição de boot para tela principal
 - [ ] Confirmar origem/licença dos assets visuais
 
@@ -28,15 +29,18 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] **V0.2-A:** integrar entrada de debug e compilar o fluxo local
 - [x] **V0.2-A:** validar funcionamento digitado pelo proprietário
 - [ ] Validar explicitamente cenários de layout com teclado e ausência de DEV na release
-- [ ] **V0.2-B:** reconhecer presença informal (“tá aí?”, “ta ai?”, “vc tá aí?”)
+- [x] **V0.2-B:** reconhecer presença informal (“tá aí?”, “ta ai?”, “vc tá aí?”)
 - [x] Catálogo inicial de frases com personalidade e variação sem repetição imediata
 - [x] Reflexos sociais por gatilho: chamada, saudação e agradecimento
 - [x] Entrada de desenvolvimento para testar roteamento sem microfone
 - [x] Motor inicial de intents com reconhecimento de frases completas
 - [ ] Ambiguidade, negação e resultados de ação sem confirmação falsa
-- [ ] Volume
-- [ ] Controle de mídia
-- [ ] Abrir aplicativos
+- [x] Aumento/redução de volume de mídia implementados com resultados tipados e testes
+- [ ] Validar volume real e limites no aparelho
+- [x] Contribuição remota de mídia, abertura de apps e volume percentual preservada no código
+- [ ] Consolidar motores e revisar contribuição remota (TASK-003)
+- [ ] Integrar e validar controle de mídia
+- [ ] Integrar e validar abertura de aplicativos
 - [x] Consulta de hora local
 - [ ] Status do sistema
 - [ ] Navegação/câmera como intents
