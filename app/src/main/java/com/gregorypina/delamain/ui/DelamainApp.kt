@@ -21,13 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.math.abs
-import kotlin.math.cos
 import kotlin.math.sin
 
 private enum class UiState {
@@ -44,8 +43,6 @@ private enum class UiState {
 
 private val Background = Color(0xFF020608)
 private val Cyan = Color(0xFF64D8FF)
-private val DimCyan = Color(0xFF16475A)
-private val SoftWhite = Color(0xFFD9F5FF)
 private val ErrorRed = Color(0xFFFF315A)
 
 @Composable
@@ -118,7 +115,7 @@ private fun DelamainScreen(state: UiState, onTap: () -> Unit) {
                 UiState.ERROR -> 1.25f
             }
 
-            drawScanlines(phase, activeColor, 0.09f)
+            drawScanlines(phase, activeColor)
             drawFace(
                 center = Offset(cx, cy),
                 width = faceW * pulse,
@@ -145,7 +142,6 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
     val left = center.x - width / 2f
     val top = center.y - height / 2f
 
-    // Outer holographic silhouette.
     drawOval(
         color = color.copy(alpha = 0.08f),
         topLeft = Offset(left, top),
@@ -167,7 +163,6 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
     drawEye(center.x - eyeSpacing, eyeY, eyeW, eyeH, color, eyeAlpha, stroke)
     drawEye(center.x + eyeSpacing, eyeY, eyeW, eyeH, color, eyeAlpha, stroke)
 
-    // Nose bridge: deliberately geometric rather than photorealistic.
     val nose = Path().apply {
         moveTo(center.x, eyeY + eyeH)
         lineTo(center.x - width * 0.035f, center.y + height * 0.10f)
@@ -175,7 +170,6 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
     }
     drawPath(nose, color.copy(alpha = 0.68f), style = Stroke(stroke, join = StrokeJoin.Round))
 
-    // Mouth changes subtly in SPEAKING.
     val mouthY = center.y + height * 0.25f
     val mouthOpen = if (state == UiState.SPEAKING) height * 0.018f else height * 0.004f
     val mouth = Path().apply {
@@ -188,7 +182,6 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFace(
     }
     drawPath(mouth, color.copy(alpha = 0.9f), style = Stroke(stroke, cap = StrokeCap.Round))
 
-    // Facial contour fragments create the synthetic/CRT identity.
     val contourAlpha = when (state) {
         UiState.THINKING, UiState.ERROR -> 0.55f
         else -> 0.32f
@@ -219,13 +212,12 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawEye(
 
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawScanlines(
     phase: Float,
-    color: Color,
-    alpha: Float
+    color: Color
 ) {
     val spacing = 5f
     var y = (phase * spacing * 3f) % spacing
     while (y < size.height) {
-        drawLine(color.copy(alpha = alpha), Offset(0f, y), Offset(size.width, y), 1f)
+        drawLine(color.copy(alpha = 0.09f), Offset(0f, y), Offset(size.width, y), 1f)
         y += spacing
     }
 }
@@ -284,11 +276,10 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHud(
         letterSpacing = 2.sp
     )
 
-    // Text is intentionally minimal; the first UI build prioritizes the face.
     drawContext.canvas.nativeCanvas.apply {
         val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = style.color.hashCode()
-            textSize = 11.sp.toPx()
+            color = style.color.toArgb()
+            textSize = 11f * density
             typeface = android.graphics.Typeface.MONOSPACE
             letterSpacing = 0.18f
         }
@@ -297,5 +288,3 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHud(
         drawText("DELAMAIN // V0.1", size.width - 150f, 28f, paint)
     }
 }
-
-private fun Float.toPx(): Float = this
