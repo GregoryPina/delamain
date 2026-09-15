@@ -79,19 +79,22 @@ fun DelamainApp() {
                 state = UiState.IDLE
             }
 
-            DelamainScreen(
-                state = state,
-                onTap = {
-                    state = when (state) {
-                        UiState.BOOT -> UiState.IDLE
-                        UiState.IDLE -> UiState.LISTENING
-                        UiState.LISTENING -> UiState.THINKING
-                        UiState.THINKING -> UiState.SPEAKING
-                        UiState.SPEAKING -> UiState.ERROR
-                        UiState.ERROR -> UiState.IDLE
+            Box(modifier = Modifier.fillMaxSize()) {
+                DelamainScreen(
+                    state = state,
+                    onTap = {
+                        state = when (state) {
+                            UiState.BOOT -> UiState.IDLE
+                            UiState.IDLE -> UiState.LISTENING
+                            UiState.LISTENING -> UiState.THINKING
+                            UiState.THINKING -> UiState.SPEAKING
+                            UiState.SPEAKING -> UiState.ERROR
+                            UiState.ERROR -> UiState.IDLE
+                        }
                     }
-                }
-            )
+                )
+                DebugCommandPanel()
+            }
         }
     }
 }

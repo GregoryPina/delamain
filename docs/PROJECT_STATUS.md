@@ -1,0 +1,50 @@
+# Estado do projeto
+
+Atualizado em 2026-09-15. Documento canônico de estado; não duplicar como PROJECT_STATE.md.
+
+## Objetivo atual
+
+Publicar baseline que preserve o trabalho local V0.2-B e os commits remotos, depois consolidar os dois motores com revisão externa.
+
+## Concluído
+
+- Interface V0.1 e fluxo digitado V0.2-A aceitos pelo proprietário.
+- Wrapper Gradle 8.9, motor local, painel DEV exclusivo de debug, reflexos e hora.
+- V0.2-B: aliases de presença informal e ações de aumentar/reduzir volume de mídia, com resultados tipados.
+- Astra executou assembleDebug, testDebugUnitTest e assembleRelease: sucesso; 18 testes, zero falhas/erros/ignorados.
+- Build não equivale a teste de volume no aparelho.
+
+## Operação
+
+Astra é o único agente no Work: planejamento, revisão, aplicação local, testes e Git. Não criar/reativar agentes internos. Modelos externos são abertos pelo proprietário e devolvem patches contra BASE COMMIT exato. Os handoffs de SOL são históricos; os executores pararam por limite de uso e o fechamento foi assumido por Astra.
+
+## Wave atual
+
+Checkpoint e sincronização com origin/main. O remoto avançou a 2894e76 com domain/command/ e platform/; preservar esse código sem conectá-lo ao painel antes da revisão. O fluxo ativo continua LocalCommandEngine + LocalActionPort + AndroidMediaVolumeActionPort.
+
+## Próxima wave
+
+Wave 1, um executor externo: tasks/TASK-003.md, revisão de consolidação. Dependência: commit do checkpoint publicado e informado no EXTERNAL AGENT DISPATCH. Nenhum executor externo foi iniciado automaticamente.
+
+## Problemas / limites
+
+- Dois motores no código até a consolidação; mídia/apps/volume percentual remotos não estão integrados ao fluxo ativo.
+- Parser remoto usa substring para alguns comandos e precisa de revisão de negações; executor remoto confirma ações sem toda a evidência exigida no fluxo atual.
+- Volume real, limites e rotas de áudio ainda precisam de validação no aparelho.
+- Catálogo local continua fechado; aliases não são compreensão livre de linguagem.
+- Release não assinado; APK debug para teste pessoal. Sem voz, IA ou rede no app.
+
+## Memória
+
+- [Retomada](../TECH_LEAD_HANDOFF.md)
+- [Decisões](DECISIONS.md)
+- [Feedback de digitação](handoffs/FEEDBACK-01.md)
+- [Núcleo inicial](handoffs/LOCAL-01.md)
+- [Volume e aliases](handoffs/LOCAL-02.md)
+- [Revisão de volume](handoffs/QA-02.md)
+- [Build](handoffs/BUILD-01.md)
+- [Painel DEV](handoffs/DEBUG-01.md)
+
+## Próximo passo
+
+Conferir a baseline em TECH_LEAD_HANDOFF.md e encaminhar TASK-003 a um modelo externo. Não ativar mais recursos até receber e revisar a proposta de consolidação. Em paralelo, proprietário pode testar o APK V0.2-B.

@@ -1,26 +1,44 @@
 # Roadmap
 
 ## Fase 0 — Fundação
+
+Situação em 15 de setembro de 2026: interface V0.1 e funcionamento digitado da V0.2-A aceitos pelo proprietário. Wrapper restaurado; builds debug/release e 10 testes do motor local passaram pelos agentes. Variação informal “ta ai?” reportada como não reconhecida; correção e controle de volume em execução na V0.2-B.
+
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios
 - [x] Documentar arquitetura inicial
-- [ ] Criar projeto Android compilável
-- [ ] Primeiro build em dispositivo
+- [x] Especificar personalidade, reflexos locais e contrato de integração com IA
+- [x] Fundação Android presente e interface funcional segundo o proprietário
+- [x] Reproduzir build neste checkout pelos agentes
 
 ## V0.1 — Interface
-- [ ] Fullscreen horizontal
-- [ ] Tela de boot
-- [ ] Rosto/personagem original com estética cyberpunk
-- [ ] Glitch/flicker/scanlines
-- [ ] Estados IDLE, LISTENING, THINKING, SPEAKING
-- [ ] Transição de boot para tela principal
+- [x] Fullscreen horizontal
+- [x] Tela de boot
+- [x] Rosto/personagem com estética cyberpunk presente
+- [x] Glitch/flicker/scanlines
+- [x] Estados IDLE, LISTENING, THINKING, SPEAKING
+- [x] Transição de boot para tela principal
+- [ ] Confirmar origem/licença dos assets visuais
+
+Conclusão funcional baseada no relato do proprietário em 15 de setembro de 2026. Ela não representa reprodução do build por um agente nem certificação da licença dos assets.
 
 ## V0.2 — Comandos locais
-- [ ] Motor de intents
+- [x] **V0.2-A:** núcleo Kotlin local para chamada, saudação, agradecimento e hora
+- [x] **V0.2-A:** testes do roteamento e das variantes sem repetição imediata
+- [x] **V0.2-A:** integrar entrada de debug e compilar o fluxo local
+- [x] **V0.2-A:** validar funcionamento digitado pelo proprietário
+- [ ] Validar explicitamente cenários de layout com teclado e ausência de DEV na release
+- [ ] **V0.2-B:** reconhecer presença informal (“tá aí?”, “ta ai?”, “vc tá aí?”)
+- [x] Catálogo inicial de frases com personalidade e variação sem repetição imediata
+- [x] Reflexos sociais por gatilho: chamada, saudação e agradecimento
+- [x] Entrada de desenvolvimento para testar roteamento sem microfone
+- [x] Motor inicial de intents com reconhecimento de frases completas
+- [ ] Ambiguidade, negação e resultados de ação sem confirmação falsa
 - [ ] Volume
 - [ ] Controle de mídia
 - [ ] Abrir aplicativos
-- [ ] Hora/status do sistema
+- [x] Consulta de hora local
+- [ ] Status do sistema
 - [ ] Navegação/câmera como intents
 
 ## V0.3 — Voz
@@ -29,11 +47,15 @@
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões
+- [ ] Interrupção de fala, cancelamento e modo silencioso
+- [ ] Validar STT/TTS offline e medir latência por etapa no dispositivo
 
 ## V0.4 — IA
 - [ ] Provider abstrato
 - [ ] Integração com provider escolhido
 - [ ] Histórico de conversa
+- [ ] Personalidade consistente com respostas locais e retenção opcional de histórico
+- [ ] Timeout e descarte de respostas após cancelamento
 - [ ] Resposta por voz
 - [ ] Ações estruturadas com allowlist
 
@@ -43,6 +65,9 @@
 - [ ] Câmera
 - [ ] Inicialização automática quando apropriado
 - [ ] Modo de condução / UI simplificada
+- [ ] Eventos de sessão com limite de repetição e falas espontâneas opcionais
+
+Ideias adicionais estão em [IDEAS.md](IDEAS.md), sem compromisso de implementação nesta sequência.
 
 ## V1.0 — Hardware
 - [ ] Escolher método de saída de vídeo

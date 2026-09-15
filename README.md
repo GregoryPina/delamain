@@ -1,6 +1,6 @@
 # DELAMAIN
 
-Projeto pessoal de um assistente automotivo Android inspirado na estética de inteligência artificial veicular de Cyberpunk 2077, desenvolvido para uso privado.
+Projeto pessoal de um companion de viagem Android inspirado na estética de inteligência artificial veicular de Cyberpunk 2077, desenvolvido para uso privado. O Delamain terá personalidade própria: cortês, calmo, atento e com humor seco discreto.
 
 ## Objetivo
 
@@ -37,12 +37,32 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 ## Status
 
-**Fase 0 — especificação e estrutura.**
+**Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
 
-Nenhum APK está sendo produzido ainda.
+O código inclui fullscreen, boot, imagens do rosto por estado e efeitos em Compose/Canvas. A V0.2-B inclui reflexos locais, hora, presença informal (“tá aí?”) e controle de volume de mídia pelo painel debug. Builds debug/release e 18 testes unitários passaram. O proprietário validou o fluxo digitado anterior; o ajuste real de volume ainda precisa de teste no aparelho. Voz e IA continuam planejadas.
+
+Para testar, instale o APK debug, abra `DEV` e envie “ta ai?”, “que horas são?”, “aumente o volume” ou “abaixe o volume”. O painel começa fechado e não existe na variante release. Contribuições remotas de mídia/apps ainda não estão ligadas ao fluxo ativo.
+
+## Como o companion responderá
+
+- **Reflexos locais:** gatilhos conhecidos escolhem frases prontas e executam ações permitidas, sem consultar IA.
+- **Conversa por IA:** perguntas abertas e pedidos complexos usam uma API opcional, mantendo a mesma personalidade.
+- **Controle local:** a IA pode propor uma ação, mas o app valida sua permissão, parâmetros e disponibilidade antes de executar.
+
+Exemplo: “Delamain, está aí?” → “Sempre a postos, Gregory.” “Que horas são?” → resposta com a hora do aparelho. “Me ajude a organizar uma viagem de três dias” → conversa via IA, se habilitada.
+
+A personalidade aparece desde as respostas prontas. Internet não é requisito para dar identidade ao personagem; reconhecimento e síntese de voz offline precisam ser validados separadamente.
 
 ## Documentação
 
 - [Arquitetura](docs/ARCHITECTURE.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Status coordenado](docs/PROJECT_STATUS.md)
+- [Retomada do Tech Lead](TECH_LEAD_HANDOFF.md)
+- [Decisões](docs/DECISIONS.md)
+- [Personalidade e respostas](docs/PERSONALITY.md)
+- [Roteamento e gatilhos](docs/INTERACTIONS.md)
+- [Ideias para evolução](docs/IDEAS.md)
+- [Design visual](docs/DESIGN.md)
+- [Desenvolvimento](docs/DEVELOPMENT.md)
 - [Diretrizes para agentes de código](AGENTS.md)

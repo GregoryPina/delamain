@@ -22,6 +22,25 @@ Construir o projeto em pequenos incrementos. Cada incremento deve deixar o repos
 
 ## Estratégia de IA de desenvolvimento
 
+### Coordenação e economia de tokens
+
+O GPT-Astra é responsável por planejamento, contratos, revisão, aplicação local, builds, testes e Git. Por instrução posterior do proprietário, Work é exclusivo do Astra: não criar ou reativar agentes internos. Os registros de GPT-SOL em handoffs anteriores são históricos.
+
+O quadro fica em [PROJECT_STATUS.md](PROJECT_STATUS.md); a retomada começa em [TECH_LEAD_HANDOFF.md](../TECH_LEAD_HANDOFF.md). Agentes externos são abertos pelo proprietário e normalmente só leem GitHub. Não presumir acesso local nem resultados de testes.
+
+Fluxo de cada incremento:
+
+1. Astra preserva alterações, valida, cria checkpoint, faz commit/push e registra baseline exata.
+2. Define TASKs em `tasks/` e waves por dependência; agrupa tarefas com arquivos compartilhados.
+3. Entrega EXTERNAL AGENT DISPATCH copiável com repositório, branch, BASE COMMIT, TASKs e saída esperada.
+4. Executor externo devolve patch/arquivos e limitações. O proprietário traz a solução para Astra.
+5. Astra confere baseline e diff, aplica e testa. Correções pequenas podem ser locais; mudanças relevantes viram PATCH REQUEST.
+6. Após validação, commit/push e atualização de baseline e handoff. Nenhuma implementação pesada é enviada a agentes internos.
+
+Cada passagem deve incluir: status; resumo; arquivos alterados; interfaces e exemplos de uso; comandos de validação e resultados; limitações; decisões; próximo responsável. Se teste não foi executado, informar o motivo. Aprovação funcional do proprietário é evidência válida, identificada como relato, sem atribuir ao agente um teste que ele não fez.
+
+Usar um executor externo por recorte, paralelo somente para trabalho independente. Não criar tarefas na barra lateral ou automações sem pedido específico. Repositório local pode estar adiante do GitHub; nenhum despacho é liberado enquanto a baseline não estiver publicada.
+
 O agente de código deve evitar reescrever grandes partes do projeto sem necessidade. Antes de alterar uma implementação existente, procurar os arquivos e componentes relacionados e preservar interfaces públicas já estabelecidas.
 
 Quando uma biblioteca externa for necessária:
@@ -45,6 +64,16 @@ Para recursos de voz, testar separadamente:
 6. TTS.
 
 Não juntar todos esses componentes em um único primeiro teste.
+
+Para comandos e personalidade, usar os cenários de aceite de [INTERACTIONS.md](INTERACTIONS.md). Testar primeiro com entradas de texto e provider falso que registre chamadas: os reflexos locais devem produzir zero chamadas de IA. Testes de voz no dispositivo devem incluir ausência de rede, ruído ambiente, interrupção e retomada do app.
+
+Alterações apenas de documentação exigem revisão de consistência e links, sem declarar build validado. O Gradle Wrapper 8.9 foi restaurado em BUILD-01. Com um JDK compatível configurado em `JAVA_HOME` e o SDK Android disponível por configuração local, executar no Windows:
+
+```powershell
+.\gradlew.bat assembleDebug testDebugUnitTest assembleRelease
+```
+
+Na entrega V0.2-A essa sequência passou usando o JBR instalado; consulte [BUILD-01](handoffs/BUILD-01.md) e [QA-01](handoffs/QA-01.md) para ambiente, resultados e roteiro manual. Não versionar `local.properties`. A variante release produz APK não assinado; usar o APK debug para o teste de desenvolvimento.
 
 ## Segurança e privacidade
 

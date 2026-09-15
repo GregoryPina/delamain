@@ -13,10 +13,21 @@ Antes de implementar qualquer mudança, ler:
 4. `docs/ROADMAP.md`
 5. `docs/DESIGN.md` quando a tarefa envolver UI/visual
 6. `docs/DEVELOPMENT.md` quando a tarefa envolver processo de desenvolvimento, testes ou agentes
+7. `docs/PERSONALITY.md` e `docs/INTERACTIONS.md` quando a tarefa envolver respostas, comandos, voz ou IA
+8. `docs/PROJECT_STATUS.md` para conhecer responsáveis, dependências e passagem de trabalho
+9. `TECH_LEAD_HANDOFF.md` ao assumir a coordenação; `docs/DECISIONS.md` e a TASK atribuída em `tasks/` para trabalho externo
 
 A documentação do repositório é a fonte de verdade do projeto. Não substituir decisões documentadas por uma arquitetura nova sem necessidade.
 
 ## Regras de desenvolvimento
+
+- Astra é o Tech Lead e integrador local. Work é exclusivo do Astra: não criar ou reativar subagentes internos, workers ou instâncias paralelas. Esta regra substitui a divisão anterior com GPT-SOL interno.
+- Trabalho externo é preparado como TASKs e prompts copiáveis; o proprietário abre os modelos fora do Work. Não presumir acesso deles ao filesystem local, execução de testes ou Git.
+- Antes de despachar, sincronizar trabalho local válido com GitHub, sem descartar mudanças. Cada wave usa repositório, branch e BASE COMMIT exatos; nunca fornecer branch móvel como única referência.
+- Cada executor externo recebe objetivo, arquivos permitidos, dependências e aceite. Retorna preferencialmente unified diff e resumo de testes/riscos. Astra revisa, aplica, testa, integra, faz commit e push.
+- Registrar entregas em `docs/handoffs/`; Astra mantém `docs/PROJECT_STATUS.md`, decisões e `TECH_LEAD_HANDOFF.md`. Usar os caminhos existentes, sem duplicar documentos de estado.
+- Preservar código funcional e trabalho local. Não usar reset/clean/restore destrutivos para resolver divergências. Correções maiores voltam como PATCH REQUEST externo.
+- Não marcar tarefa como concluída só porque o código foi escrito. Distinguir implementação, testes automáticos e validação do proprietário.
 
 - Não adicionar funcionalidades não solicitadas apenas por iniciativa própria.
 - Trabalhar em incrementos pequenos e compiláveis.
