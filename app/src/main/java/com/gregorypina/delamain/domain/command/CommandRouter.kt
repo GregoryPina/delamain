@@ -109,7 +109,7 @@ class CommandRouter {
         val VOLUME_PERCENT_PATTERN = Regex(
             "^(?:volume|som)\\s*(?:para|em|de)?\\s*(100|[1-9]?[0-9])\\s*(?:%|por cento)?$",
         )
-        val TERMINAL_PUNCTUATION = Regex("[\\p{P}]+$")
+        val TERMINAL_PUNCTUATION = Regex("[!?.]+$")
         val WHITESPACE = Regex("\\s+")
     }
 }
