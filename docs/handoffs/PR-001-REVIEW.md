@@ -28,3 +28,7 @@ Resultado: APPROVED na revisão estática; aguardando builds/testes e validaçã
 Comparação com 8351703: somente CommandRouter.kt e CommandRouterTest.kt mudaram. A normalização remove apenas !, ? e ponto final; %, / e - permanecem para validação integral. Regressões negativas e positivas solicitadas foram adicionadas. TASK-005, executor Android e fluxo ativo não sofreram alterações adicionais.
 
 Testes/builds executados por Astra: nenhum. Próximo passo: proprietário testar este HEAD exato e informar resultado; integrar somente após a validação.
+
+## Validação do proprietário e integração
+
+Proprietário informou “teste ok” para o roteiro do HEAD `39d9fce03943760eb722bd31b557596653a15798`. Não foram fornecidos logs ou detalhes de aparelho. HEAD conferido antes do merge, sem alterações adicionais. PR #1 integrado em `85d249df33d5722cec74532bcee8dd6a58d2b3af`; nenhuma repetição de build/teste por Astra.

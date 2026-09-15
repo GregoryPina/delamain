@@ -22,9 +22,15 @@ class LocalCommandEngine(
             else -> recognize(stripOptionalPrefix(normalized))
         } ?: return LocalCommandResult.Unknown
 
+        val strippedPhrase = stripOptionalPrefix(normalized)
         val action = when (intent) {
-            LocalIntent.VOLUME_UP -> LocalAction.VOLUME_UP
-            LocalIntent.VOLUME_DOWN -> LocalAction.VOLUME_DOWN
+            LocalIntent.VOLUME_UP -> LocalAction.VolumeUp
+            LocalIntent.VOLUME_DOWN -> LocalAction.VolumeDown
+            LocalIntent.OPEN_APP -> {
+                val target = OPEN_APP_PHRASES[strippedPhrase]
+                    ?: return LocalCommandResult.Unknown
+                LocalAction.OpenApp(target.first, target.second)
+            }
             else -> null
         }
         if (action != null) {
@@ -39,13 +45,14 @@ class LocalCommandEngine(
         return LocalCommandResult.Recognized(intent, nextResponse(intent))
     }
 
-    private fun recognize(phrase: String): LocalIntent? = when (phrase) {
-        in PRESENCE_PHRASES -> LocalIntent.PRESENCE
-        in GREETING_PHRASES -> LocalIntent.GREETING
-        in THANKS_PHRASES -> LocalIntent.THANKS
-        in TIME_PHRASES -> LocalIntent.TIME
-        in VOLUME_UP_PHRASES -> LocalIntent.VOLUME_UP
-        in VOLUME_DOWN_PHRASES -> LocalIntent.VOLUME_DOWN
+    private fun recognize(phrase: String): LocalIntent? = when {
+        phrase in OPEN_APP_PHRASES -> LocalIntent.OPEN_APP
+        phrase in PRESENCE_PHRASES -> LocalIntent.PRESENCE
+        phrase in GREETING_PHRASES -> LocalIntent.GREETING
+        phrase in THANKS_PHRASES -> LocalIntent.THANKS
+        phrase in TIME_PHRASES -> LocalIntent.TIME
+        phrase in VOLUME_UP_PHRASES -> LocalIntent.VOLUME_UP
+        phrase in VOLUME_DOWN_PHRASES -> LocalIntent.VOLUME_DOWN
         else -> null
     }
 
@@ -77,22 +84,33 @@ class LocalCommandEngine(
         }
         LocalIntent.VOLUME_UP,
         LocalIntent.VOLUME_DOWN,
+        LocalIntent.OPEN_APP,
         -> error("Action responses depend on the observed result")
     }
 
     private fun responseFor(result: LocalActionResult): String = when (result) {
         is LocalActionResult.Changed -> when (result.action) {
-            LocalAction.VOLUME_UP -> "Volume aumentado."
-            LocalAction.VOLUME_DOWN -> "Volume reduzido."
+            LocalAction.VolumeUp -> "Volume aumentado."
+            LocalAction.VolumeDown -> "Volume reduzido."
+            is LocalAction.OpenApp -> error("Volume change is not supported for app launch")
         }
         is LocalActionResult.AtLimit -> when (result.action) {
-            LocalAction.VOLUME_UP -> "O volume já está no máximo."
-            LocalAction.VOLUME_DOWN -> "O volume já está no mínimo."
+            LocalAction.VolumeUp -> "O volume já está no máximo."
+            LocalAction.VolumeDown -> "O volume já está no mínimo."
+            is LocalAction.OpenApp -> error("Volume limit is not supported for app launch")
         }
         is LocalActionResult.Fixed -> "O volume deste dispositivo é fixo."
-        is LocalActionResult.Unavailable -> "Controle de volume indisponível."
+        is LocalActionResult.Unavailable -> when (result.action) {
+            is LocalAction.OpenApp -> "Abertura de aplicativos indisponível."
+            else -> "Controle de volume indisponível."
+        }
         is LocalActionResult.Denied -> "Sem permissão para ajustar o volume."
-        is LocalActionResult.Failure -> "Não consegui confirmar o ajuste de volume."
+        is LocalActionResult.Failure -> when (result.action) {
+            is LocalAction.OpenApp -> "Não consegui abrir o aplicativo."
+            else -> "Não consegui confirmar o ajuste de volume."
+        }
+        is LocalActionResult.Launched -> "Abrindo ${result.displayName}."
+        is LocalActionResult.NotInstalled -> "${result.displayName} não está instalado."
     }
 
     private fun normalize(input: String): String = Normalizer
@@ -132,6 +150,24 @@ class LocalCommandEngine(
             "abaixar o volume",
             "baixe o volume",
         )
+
+        val OPEN_APP_PHRASES: Map<String, Pair<String, String>> = buildMap {
+            val verbs = listOf("abrir", "abra", "abre")
+            val apps = listOf(
+                "youtube" to ("com.google.android.youtube" to "YouTube"),
+                "chrome" to ("com.android.chrome" to "Chrome"),
+                "google maps" to ("com.google.android.apps.maps" to "Google Maps"),
+                "maps" to ("com.google.android.apps.maps" to "Google Maps"),
+                "spotify" to ("com.spotify.music" to "Spotify"),
+                "whatsapp" to ("com.whatsapp" to "WhatsApp"),
+            )
+            verbs.forEach { verb ->
+                apps.forEach { (name, app) ->
+                    put("$verb $name", app)
+                    put("$verb o $name", app)
+                }
+            }
+        }
 
         val COMBINING_MARKS = Regex("\\p{M}+")
         val PUNCTUATION_OR_SYMBOLS = Regex("[\\p{P}\\p{S}]+")

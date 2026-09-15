@@ -35,3 +35,7 @@ Resultado esperado: testes unitários verdes e builds debug/release concluídos 
 - `AndroidCommandExecutor` não foi alterado.
 - mídia, abertura de apps e volume percentual não foram ativados.
 - o problema semântico de pausa versus toggle continua registrado para uma etapa futura.
+
+## Fechamento
+
+Proprietário confirmou teste ok no HEAD 39d9fce03943760eb722bd31b557596653a15798. PR #1 integrado em 85d249df33d5722cec74532bcee8dd6a58d2b3af. Relato sem logs detalhados; testes não repetidos por Astra. Status atual: concluída e integrada.

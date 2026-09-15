@@ -8,4 +8,5 @@ enum class LocalIntent {
     TIME,
     VOLUME_UP,
     VOLUME_DOWN,
+    OPEN_APP,
 }

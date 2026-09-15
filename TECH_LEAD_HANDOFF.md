@@ -4,49 +4,50 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Base commit da Wave 2: d3e341a9d684f1fd2fb6d9490c8c6d554fbf502c.
-Baseline fixa contém TASK-004 e TASK-005. Despacho em tasks/WAVE-002-DISPATCH.md; confirmar publicação em origin/main antes de executar.
+Baseline integrada: 85d249df33d5722cec74532bcee8dd6a58d2b3af (merge PR #1).
+HEAD validado pelo proprietário: 39d9fce03943760eb722bd31b557596653a15798.
+Commits posteriores apenas de documentação não alteram esse código validado.
 
 ## Current objective
 
-Receber implementação de correções do roteador remoto e identidade VEXA, preservando fluxo ativo.
+Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 2: TASK-004 + TASK-005, um executor externo. Entrega obrigatória PR ou patch; não apenas análise.
+Wave 3 preparada: TASK-006 (abertura de aplicativo no fluxo local ativo). Despacho em `tasks/WAVE-003-DISPATCH.md`.
 
 ## Completed
 
-TASK-003 concluída: revisão estática CHANGES REQUIRED, nenhum código ou teste executado pelo revisor. Interface/digitação anteriores aprovadas pelo proprietário; builds anteriores e 18 testes são evidência histórica.
+Wave 2: TASK-004 + TASK-005 integradas pelo PR #1. Roteador remoto passou a reconhecer frases completas; correção de pontuação numérica revisada. Nome exibido e gatilho VEXA implementados; identificadores técnicos preservados. Proprietário respondeu “teste ok” ao roteiro de build e verificações manuais do HEAD indicado. Não forneceu logs, contagem de testes ou detalhes do aparelho; não inferir esses dados. Astra não repetiu testes.
 
 ## In progress
 
-PR #1: correção no HEAD 39d9fce03943760eb722bd31b557596653a15798 aprovada estaticamente (APPROVED). Aguardando teste pelo proprietário; não integrado.
+TASK-006 implementada na branch `codex/open-app-local`. Proprietário confirmou abertura do YouTube após correção de visibilidade de pacotes no manifesto. Demais apps da allowlist e testes automáticos ainda não validados. Nenhum agente externo ativo atribuído.
 
 ## Waiting / blocked
 
-Builds/testes e validação VEXA no HEAD 39d9fce pelo proprietário. Nenhum build/teste executado por Astra nesta revisão.
+Nenhum bloqueio desta wave. Rotas adicionais de áudio e diferenças entre aparelhos não foram especificadas no relato.
 
 ## Current agent assignments
 
-Executor externo a ser aberto pelo proprietário; pode usar branch própria e PR se tiver escrita autorizada. Nunca main/merge direto. Sem escrita, unified diff.
+Nenhum. Próximo executor externo só recebe tarefa com baseline exata. Branch/PR próprio se possuir escrita; nunca main ou merge por conta própria.
 
 ## Important decisions
 
-Work exclusivo Astra. LocalCommandEngine é canônico. Contribuição remota não deve ser ativada. VEXA muda textos/gatilho; identificadores técnicos permanecem. Ver docs/DECISIONS.md.
+Work exclusivo do Astra, sem agentes internos. Builds/testes locais pelo proprietário. LocalCommandEngine é canônico; contribuição remota continua fora da UI. VEXA é nome e gatilho; repositório/applicationId/pacotes permanecem delamain.
 
 ## Open decisions
 
-Migração futura de apps/mídia/percentual depende de contratos e revisão posteriores.
+Próximo recorte recomendado: abertura de um aplicativo permitido, com resultado tipado, validação de disponibilidade e falha. Preparar TASK antes de implementar. Mídia e volume percentual permanecem futuros.
 
 ## Known problems
 
-Parser remoto com falsos positivos (TASK-004); executor remoto sem confirmação robusta e pausa como toggle (ainda inativo). Volume real depende do aparelho.
+Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá-lo. Catálogo de frases fechado. Não há voz, STT ou IA.
 
 ## Next recommended action
 
-Proprietário testa HEAD 39d9fce03943760eb722bd31b557596653a15798; registrar resultados antes de integrar PR #1. Conferir se HEAD mudou antes de merge.
+Executar `testDebugUnitTest` e validar os demais apps da allowlist no aparelho. Se ok, integrar branch `codex/open-app-local` via PR. Não ativar roteador remoto.
 
 ## Warnings
 
-Não criar/reativar agentes internos. Não executar builds/testes automaticamente. Não afirmar que TASK-003 implementou código. Não renomear repo, applicationId ou pacotes para VEXA. Ler TEMP_LEAD_HANDOFF.md se existir.
+Não criar agentes internos nem executar testes automaticamente. Não reenviar TASK-004/005: concluídas. Não renomear identificadores técnicos. Ler TEMP_LEAD_HANDOFF.md se existir.

@@ -161,16 +161,16 @@ class LocalCommandEngineTest {
 
         assertEquals(
             listOf(
-                LocalAction.VOLUME_UP,
-                LocalAction.VOLUME_UP,
-                LocalAction.VOLUME_UP,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
-                LocalAction.VOLUME_DOWN,
+                LocalAction.VolumeUp,
+                LocalAction.VolumeUp,
+                LocalAction.VolumeUp,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
+                LocalAction.VolumeDown,
             ),
             port.actions,
         )
@@ -178,10 +178,10 @@ class LocalCommandEngineTest {
 
     @Test
     fun `reports confirmed volume changes with observed levels`() {
-        val upResult = LocalActionResult.Changed(LocalAction.VOLUME_UP, before = 4, after = 5)
-        val downResult = LocalActionResult.Changed(LocalAction.VOLUME_DOWN, before = 5, after = 4)
+        val upResult = LocalActionResult.Changed(LocalAction.VolumeUp, before = 4, after = 5)
+        val downResult = LocalActionResult.Changed(LocalAction.VolumeDown, before = 5, after = 4)
         val port = RecordingActionPort { action ->
-            if (action == LocalAction.VOLUME_UP) upResult else downResult
+            if (action == LocalAction.VolumeUp) upResult else downResult
         }
         val engine = LocalCommandEngine(actionPort = port)
 
@@ -202,7 +202,7 @@ class LocalCommandEngineTest {
             .process("Vexa, aumente o volume")
 
         assertRecognized(result, LocalIntent.VOLUME_UP)
-        assertEquals(listOf(LocalAction.VOLUME_UP), port.actions)
+        assertEquals(listOf(LocalAction.VolumeUp), port.actions)
     }
 
     @Test
@@ -256,7 +256,7 @@ class LocalCommandEngineTest {
 
         assertEquals("Controle de volume indisponível.", result.response)
         assertEquals(
-            LocalActionResult.Unavailable(LocalAction.VOLUME_UP),
+            LocalActionResult.Unavailable(LocalAction.VolumeUp),
             result.actionResult,
         )
     }
@@ -280,6 +280,134 @@ class LocalCommandEngineTest {
         assertTrue(port.actions.isEmpty())
     }
 
+    @Test
+    fun `recognizes allowlisted open app phrases`() {
+        val port = RecordingActionPort()
+        val engine = LocalCommandEngine(actionPort = port)
+
+        listOf(
+            "abra o youtube",
+            "abrir spotify",
+            "abre o chrome",
+            "abrir google maps",
+            "abra maps",
+            "abrir whatsapp",
+        ).forEach { phrase ->
+            assertRecognized(engine.process(phrase), LocalIntent.OPEN_APP)
+        }
+
+        assertEquals(
+            listOf(
+                LocalAction.OpenApp("com.google.android.youtube", "YouTube"),
+                LocalAction.OpenApp("com.spotify.music", "Spotify"),
+                LocalAction.OpenApp("com.android.chrome", "Chrome"),
+                LocalAction.OpenApp("com.google.android.apps.maps", "Google Maps"),
+                LocalAction.OpenApp("com.google.android.apps.maps", "Google Maps"),
+                LocalAction.OpenApp("com.whatsapp", "WhatsApp"),
+            ),
+            port.actions,
+        )
+    }
+
+    @Test
+    fun `accepts assistant prefix for open app commands`() {
+        val port = RecordingActionPort()
+        val result = LocalCommandEngine(actionPort = port).process("Vexa, abra o spotify")
+
+        assertRecognized(result, LocalIntent.OPEN_APP)
+        assertEquals(
+            listOf(LocalAction.OpenApp("com.spotify.music", "Spotify")),
+            port.actions,
+        )
+    }
+
+    @Test
+    fun `reports launched app result`() {
+        val spotify = LocalAction.OpenApp("com.spotify.music", "Spotify")
+        val launched = LocalActionResult.Launched(spotify, "Spotify")
+        val engine = LocalCommandEngine(
+            actionPort = RecordingActionPort { launched },
+        )
+
+        assertEquals(
+            LocalCommandResult.Recognized(LocalIntent.OPEN_APP, "Abrindo Spotify.", launched),
+            engine.process("abra o spotify"),
+        )
+    }
+
+    @Test
+    fun `reports not installed app result`() {
+        val spotify = LocalAction.OpenApp("com.spotify.music", "Spotify")
+        val notInstalled = LocalActionResult.NotInstalled(spotify, "Spotify")
+        val engine = LocalCommandEngine(
+            actionPort = RecordingActionPort { notInstalled },
+        )
+
+        assertEquals(
+            LocalCommandResult.Recognized(
+                LocalIntent.OPEN_APP,
+                "Spotify não está instalado.",
+                notInstalled,
+            ),
+            engine.process("abrir spotify"),
+        )
+    }
+
+    @Test
+    fun `does not claim success for unavailable or failed app launches`() {
+        val youtube = LocalAction.OpenApp("com.google.android.youtube", "YouTube")
+        val cases = listOf(
+            LocalActionResult.Unavailable(youtube) to "Abertura de aplicativos indisponível.",
+            LocalActionResult.Failure(youtube) to "Não consegui abrir o aplicativo.",
+        )
+
+        cases.forEach { (actionResult, expectedResponse) ->
+            val engine = LocalCommandEngine(
+                actionPort = RecordingActionPort { actionResult },
+            )
+            val result = assertRecognized(
+                engine.process("abra o youtube"),
+                LocalIntent.OPEN_APP,
+            )
+            assertEquals(expectedResponse, result.response)
+            assertEquals(actionResult, result.actionResult)
+        }
+    }
+
+    @Test
+    fun `defaults open app actions to unavailable`() {
+        val result = assertRecognized(
+            LocalCommandEngine().process("abra o youtube"),
+            LocalIntent.OPEN_APP,
+        )
+
+        assertEquals("Abertura de aplicativos indisponível.", result.response)
+        assertEquals(
+            LocalActionResult.Unavailable(
+                LocalAction.OpenApp("com.google.android.youtube", "YouTube"),
+            ),
+            result.actionResult,
+        )
+    }
+
+    @Test
+    fun `rejects negative compound and unknown open app text without executing actions`() {
+        val port = RecordingActionPort()
+        val engine = LocalCommandEngine(actionPort = port)
+
+        listOf(
+            "não abrir spotify",
+            "abrir spotify e youtube",
+            "abrir netflix",
+            "abrir",
+            "abra aplicativo",
+        ).forEach { phrase ->
+            assertSame(LocalCommandResult.Unknown, engine.process(phrase))
+        }
+
+        assertTrue(port.actions.isEmpty())
+    }
+
     private fun assertRecognized(
         result: LocalCommandResult,
         expectedIntent: LocalIntent,
@@ -294,8 +422,8 @@ class LocalCommandEngineTest {
         private val result: (LocalAction) -> LocalActionResult = {
             LocalActionResult.Changed(
                 action = it,
-                before = if (it == LocalAction.VOLUME_UP) 4 else 5,
-                after = if (it == LocalAction.VOLUME_UP) 5 else 4,
+                before = if (it == LocalAction.VolumeUp) 4 else 5,
+                after = if (it == LocalAction.VolumeUp) 5 else 4,
             )
         },
     ) : LocalActionPort {

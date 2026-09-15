@@ -10,7 +10,14 @@ import com.gregorypina.delamain.domain.LocalActionResult
 class AndroidMediaVolumeActionPort private constructor(
     private val audioManager: AudioManager?,
 ) : LocalActionPort {
-    override fun execute(action: LocalAction): LocalActionResult {
+    override fun execute(action: LocalAction): LocalActionResult = when (action) {
+        is LocalAction.OpenApp -> LocalActionResult.Unavailable(action)
+        LocalAction.VolumeUp,
+        LocalAction.VolumeDown,
+        -> executeVolume(action)
+    }
+
+    private fun executeVolume(action: LocalAction): LocalActionResult {
         val manager = audioManager ?: return LocalActionResult.Unavailable(action)
 
         return try {
@@ -20,30 +27,34 @@ class AndroidMediaVolumeActionPort private constructor(
 
             val before = manager.getStreamVolume(AudioManager.STREAM_MUSIC)
             val limit = when (action) {
-                LocalAction.VOLUME_UP -> manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-                LocalAction.VOLUME_DOWN -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                LocalAction.VolumeUp -> manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                LocalAction.VolumeDown -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     manager.getStreamMinVolume(AudioManager.STREAM_MUSIC)
                 } else {
                     0
                 }
+                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
             }
             val atLimit = when (action) {
-                LocalAction.VOLUME_UP -> before >= limit
-                LocalAction.VOLUME_DOWN -> before <= limit
+                LocalAction.VolumeUp -> before >= limit
+                LocalAction.VolumeDown -> before <= limit
+                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
             }
             if (atLimit) {
                 return LocalActionResult.AtLimit(action, before)
             }
 
             val direction = when (action) {
-                LocalAction.VOLUME_UP -> AudioManager.ADJUST_RAISE
-                LocalAction.VOLUME_DOWN -> AudioManager.ADJUST_LOWER
+                LocalAction.VolumeUp -> AudioManager.ADJUST_RAISE
+                LocalAction.VolumeDown -> AudioManager.ADJUST_LOWER
+                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
             }
             manager.adjustStreamVolume(AudioManager.STREAM_MUSIC, direction, 0)
             val after = manager.getStreamVolume(AudioManager.STREAM_MUSIC)
             val changedAsRequested = when (action) {
-                LocalAction.VOLUME_UP -> after > before
-                LocalAction.VOLUME_DOWN -> after < before
+                LocalAction.VolumeUp -> after > before
+                LocalAction.VolumeDown -> after < before
+                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
             }
 
             if (changedAsRequested) {

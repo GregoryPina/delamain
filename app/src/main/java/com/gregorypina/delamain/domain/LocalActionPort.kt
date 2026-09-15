@@ -1,8 +1,12 @@
 package com.gregorypina.delamain.domain
 
-enum class LocalAction {
-    VOLUME_UP,
-    VOLUME_DOWN,
+sealed interface LocalAction {
+    data object VolumeUp : LocalAction
+    data object VolumeDown : LocalAction
+    data class OpenApp(
+        val packageName: String,
+        val displayName: String,
+    ) : LocalAction
 }
 
 fun interface LocalActionPort {
@@ -27,6 +31,16 @@ sealed interface LocalActionResult {
     data class Unavailable(override val action: LocalAction) : LocalActionResult
     data class Denied(override val action: LocalAction) : LocalActionResult
     data class Failure(override val action: LocalAction) : LocalActionResult
+
+    data class Launched(
+        override val action: LocalAction,
+        val displayName: String,
+    ) : LocalActionResult
+
+    data class NotInstalled(
+        override val action: LocalAction,
+        val displayName: String,
+    ) : LocalActionResult
 }
 
 object UnavailableLocalActionPort : LocalActionPort {

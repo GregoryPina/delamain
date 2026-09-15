@@ -1,1 +1,1 @@
-Checkpoint V0.2-B integrado e publicado. Baseline da Wave 1: 06bf60d73d38ac4acf76c9684082572590a606f4. Estado e retomada: TECH_LEAD_HANDOFF.md e docs/PROJECT_STATUS.md. Não criar agentes internos; despacho externo em tasks/WAVE-001-DISPATCH.md.
+Baseline de código validada pelo proprietário e integrada: 85d249df33d5722cec74532bcee8dd6a58d2b3af (PR #1). Nome/gatilho VEXA. Wave 2 concluída. Consultar TECH_LEAD_HANDOFF.md. Builds/testes pelo proprietário; nenhum agente interno permitido.

@@ -68,3 +68,9 @@ TASK-004/005 entregues no PR draft #1, HEAD `8351703787b01fe598e31307d3dab43ffde
 ## PR #1 — correção aprovada estaticamente
 
 HEAD `39d9fce03943760eb722bd31b557596653a15798` revisado somente contra o HEAD anterior. APPROVED na revisão estática; agora aguardando execução dos builds/testes e verificação de VEXA pelo proprietário. Não houve merge nem teste automático no Work. A correção ficou restrita aos dois arquivos de roteador/testes pedidos.
+
+## Fechamento da Wave 2 — estado atual
+
+Proprietário respondeu “teste ok” ao roteiro do HEAD `39d9fce03943760eb722bd31b557596653a15798`. Validação aceita como relato, sem logs/contagem/aparelho inferidos. Astra não executou testes. PR #1 integrado em `85d249df33d5722cec74532bcee8dd6a58d2b3af`; checkout local retornou a main.
+
+TASK-004 e TASK-005 concluídas. Nome/gatilho oficiais: VEXA. Parser remoto corrigido, mas permanece inativo. Não há executor ativo. Próximo recorte recomendado: abertura controlada de aplicativo via porta tipada; preparar TASK antes de implementar. Este fechamento substitui os estados pendentes da Wave 2 registrados acima.

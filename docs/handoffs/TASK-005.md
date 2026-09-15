@@ -35,3 +35,7 @@ No APK debug, verificar também:
 4. `Delamain`, `Delamain, bom dia` e `Delamain, aumente o volume` retornam desconhecido e não executam ação.
 
 A validação física do volume continua separada das mudanças de identidade.
+
+## Fechamento
+
+Proprietário confirmou teste ok no HEAD 39d9fce03943760eb722bd31b557596653a15798. PR #1 integrado em 85d249df33d5722cec74532bcee8dd6a58d2b3af. Relato sem logs detalhados; testes não repetidos por Astra. Status atual: concluída e integrada.

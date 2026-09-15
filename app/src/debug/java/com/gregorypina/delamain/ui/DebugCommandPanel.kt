@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
+import com.gregorypina.delamain.integration.CompositeLocalActionPort
+import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
 
 private val DebugPanelBackground = Color(0xEE101820)
@@ -49,7 +51,10 @@ internal fun DebugCommandPanel() {
     val applicationContext = LocalContext.current.applicationContext
     val engine = remember(applicationContext) {
         LocalCommandEngine(
-            actionPort = AndroidMediaVolumeActionPort.from(applicationContext),
+            actionPort = CompositeLocalActionPort(
+                volumePort = AndroidMediaVolumeActionPort.from(applicationContext),
+                launchAppPort = AndroidLaunchAppActionPort.from(applicationContext),
+            ),
         )
     }
     var expanded by rememberSaveable { mutableStateOf(false) }

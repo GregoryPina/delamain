@@ -82,6 +82,6 @@ Ideias adicionais estão em [IDEAS.md](IDEAS.md), sem compromisso de implementa�
 ## Wave 2 — preparada
 
 - [x] Receber revisão estática TASK-003, sem alterações de código
-- [ ] TASK-004: corrigir falsos positivos no roteador remoto, sem ativá-lo
-- [ ] TASK-005: aplicar nome VEXA em textos e chamada digitada
-- [ ] Proprietário executar build/testes e informar resultado das próximas entregas
+- [x] TASK-004: corrigir falsos positivos no roteador remoto, sem ativá-lo
+- [x] TASK-005: aplicar nome VEXA em textos e chamada digitada
+- [x] Proprietário validar Wave 2: relato “teste ok” para HEAD 39d9fce; PR #1 integrado
