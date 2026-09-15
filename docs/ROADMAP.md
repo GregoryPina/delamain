@@ -5,22 +5,22 @@
 - [x] Documentar objetivo e princípios
 - [x] Documentar arquitetura inicial
 - [ ] Criar projeto Android compilável
-- [ ] Primeiro build em dispositivo
+- [x] Primeiro build em dispositivo
 
 ## V0.1 — Interface
-- [ ] Fullscreen horizontal
-- [ ] Tela de boot
-- [ ] Rosto/personagem original com estética cyberpunk
-- [ ] Glitch/flicker/scanlines
-- [ ] Estados IDLE, LISTENING, THINKING, SPEAKING
-- [ ] Transição de boot para tela principal
+- [x] Fullscreen horizontal
+- [x] Tela de boot
+- [x] Rosto/personagem original com estética cyberpunk
+- [x] Glitch/flicker/scanlines
+- [x] Estados IDLE, LISTENING, THINKING, SPEAKING/ERROR
+- [x] Transição de boot para tela principal
 
 ## V0.2 — Comandos locais
-- [ ] Motor de intents
-- [ ] Volume
-- [ ] Controle de mídia
-- [ ] Abrir aplicativos
-- [ ] Hora/status do sistema
+- [x] Motor de intents
+- [x] Volume
+- [x] Controle de mídia
+- [x] Abrir aplicativos
+- [x] Hora/status do sistema
 - [ ] Navegação/câmera como intents
 
 ## V0.3 — Voz
