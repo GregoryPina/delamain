@@ -4,8 +4,8 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Última baseline publicada observada: 3d3884d67686f37cac86e141cf0f8025c17539d3.
-Wave 2: documentos em publicação; liberar despacho somente com hash que contenha TASK-004 e TASK-005.
+Base commit da Wave 2: d3e341a9d684f1fd2fb6d9490c8c6d554fbf502c.
+Baseline fixa contém TASK-004 e TASK-005. Despacho em tasks/WAVE-002-DISPATCH.md; confirmar publicação em origin/main antes de executar.
 
 ## Current objective
 
@@ -21,7 +21,7 @@ TASK-003 concluída: revisão estática CHANGES REQUIRED, nenhum código ou test
 
 ## In progress
 
-Preparação/publicação do despacho; nenhum agente iniciado automaticamente.
+Despacho preparado; nenhum agente iniciado automaticamente.
 
 ## Waiting / blocked
 
