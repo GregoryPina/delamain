@@ -3,6 +3,19 @@
 ## Objetivo
 Construir um aplicativo Android pessoal que funcione como assistente automotivo, inspirado na estética de Delamain/KITT. O projeto é para uso privado do proprietário.
 
+## Documentação obrigatória
+
+Antes de implementar qualquer mudança, ler:
+
+1. `README.md`
+2. `AGENTS.md`
+3. `docs/ARCHITECTURE.md`
+4. `docs/ROADMAP.md`
+5. `docs/DESIGN.md` quando a tarefa envolver UI/visual
+6. `docs/DEVELOPMENT.md` quando a tarefa envolver processo de desenvolvimento, testes ou agentes
+
+A documentação do repositório é a fonte de verdade do projeto. Não substituir decisões documentadas por uma arquitetura nova sem necessidade.
+
 ## Regras de desenvolvimento
 
 - Não adicionar funcionalidades não solicitadas apenas por iniciativa própria.
