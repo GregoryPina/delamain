@@ -419,12 +419,12 @@ class LocalCommandEngineTest {
     }
 
     private class RecordingActionPort(
-        private val result: (LocalAction) -> LocalActionResult = {
-            LocalActionResult.Changed(
-                action = it,
-                before = if (it == LocalAction.VolumeUp) 4 else 5,
-                after = if (it == LocalAction.VolumeUp) 5 else 4,
-            )
+        private val result: (LocalAction) -> LocalActionResult = { action ->
+            when (action) {
+                LocalAction.VolumeUp -> LocalActionResult.Changed(action, before = 4, after = 5)
+                LocalAction.VolumeDown -> LocalActionResult.Changed(action, before = 5, after = 4)
+                is LocalAction.OpenApp -> LocalActionResult.Launched(action, action.displayName)
+            }
         },
     ) : LocalActionPort {
         val actions = mutableListOf<LocalAction>()
