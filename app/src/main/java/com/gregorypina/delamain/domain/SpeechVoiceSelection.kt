@@ -12,6 +12,7 @@ data class SpeechVoiceCandidate(
 data class SpeechVoiceSelection(
     val ids: List<String> = emptyList(),
     val selectedId: String? = null,
+    val engineId: String? = null,
 ) {
     fun nextId(): String? {
         if (ids.isEmpty()) return null
