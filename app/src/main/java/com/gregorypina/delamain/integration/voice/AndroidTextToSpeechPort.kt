@@ -6,15 +6,15 @@ import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.speech.tts.Voice
 import com.gregorypina.delamain.domain.SpeechOutputEngine
 import com.gregorypina.delamain.domain.SpeechOutputPort
 import com.gregorypina.delamain.domain.SpeechOutputSession
 import com.gregorypina.delamain.domain.SpeechOutputState
-import java.util.Locale
-import android.speech.tts.Voice
 import com.gregorypina.delamain.domain.SpeechVoiceCandidate
 import com.gregorypina.delamain.domain.SpeechVoiceSelection
 import com.gregorypina.delamain.domain.localBrazilianVoices
+import java.util.Locale
 
 /** Construct and call on the main thread; binder callbacks are posted to that thread. */
 class AndroidTextToSpeechPort(
@@ -49,14 +49,10 @@ class AndroidTextToSpeechPort(
         checkMainThread()
         try {
             textToSpeech = TextToSpeech(context.applicationContext) { status ->
-                // Posting also prevents an early onInit from accessing an unassigned TTS instance.
                 handler.post {
                     if (!closed) {
-                        val available = try {
-                            status == TextToSpeech.SUCCESS && configureVoice()
-                        } catch (_: RuntimeException) {
-                            false
-                        }
+                        val available = try { status == TextToSpeech.SUCCESS && configureVoice() }
+                        catch (_: RuntimeException) { false }
                         session.initialized(available)
                     }
                 }
@@ -68,7 +64,6 @@ class AndroidTextToSpeechPort(
 
     override fun speak(text: String) = onMain { session.speak(text) }
     override fun stop() = onMain { session.stop() }
-
     override fun shutdown() = onMain {
         if (!closed) {
             closed = true
@@ -90,7 +85,7 @@ class AndroidTextToSpeechPort(
         voicesById = available.filter { it.name in eligibleIds }.associateBy { it.name }
         val selected = eligibleIds.firstOrNull() ?: return false
         if (!applyVoice(selected)) return false
-        voiceSelection = SpeechVoiceSelection(eligibleIds, selected)
+        voiceSelection = SpeechVoiceSelection(eligibleIds, selected, tts.defaultEngine)
         progressListenerReady = tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) = dispatch { session.started(utteranceId) }
             override fun onDone(utteranceId: String?) = dispatch { session.completed(utteranceId) }
@@ -112,20 +107,38 @@ class AndroidTextToSpeechPort(
         applied
     }
 
+    /** Startup restore: validates both engine identity and current eligible catalog, and never speaks. */
+    fun restoreVoice(engineId: String, id: String): Boolean = onMain {
+        if (closed || !progressListenerReady || engineId != voiceSelection.engineId || id !in voiceSelection.ids) {
+            return@onMain false
+        }
+        val applied = try { applyVoice(id) } catch (_: RuntimeException) { false }
+        if (applied) {
+            voiceSelection = voiceSelection.copy(selectedId = id)
+            onVoices(voiceSelection)
+        }
+        applied
+    }
+
+    /** Applies the deterministic local fallback while persistence is cleared separately. */
+    fun selectDefaultVoice(): Boolean = onMain {
+        val id = voiceSelection.ids.firstOrNull() ?: return@onMain false
+        selectVoice(id)
+    }
+
     private fun applyVoice(id: String): Boolean {
         val tts = textToSpeech ?: return false
         val voice = voicesById[id] ?: return false
+        if (voice.locale.language != "pt" || voice.locale.country != "BR" ||
+            voice.isNetworkConnectionRequired || TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED in voice.features.orEmpty()) return false
         if (tts.setVoice(voice) != TextToSpeech.SUCCESS) return false
-        return tts.voice?.name == id && tts.voice?.isNetworkConnectionRequired == false
+        val applied = tts.voice ?: return false
+        return applied.name == id && applied.locale.language == "pt" && applied.locale.country == "BR" &&
+            !applied.isNetworkConnectionRequired &&
+            TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED !in applied.features.orEmpty()
     }
 
-    private fun dispatch(action: () -> Unit) {
-        handler.post { if (!closed) action() }
-    }
-
+    private fun dispatch(action: () -> Unit) { handler.post { if (!closed) action() } }
     private fun checkMainThread() = check(Looper.myLooper() == Looper.getMainLooper())
-    private inline fun <T> onMain(action: () -> T): T {
-        checkMainThread()
-        return action()
-    }
+    private inline fun <T> onMain(action: () -> T): T { checkMainThread(); return action() }
 }
