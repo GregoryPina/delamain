@@ -39,9 +39,9 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [ ] Validar volume real e limites no aparelho
 - [x] Contribuição remota de mídia, abertura de apps e volume percentual preservada no código
 - [ ] Consolidar motores e revisar contribuição remota (TASK-003)
-- [ ] Integrar e validar controle de mídia
-- [x] Integrar abertura de aplicativos no fluxo local (TASK-006; PR pendente)
-- [ ] Validar abertura de aplicativos no aparelho (YouTube ok; demais apps pendentes)
+- [ ] Integrar e validar controle de mídia (TASK-007 em branch `codex/media-track-local`)
+- [x] Integrar abertura de aplicativos no fluxo local (TASK-006)
+- [x] Validar abertura de aplicativos no aparelho (proprietário: teste ok)
 - [x] Consulta de hora local
 - [ ] Status do sistema
 - [ ] Navegação/câmera como intents
