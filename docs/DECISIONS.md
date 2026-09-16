@@ -22,7 +22,7 @@ A companion passa a se chamar VEXA. TASK-005 altera apenas nome exibido, textos 
 
 ## ADR-005 — voz via APIs nativas do Android
 
-Não desenvolver STT/TTS próprios nesta fase. STT futuro usará `SpeechRecognizer` (on-device quando disponível; senão serviço do sistema). TTS usará `android.speech.tts.TextToSpeech`. Não usar Google Assistente, “Ok Google” nem substituir o Assistente por um wake word do app para **interpretar** comandos — apenas reutilizar a infraestrutura de reconhecimento/fala do aparelho.
+Não desenvolver STT/TTS próprios nesta fase. STT futuro usará `SpeechRecognizer`, preferindo on-device quando disponível. Serviço do sistema que possa usar rede exige escolha explícita do usuário; não fazer fallback silencioso. TTS usa `android.speech.tts.TextToSpeech`. Não usar Google Assistente, “Ok Google” nem substituir o Assistente por um wake word do app para **interpretar** comandos — apenas reutilizar a infraestrutura de reconhecimento/fala do aparelho.
 
 Fluxo alvo V0.3:
 
@@ -32,8 +32,16 @@ Microfone → SpeechRecognizer → texto → LocalCommandEngine → ação/respo
 
 - Roteamento canônico: **`LocalCommandEngine`** (não `CommandRouter`, que permanece inativo).
 - Gatilho de chamada: **VEXA** (não Delamain).
-- IA/OpenAI: fallback futuro para `Unknown` e conversa aberta; não para comandos locais determinísticos.
+- IA/provider: conversa aberta futura quando habilitada, nunca fallback automático de todo `Unknown`; entradas ambíguas, negadas ou falhas locais não autorizam envio remoto. Provider ainda não escolhido.
 - Wake word contínua: etapa futura, independente do STT inicial.
 - Camadas desacopladas via portas (`SpeechInputPort` futuro, `SpeechOutputPort` agora) para permitir troca de implementação sem reescrever o domínio.
 
 TASK-009 implementa apenas a saída de voz (TTS) no painel DEV; STT e wake word ficam para TASKs posteriores.
+
+## ADR-006 — estabilizar saída antes de captura de voz
+
+Revisão de continuidade em 2026-09-16: preservar aceite funcional da TASK-009, mas tratar semântica assíncrona, descarte e erros em TASK-010 antes do STT. TASK-011 será escuta explícita por botão, uma sessão por vez, sem wake word/loop contínuo, com cancelamento e sem autoescuta do TTS. Personalização da voz é recorte separado, posterior à estabilidade.
+
+`TextToSpeech.speak` aceita um pedido na fila; conclusão depende do listener. `SpeechRecognizer` do sistema pode transmitir áudio, e `EXTRA_PREFER_OFFLINE` pode ser ignorado. Logo “API nativa” não prova operação offline. Não incluir gravação/rede implícita nas próximas tarefas.
+
+Fontes: [TextToSpeech](https://developer.android.com/reference/android/speech/tts/TextToSpeech), [SpeechRecognizer](https://developer.android.com/reference/android/speech/SpeechRecognizer), [preferência offline](https://developer.android.com/reference/android/speech/RecognizerIntent#EXTRA_PREFER_OFFLINE).

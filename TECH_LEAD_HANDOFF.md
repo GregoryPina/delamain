@@ -2,59 +2,37 @@
 
 ## Baseline
 
-Repository: GregoryPina/delamain
-Branch: main
-Baseline integrada: `1d6ae3b` (TASK-006 a TASK-009 em `main`).
-HEAD validado pelo proprietário: apps, volume, hora, mídia, bateria, respostas variadas e TTS no painel DEV (TASK-006–009).
+Repositório: GregoryPina/delamain. Branch: main.
+Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, sincronizada com origin/main na retomada. O código TTS entrou em `add292a`; commits seguintes até esta baseline documentam fechamento. Este handoff é atualização documental posterior, não nova validação de código.
 
-## Current objective
+## Objetivo e estado
 
-Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
+VEXA já responde por texto e fala no painel DEV. TASK-004 a TASK-009 integradas; não refazer nem reenviar. Apps, volume, hora, mídia, bateria, variantes e TTS têm aceite histórico do proprietário; detalhes em docs/PROJECT_STATUS.md e docs/handoffs/TASK-006.md a TASK-009.md. Não inventar logs, aparelho ou cobertura a partir de “teste ok”.
 
-## Current wave
+## Próxima ação
 
-Wave 6 concluída: TASK-009 (TTS) integrada em `main`. Proprietário confirmou áudio; voz do sistema a personalizar depois.
+Preparar despacho externo da TASK-010 (estabilização TTS), usando hash completo publicado que contenha a especificação. A tarefa está planejada, não despachada. Antes de iniciar, conferir Git e possíveis novos relatos do proprietário. Não usar automaticamente a baseline desta auditoria para um despacho posterior.
 
-## Completed
+Depois: TASK-011, STT por botão para uma frase, dependente do fechamento da TASK-010. Personalização da voz é preferência do proprietário e merece recorte separado. Wake word, IA, play/pause e volume percentual continuam futuros.
 
-Wave 6 / TASK-009: TTS no painel DEV via `SpeechOutputPort`; ADR-005. Proprietário: “funcionou, ela falou”; voz padrão a trocar depois.
+## Achados e limites
 
-Wave 5 / TASK-008: status da bateria, respostas variadas (≥3) em todo o fluxo local; 42 testes verdes. Proprietário confirmou “testado”.
+- TTS: `Spoken` indica aceitação na fila; callbacks atuais de início/término/erro não atualizam estado. Revisar inicialização tardia após descarte, cancelamento e voz disponível/offline.
+- TASK-009 foi aceita: não reinterpretar estes riscos de revisão estática como falha reproduzida no aparelho.
+- LocalCommandEngine é canônico; CompositeLocalActionPort reúne adapters ativos. Não ativar domain/command/CommandRouter ou platform/AndroidCommandExecutor.
+- Mídia confirma despacho, não efeito no player. Unknown não dispara IA.
+- Release não tem painel DEV; integração com estados faciais não está concluída.
 
-Wave 4 / TASK-007: faixa anterior/próxima. Proprietário: “testado ok”.
+## Responsáveis e validação
 
-Wave 3 / TASK-006: abertura de apps. Proprietário: “teste ok”.
+Nenhum executor ativo. Astra coordena e integra; executores externos recebem TASK + BASE COMMIT exato, entregam branch/PR ou patch. Nunca main/merge pelo executor. Não criar/reativar agentes internos. Proprietário executa builds/testes; coordenador faz revisão estática e registra a origem de cada evidência.
 
-Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto inativo.
+## Trabalho local preservado
 
-## In progress
+`Sem_titulo_bordas_arredondadas.stl` estava não rastreado na retomada. Não incluir, apagar ou alterar sem tarefa correspondente. Não descartar outras mudanças que apareçam após este registro.
 
-Nenhuma implementação ativa. Próximo recorte: TASK-010 (STT) ou personalização de voz TTS (feedback do proprietário).
+## Quando substituir ou retornar
 
-## Waiting / blocked
+Ler AGENTS.md, README, arquitetura, roadmap, estado, decisões e docs/DEVELOPMENT.md. Ler TEMP_LEAD_HANDOFF.md se existir; ele não existia nesta retomada. Registrar nele baseline inicial/final completas, tarefas, commits/PRs, testes realmente executados e por quem, pendências, mudanças locais e próximo passo. Atualizar os parágrafos de estado atual; guardar história nos handoffs, sem acumular próximos passos contraditórios.
 
-Nenhum bloqueio desta wave. Rotas adicionais de áudio e diferenças entre aparelhos não foram especificadas no relato.
-
-## Current agent assignments
-
-Nenhum. Próximo executor externo só recebe tarefa com baseline exata. Branch/PR próprio se possuir escrita; nunca main ou merge por conta própria.
-
-## Important decisions
-
-Work exclusivo do Astra, sem agentes internos. Builds/testes locais pelo proprietário. LocalCommandEngine é canônico; contribuição remota continua fora da UI. VEXA é nome e gatilho; repositório/applicationId/pacotes permanecem delamain.
-
-## Open decisions
-
-Play/pause como toggle e volume percentual permanecem futuros. TTS baseline validado; STT é próximo passo V0.3. Voz TTS: trocar engine/tom em etapa futura (proprietário não gostou da voz padrão).
-
-## Known problems
-
-Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá-lo. Catálogo de frases fechado. TTS baseline no painel DEV; qualidade da voz pendente. Sem STT, wake word ou IA.
-
-## Next recommended action
-
-Preparar TASK-010 (STT com SpeechRecognizer). Personalização de voz TTS pode entrar como TASK separada. Não ativar roteador remoto nem play/pause como toggle.
-
-## Warnings
-
-Não criar agentes internos nem executar testes automaticamente. Não reenviar TASK-004/005: concluídas. Não renomear identificadores técnicos. Ler TEMP_LEAD_HANDOFF.md se existir.
+Auditoria: docs/handoffs/RETOMADA-2026-09-16.md. Nenhum build/teste foi executado nesta retomada.

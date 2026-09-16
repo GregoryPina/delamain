@@ -1,1 +1,1 @@
-Baseline: `cf67638` em `main`. VEXA ativo; apps, volume, hora, mídia, bateria e respostas variadas validados. Consultar TECH_LEAD_HANDOFF.md.
+Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, main sincronizada na retomada. TASK-006–009 integradas, incluindo TTS DEV. Próximo recorte: TASK-010, estabilização TTS. Atualização de documentação não altera o código validado. Consultar TECH_LEAD_HANDOFF.md para retomada e evidências.

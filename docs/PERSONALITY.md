@@ -1,6 +1,6 @@
 # Personalidade da VEXA
 
-Especificação para implementação incremental. A V0.2-A já implementa respostas locais para chamada, presença, saudações, agradecimento e hora, com alternância de variantes. Voz, eventos automáticos, preferências persistentes e IA continuam planejados.
+Especificação para implementação incremental. A V0.2-A já implementa respostas locais para chamada, presença, saudações, agradecimento e hora, com alternância de variantes. TASK-008 ampliou as variantes; TASK-009 adicionou TTS no painel DEV. Personalização de voz, eventos automáticos, preferências persistentes e IA continuam planejados.
 
 ## Identidade
 

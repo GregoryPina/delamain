@@ -8,7 +8,7 @@ Construir o projeto em pequenos incrementos. Cada incremento deve deixar o repos
 
 1. Ler `README.md`, `AGENTS.md` e a documentação relevante em `docs/` antes de alterar o projeto.
 2. Implementar somente a etapa solicitada.
-3. Fazer build/testes relevantes.
+3. Fornecer roteiro de build/testes relevantes ao proprietário e registrar seu retorno.
 4. Corrigir erros antes de avançar.
 5. Atualizar `ROADMAP.md` quando uma etapa realmente estiver concluída.
 6. Registrar decisões arquiteturais relevantes na documentação.
@@ -40,6 +40,16 @@ Fluxo de cada incremento:
 Cada passagem deve incluir: status; resumo; arquivos alterados; interfaces e exemplos de uso; comandos de validação e resultados; limitações; decisões; próximo responsável. Se teste não foi executado, informar o motivo. Aprovação funcional do proprietário é evidência válida, identificada como relato, sem atribuir ao agente um teste que ele não fez.
 
 Usar um executor externo por recorte, paralelo somente para trabalho independente. Não criar tarefas na barra lateral ou automações sem pedido específico. Repositório local pode estar adiante do GitHub; nenhum despacho é liberado enquanto a baseline não estiver publicada.
+
+### Substituição temporária do Tech Lead
+
+Ao assumir, ler primeiro `TECH_LEAD_HANDOFF.md` e `TEMP_LEAD_HANDOFF.md` se existir. Conferir `git status`, branch, HEAD e remoto antes de editar. Comparar commits desde a baseline anterior e preservar arquivos alheios não rastreados. Não repetir tarefas já concluídas nem testes só por troca de modelo.
+
+Durante a substituição, manter `TEMP_LEAD_HANDOFF.md` curto: starting/ending baseline completas; TASKs/PRs/commits; decisões alteradas; evidência de validação (quem, qual HEAD, resultado); pendências; arquivos locais não versionados; próximo passo exato. Não atribuir ao agente testes feitos pelo proprietário nem inferir contagens/aparelho a partir de “teste ok”.
+
+Ao encerrar cada entrega, atualizar os parágrafos atuais de README, arquitetura, status e handoff afetados — não apenas anexar outro histórico contraditório. Histórico detalhado fica em `docs/handoffs/` e Git. Usar hashes completos, sem tentar gravar o hash de um commit dentro dele mesmo: distinguir baseline de código de commits posteriores de documentação.
+
+Merge somente após revisão do HEAD testado e retorno do proprietário. Se a branch mudou desde o teste, revisar o delta e determinar se nova validação é necessária. Preparar PR/patch obrigatório para implementação; relatório de análise sozinho conclui apenas tarefas de revisão.
 
 O agente de código deve evitar reescrever grandes partes do projeto sem necessidade. Antes de alterar uma implementação existente, procurar os arquivos e componentes relacionados e preservar interfaces públicas já estabelecidas.
 

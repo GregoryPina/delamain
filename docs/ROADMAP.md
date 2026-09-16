@@ -2,7 +2,7 @@
 
 ## Fase 0 — Fundação
 
-Situação em 15 de setembro de 2026: interface V0.1 e digitação V0.2-A aceitas pelo proprietário. V0.2-B implementa presença informal e volume; builds debug/release e 18 testes passaram. Volume no aparelho ainda pendente. Código remoto de mídia/apps preservado, ainda sem ligação à UI.
+Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. Próximo recorte: estabilização TTS (TASK-010), depois STT por botão (TASK-011). Evidências em PROJECT_STATUS.md; não houve novos testes nesta auditoria.
 
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios
@@ -36,9 +36,11 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] Motor inicial de intents com reconhecimento de frases completas
 - [ ] Ambiguidade, negação e resultados de ação sem confirmação falsa
 - [x] Aumento/redução de volume de mídia implementados com resultados tipados e testes
-- [ ] Validar volume real e limites no aparelho
+- [x] Proprietário confirmou funcionamento de volume (TASK-006)
+- [ ] Detalhar limites e rotas de áudio no aparelho
 - [x] Contribuição remota de mídia, abertura de apps e volume percentual preservada no código
-- [ ] Consolidar motores e revisar contribuição remota (TASK-003)
+- [x] Revisar contribuição remota (TASK-003) e corrigir parser (TASK-004)
+- [ ] Consolidar/remover legado quando necessário; motor remoto continua inativo
 - [x] Integrar faixa anterior/próxima no fluxo local (TASK-007)
 - [ ] Validar controle de mídia completo (play/pause futuro; fora do escopo TASK-007)
 - [x] Integrar abertura de aplicativos no fluxo local (TASK-006)
@@ -49,7 +51,9 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 
 ## V0.3 — Voz
 - [x] TTS (baseline no painel DEV; voz do sistema — personalizar depois)
-- [ ] STT
+- [ ] TASK-010: estabilizar TTS, callbacks, ciclo de vida e interrupção
+- [ ] TASK-011: STT por botão, uma frase por sessão, após TASK-010
+- [ ] Personalização de voz em recorte separado
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões
@@ -81,7 +85,7 @@ Ideias adicionais estão em [IDEAS.md](IDEAS.md), sem compromisso de implementa�
 - [ ] Integrar tela externa
 - [ ] Otimizar consumo e estabilidade
 
-## Wave 2 — preparada
+## Wave 2 — concluída
 
 - [x] Receber revisão estática TASK-003, sem alterações de código
 - [x] TASK-004: corrigir falsos positivos no roteador remoto, sem ativá-lo

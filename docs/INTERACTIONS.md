@@ -1,6 +1,6 @@
 # Roteamento, reflexos e conversa
 
-Contrato alvo para V0.2–V0.4. A V0.2-B implementa reflexos sociais, hora, aliases informais de presença e volume de mídia por texto. Retorna `Unknown` para entradas fora do catálogo. Esclarecimento conversacional, voz, outras ações Android e IA continuam futuros. O catálogo completo e resultados de volume estão em [LOCAL-02](handoffs/LOCAL-02.md).
+Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. Esclarecimento conversacional, STT e IA são futuros. Cancelamento robusto de fala está planejado na TASK-010. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
 
 ## Caminho de uma entrada
 
@@ -22,13 +22,16 @@ Um comando conhecido que falha não deve virar tentativa pela IA. “Não apagar
 | “Está aí?”, “bom dia”, “obrigado” | Reflexo social | Banco local de frases | V0.2 |
 | “Que horas são?” | Consulta local | Relógio do aparelho | V0.2 |
 | “Aumente o volume” | Comando local | Ação permitida e resultado do adapter | V0.2 |
-| “Pause a música” | Comando local | Adapter de mídia, quando disponível | V0.2 |
+| “Próxima música” / “música anterior” | Comando local | Despacho de tecla de mídia | Implementado TASK-007 |
+| “Abra Spotify” | Comando local | Lista permitida de apps | Implementado TASK-006 |
+| “Bateria” | Consulta local | Nível e carga | Implementado TASK-008 |
+| “Pause a música” | Comando local | Semântica de pausa a definir | Futuro |
 | “Pare de falar” | Controle prioritário | Cancelar TTS e resposta pendente | V0.3 |
 | “Modo silencioso” | Preferência local | Suprimir comentários espontâneos | V0.3 |
 | “Me explique…” | Conversa aberta | API de IA habilitada | V0.4 |
 | Início de sessão de viagem | Evento | Saudação local opcional, uma vez por sessão | V0.5 |
 
-Saudações, presença, agradecimento e hora foram implementados na V0.2-A; volume de mídia e formas “tá aí?”, “vc tá aí?” e “cê tá aí?” na V0.2-B. Prefixo “Vexa”, caixa, acentos e pontuação são normalizados. Apenas frases cadastradas são aceitas, sem reconhecimento aproximado para ações. “Delamain” não é mais gatilho de chamada; permanece apenas em identificadores técnicos e registros históricos. As demais linhas são planejadas; código remoto de mídia/apps ainda precisa de consolidação e integração.
+Saudações, presença, agradecimento e hora foram implementados na V0.2-A; volume de mídia e formas “tá aí?”, “vc tá aí?” e “cê tá aí?” na V0.2-B. Prefixo “Vexa”, caixa, acentos e pontuação são normalizados. Apenas frases cadastradas são aceitas, sem reconhecimento aproximado para ações. “Delamain” não é mais gatilho de chamada; permanece apenas em identificadores técnicos e registros históricos. Apps, próxima/anterior e bateria foram integrados pelas TASK-006–008 através das portas locais. O executor remoto permanece inativo. As demais capacidades são planejadas.
 
 ## Modelo mínimo
 

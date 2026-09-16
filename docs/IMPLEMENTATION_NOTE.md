@@ -1,5 +1,7 @@
-Checkpoint de 15 de setembro de 2026: interface V0.1 aceita pelo proprietário. V0.2-A implementada por agentes GPT-SOL e revisada pelo coordenador Astra: motor local de chamada, presença, saudação, agradecimento e hora; painel exclusivo de debug; wrapper restaurado. Builds debug/release e 10 testes unitários passaram. APK debug disponível em `app/build/outputs/apk/debug/app-debug.apk`. Validação do novo painel no aparelho pendente. Ver PROJECT_STATUS.md e os registros em handoffs/ para contratos, evidências e próximo passo.
+# Nota de implementação
 
-## Checkpoint V0.2-B
+Estado atual em [PROJECT_STATUS.md](PROJECT_STATUS.md); baseline e passagem em [TECH_LEAD_HANDOFF.md](../TECH_LEAD_HANDOFF.md).
 
-Presença informal e volume de mídia implementados; build integrado debug/release e 18 testes passaram. Proprietário aprovou digitação V0.2-A; volume real ainda pendente. Commits remotos de outro motor preservados sem ativação na UI. Operação passou a Astra local + executores externos via proprietário. Consultar TECH_LEAD_HANDOFF.md para baseline e TASK-003 para a próxima revisão.
+Em 2026-09-16, TASK-006–009 estão integradas: apps permitidos, próxima/anterior, bateria, variantes e TTS no painel DEV. Aceites e contagens históricas estão nos handoffs de cada entrega; nenhum teste foi executado na auditoria da retomada.
+
+Próxima tarefa planejada: estabilizar TTS (TASK-010), depois escuta por botão. STT, wake word e IA ainda não implementados. Registros antigos desta nota permanecem no histórico Git.

@@ -16,5 +16,5 @@ Branch: `codex/system-status-responses`.
 ## Roteiro
 
 1. `status do sistema` → percentual (e “carregando” se aplicável).
-2. Repetir `abra o netflix` (app ausente) → ouvir variantes diferentes.
+2. Repetir um comando local → verificar variantes diferentes. Para NotInstalled, usar um app da lista permitida que já esteja ausente. `abra o netflix` retorna Unknown, pois Netflix não pertence à lista (correção documental na retomada de 2026-09-16).
 3. Volume/apps/mídia continuam funcionando.

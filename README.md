@@ -41,9 +41,11 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 **Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
 
-O código inclui fullscreen, boot, imagens do rosto por estado e efeitos em Compose/Canvas. A V0.2-B inclui reflexos locais, hora, presença informal (“tá aí?”) e controle de volume de mídia pelo painel debug. Builds debug/release e 18 testes unitários passaram na baseline anterior. O proprietário validou o fluxo digitado anterior; o ajuste real de volume ainda precisa de teste no aparelho. Voz e IA continuam planejadas.
+O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. A voz padrão ainda precisa ser personalizada. STT, wake word e IA não estão implementados.
 
-Para testar, instale o APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “Vexa, aumente o volume” ou “abaixe o volume”. O painel começa fechado e não existe na variante release. Contribuições remotas de mídia/apps ainda não estão ligadas ao fluxo ativo.
+No APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “abra o spotify”, “próxima música” ou “bateria”. O painel começa fechado e não existe na variante release. As ações ativas usam adapters próprios; o antigo `CommandRouter`/`AndroidCommandExecutor` continua inativo. Builds e testes locais são executados pelo proprietário, não automaticamente pelo Tech Lead.
+
+Próximo recorte planejado: estabilizar o ciclo de vida e os resultados do TTS antes de STT por botão. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
 
 ## Como o companion responderá
 

@@ -1,4 +1,4 @@
-# DELAMAIN — instruções para agentes de código
+# VEXA — instruções para agentes de código
 
 ## Objetivo
 Construir um aplicativo Android pessoal que funcione como assistente automotivo, inspirado na estética de Delamain/KITT. O projeto é para uso privado do proprietário.
@@ -29,6 +29,7 @@ A documentação do repositório é a fonte de verdade do projeto. Não substitu
 - Registrar entregas em `docs/handoffs/`; Astra mantém `docs/PROJECT_STATUS.md`, decisões e `TECH_LEAD_HANDOFF.md`. Usar os caminhos existentes, sem duplicar documentos de estado.
 - Preservar código funcional e trabalho local. Não usar reset/clean/restore destrutivos para resolver divergências. Correções maiores voltam como PATCH REQUEST externo.
 - Não marcar tarefa como concluída só porque o código foi escrito. Distinguir implementação, testes automáticos e validação do proprietário.
+- Na substituição temporária do Tech Lead, registrar starting/ending baseline e evidências em `TEMP_LEAD_HANDOFF.md`; ao retomar, revisar esse delta antes de planejar. Atualizar estado atual, sem manter instruções antigas como próximo passo.
 
 - Não adicionar funcionalidades não solicitadas apenas por iniciativa própria.
 - Trabalhar em incrementos pequenos e compiláveis.

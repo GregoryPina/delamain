@@ -1,18 +1,20 @@
-# Arquitetura inicial
+# Arquitetura — estado atual da VEXA
 
 ## Visão geral
 
-O DELAMAIN será um aplicativo Android modular. A interface não deve conter lógica de negócio e o motor de comandos não deve depender da implementação visual. As camadas abaixo são o desenho alvo; hoje o módulo `app` contém a interface e um núcleo Kotlin local independente de Android.
+A VEXA mantém Kotlin/Compose no módulo `app`, com domínio independente de Android e adapters de plataforma. Não introduzir outra arquitetura para continuar as entregas existentes.
 
-## Fluxo ativo: V0.2-B
+## Fluxo ativo após TASK-009
 
-`domain/LocalCommandEngine` recebe texto e retorna `LocalCommandResult.Recognized(intent, response, actionResult)` ou `Unknown`. Usa catálogo fechado, aliases informais, normalização e prefixo opcional “Delamain”; o relógio é injetável e as frases alternam por intenção. Executa apenas ações tipadas `VOLUME_UP/DOWN` por `LocalActionPort`, cujo padrão é indisponível. Ver [LOCAL-02](handoffs/LOCAL-02.md).
+`domain/LocalCommandEngine` recebe texto e retorna `LocalCommandResult.Recognized(intent, response, actionResult)` ou `Unknown`. Usa catálogo fechado, aliases informais, normalização e prefixo opcional “Vexa”; relógio e bateria são injetáveis. `LocalAction` é uma sealed interface com `VolumeUp`, `VolumeDown`, `OpenApp`, `MediaNext` e `MediaPrevious`. `CompositeLocalActionPort` encaminha ao adapter correspondente. Respostas locais têm pelo menos três variantes; Unknown usa `LocalUnknownResponses`.
 
 O adapter `integration/audio/AndroidMediaVolumeActionPort` ajusta somente `STREAM_MUSIC`, verifica volume fixo/limites e confirma mudança pela leitura anterior/posterior. Falta de confirmação não causa repetição automática. A permissão normal `MODIFY_AUDIO_SETTINGS` está no manifesto. Domínio não depende de Android ou rede.
 
-Também existe uma contribuição remota em `domain/command/` e `platform/`, ainda não conectada ao fluxo ativo. Preservá-la até a revisão de consolidação em [TASK-003](../tasks/TASK-003.md); não tratar mídia/apps/volume percentual como integrados.
+Apps: `AndroidLaunchAppActionPort`, allowlist de YouTube, Chrome, Maps, Spotify e WhatsApp e `<queries>` correspondentes. Mídia: `AndroidMediaKeyActionPort` envia anterior/próxima e retorna `Dispatched`, sem afirmar que o player trocou a faixa. Bateria: `BatteryStatusPort` + `AndroidBatteryStatusPort`, sem permissão extra.
 
-A entrada manual é fornecida por `DebugCommandPanel` em `src/debug`; `src/release` fornece a mesma função sem conteúdo. O rosto apenas recebe a sobreposição, sem lógica de reconhecimento nos componentes visuais. Voz e máquina de estados de conversa serão integradas em etapas posteriores.
+O código em `domain/command/` e `platform/` continua inativo. TASK-003 revisou a sobreposição e TASK-004 corrigiu o parser remoto; capacidades ativas posteriores foram adicionadas ao motor canônico, sem ligá-lo ao executor antigo. Play/pause e volume percentual continuam fora do fluxo ativo.
+
+A entrada manual é fornecida por `DebugCommandPanel` em `src/debug`; `src/release` fornece a mesma função sem conteúdo. Após processar o texto, o painel pede fala via `SpeechOutputPort` + `AndroidTextToSpeechPort`. O resultado atual `Spoken` representa aceite da fila, não término do áudio; eventos do listener ainda são ignorados. TASK-010 tratará isso e descarte/erros antes de STT. O rosto ainda não acompanha automaticamente os eventos de voz.
 
 ```text
 Microfone / UI / eventos Android
