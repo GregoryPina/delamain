@@ -77,4 +77,8 @@ TASK-004 e TASK-005 concluídas. Nome/gatilho oficiais: VEXA. Parser remoto corr
 
 ## Wave 3 — TASK-006
 
-Implementação em `codex/open-app-local` (`0260d6b`): abertura de apps allowlisted no fluxo local, `<queries>` no manifesto, validação manual do YouTube pelo proprietário (“funcionou”). Branch publicada; PR pendente em https://github.com/GregoryPina/delamain/compare/main...codex/open-app-local Testes automáticos não executados pelo Acting Tech Lead. Próximo recorte preparado: TASK-007 (faixa anterior/próxima).
+Integrada em `main` (`8bd5d7f`). Abertura de apps allowlisted, `<queries>` no manifesto. Proprietário: “teste ok” (apps, volume, hora). 32 testes automáticos verdes.
+
+## Wave 4 — TASK-007
+
+Integrada em `main` (`323298b`). Faixa anterior/próxima via teclas de mídia; resultado `Dispatched` sem alegar troca de faixa. Proprietário: “testado ok”. 37 testes automáticos verdes. Play/pause não implementado (decisão TASK-003).

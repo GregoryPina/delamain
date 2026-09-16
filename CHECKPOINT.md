@@ -1,1 +1,1 @@
-Baseline de código validada pelo proprietário e integrada: 85d249df33d5722cec74532bcee8dd6a58d2b3af (PR #1). Nome/gatilho VEXA. Wave 2 concluída. Consultar TECH_LEAD_HANDOFF.md. Builds/testes pelo proprietário; nenhum agente interno permitido.
+Baseline: `323298b` em `main`. VEXA ativo; apps, volume, hora, faixa anterior/próxima validados pelo proprietário. Consultar TECH_LEAD_HANDOFF.md.

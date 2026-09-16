@@ -1,6 +1,6 @@
 # TASK-007 — faixa anterior e próxima
 
-Status: implementado, aguardando teste do proprietário. `testDebugUnitTest`: 37 testes, 0 falhas.
+Status: concluída e integrada em `main`. Proprietário confirmou “testado ok” no aparelho com mídia ativa. `testDebugUnitTest`: 37 testes, 0 falhas.
 Base: `8bd5d7f` (main pós-TASK-006).
 Branch: `codex/media-track-local`.
 

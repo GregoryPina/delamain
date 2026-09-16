@@ -4,9 +4,8 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Baseline integrada: 85d249df33d5722cec74532bcee8dd6a58d2b3af (merge PR #1).
-HEAD validado pelo proprietário: 39d9fce03943760eb722bd31b557596653a15798.
-Commits posteriores apenas de documentação não alteram esse código validado.
+Baseline integrada: `323298b` (TASK-006 + TASK-007 em `main`).
+HEAD validado pelo proprietário: apps, volume, hora (TASK-006) e faixa anterior/próxima (TASK-007).
 
 ## Current objective
 
@@ -14,17 +13,19 @@ Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 4 em andamento: TASK-007 (faixa anterior/próxima no fluxo local). Branch `codex/media-track-local`.
+Wave 4 concluída: TASK-007 integrada em `main` (`323298b`).
 
 ## Completed
 
-Wave 3 / TASK-006 integrada em `main` (`8bd5d7f`). Abertura de apps allowlisted, `<queries>` no manifesto, 32 testes automáticos verdes. Proprietário confirmou “teste ok” no aparelho (apps, volume, hora).
+Wave 4 / TASK-007: faixa anterior e próxima no fluxo local; 37 testes automáticos verdes. Proprietário confirmou “testado ok” no aparelho.
+
+Wave 3 / TASK-006: abertura de apps allowlisted, `<queries>` no manifesto. Proprietário confirmou “teste ok”.
 
 Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto corrigido e inativo.
 
 ## In progress
 
-TASK-007 implementada na branch `codex/media-track-local`; aguardando `testDebugUnitTest` e validação no aparelho com app de mídia ativo.
+Nenhuma implementação ativa. Próximo recorte a definir (play/pause excluído por decisão TASK-003; volume percentual futuro).
 
 ## Waiting / blocked
 
@@ -40,7 +41,7 @@ Work exclusivo do Astra, sem agentes internos. Builds/testes locais pelo proprie
 
 ## Open decisions
 
-Mídia faixa anterior/próxima em implementação (TASK-007). Play/pause e volume percentual permanecem futuros.
+Play/pause como toggle e volume percentual permanecem futuros. TTS/STT é a próxima fase do roadmap (V0.3).
 
 ## Known problems
 
@@ -48,8 +49,7 @@ Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá
 
 ## Next recommended action
 
-1. Executar testes e validar TASK-007 no aparelho com mídia em reprodução.
-2. Integrar branch `codex/media-track-local` após confirmação. Não ativar play/pause como toggle.
+Preparar próxima TASK de V0.3 (TTS) ou recorte local pendente (status do sistema), conforme prioridade do proprietário. Não ativar roteador remoto nem play/pause como toggle.
 
 ## Warnings
 
