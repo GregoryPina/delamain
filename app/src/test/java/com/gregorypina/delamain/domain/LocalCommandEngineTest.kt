@@ -476,6 +476,73 @@ class LocalCommandEngineTest {
     }
 
     @Test
+    fun `recognizes battery status phrases`() {
+        val engine = LocalCommandEngine(
+            batteryStatusPort = { BatteryStatus(levelPercent = 80, isCharging = false) },
+        )
+
+        listOf(
+            "status do sistema",
+            "como está a bateria?",
+            "nível da bateria",
+            "bateria",
+        ).forEach { phrase ->
+            assertRecognized(engine.process(phrase), LocalIntent.BATTERY_STATUS)
+        }
+    }
+
+    @Test
+    fun `reports battery level from port`() {
+        val engine = LocalCommandEngine(
+            batteryStatusPort = { BatteryStatus(levelPercent = 72, isCharging = false) },
+        )
+
+        val result = assertRecognized(engine.process("status da bateria"), LocalIntent.BATTERY_STATUS)
+
+        assertEquals("Bateria em 72%.", result.response)
+    }
+
+    @Test
+    fun `reports charging battery status`() {
+        val engine = LocalCommandEngine(
+            batteryStatusPort = { BatteryStatus(levelPercent = 54, isCharging = true) },
+        )
+
+        val result = assertRecognized(engine.process("bateria"), LocalIntent.BATTERY_STATUS)
+
+        assertEquals("Bateria em 54% e carregando.", result.response)
+    }
+
+    @Test
+    fun `reports unavailable battery status`() {
+        val engine = LocalCommandEngine(batteryStatusPort = { null })
+
+        val result = assertRecognized(engine.process("status do sistema"), LocalIntent.BATTERY_STATUS)
+
+        assertEquals("Não consigo ler a bateria neste momento.", result.response)
+    }
+
+    @Test
+    fun `rotates app not installed responses without immediate repetition`() {
+        val spotify = LocalAction.OpenApp("com.spotify.music", "Spotify")
+        val notInstalled = LocalActionResult.NotInstalled(spotify, "Spotify")
+        val engine = LocalCommandEngine(
+            actionPort = RecordingActionPort { notInstalled },
+        )
+
+        val first = assertRecognized(engine.process("abrir spotify"), LocalIntent.OPEN_APP).response
+        val second = assertRecognized(engine.process("abrir spotify"), LocalIntent.OPEN_APP).response
+        val third = assertRecognized(engine.process("abrir spotify"), LocalIntent.OPEN_APP).response
+        val fourth = assertRecognized(engine.process("abrir spotify"), LocalIntent.OPEN_APP).response
+
+        assertNotEquals(first, second)
+        assertNotEquals(second, third)
+        assertEquals(first, fourth)
+        assertTrue(first.contains("Spotify"))
+        assertTrue(second.contains("Spotify"))
+    }
+
+    @Test
     fun `rejects negative compound and unknown media text without executing actions`() {
         val port = RecordingActionPort()
         val engine = LocalCommandEngine(actionPort = port)

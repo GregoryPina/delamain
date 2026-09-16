@@ -43,6 +43,7 @@ import com.gregorypina.delamain.integration.CompositeLocalActionPort
 import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
+import com.gregorypina.delamain.integration.system.AndroidBatteryStatusPort
 
 private val DebugPanelBackground = Color(0xEE101820)
 private val DebugPanelAccent = Color(0xFF2E8BFF)
@@ -57,6 +58,7 @@ internal fun DebugCommandPanel() {
                 mediaKeyPort = AndroidMediaKeyActionPort.from(applicationContext),
                 launchAppPort = AndroidLaunchAppActionPort.from(applicationContext),
             ),
+            batteryStatusPort = AndroidBatteryStatusPort.from(applicationContext),
         )
     }
     var expanded by rememberSaveable { mutableStateOf(false) }

@@ -25,7 +25,7 @@ Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto corrigido e i
 
 ## In progress
 
-Nenhuma implementação ativa. Próximo recorte a definir (play/pause excluído por decisão TASK-003; volume percentual futuro).
+TASK-008 em `codex/system-status-responses`: bateria/status do sistema + respostas variadas para resultados de ação. 42 testes automáticos verdes; aguardando validação no aparelho.
 
 ## Waiting / blocked
 
