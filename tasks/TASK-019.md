@@ -1,6 +1,6 @@
 # TASK-019 — coexistência com áudio e matriz de rotas
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-017 e aparelho disponível para validação. BASE COMMIT a definir; aplicar [protocolo](NEXT_TASKS.md).
+Status: IMPLEMENTADA em `codex/task-019-audio-focus` (base: TASK-018). Aguardando validação no aparelho. Handoff: `docs/handoffs/TASK-019.md`; matriz: `docs/handoffs/TASK-019-AUDIO-MATRIX.md`.
 
 ## Problema e escopo
 

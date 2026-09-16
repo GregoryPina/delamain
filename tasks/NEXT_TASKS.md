@@ -12,7 +12,7 @@ Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada 
 | [016](TASK-016.md) | Controles de uso fora do DEV | 015 | Implementação com revisão visual |
 | [017](TASK-017.md) | Parar/cancelar e modo mute (sem TTS automático) | 016 | Implementada; aguardando teste |
 | [018](TASK-018.md) | Nome e tom de personalidade configuráveis | 014/017 | Implementada; aguardando teste |
-| [019](TASK-019.md) | Foco de áudio e matriz de rotas | 017; aparelho disponível | Implementação orientada por evidência |
+| [019](TASK-019.md) | Foco de áudio e matriz de rotas | 017; aparelho disponível | Implementada; aguardando teste no aparelho |
 | [020](TASK-020.md) | Conversa de IA com provider falso | 015/017/018/019 | Implementação sem rede |
 | [021](TASK-021.md) | Primeiro provider real de IA | 020 + provider/custos/credenciais decididos | Condicionada à decisão do proprietário |
 | [022](TASK-022.md) | Estudo de wake word local | 013/019 + medições no aparelho | Pesquisa; não habilita escuta contínua |

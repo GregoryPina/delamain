@@ -20,6 +20,9 @@
     <string name="msg_speech_failed">Não foi possível iniciar a fala.</string>
     <string name="msg_cannot_stop_speech">Não foi possível interromper a fala.</string>
     <string name="msg_interaction_cancelled">Interação cancelada.</string>
+    <string name="msg_audio_unavailable">Áudio indisponível; resposta em texto.</string>
+    <string name="msg_audio_focus_lost">Áudio interrompido por outro app.</string>
+    <string name="msg_audio_route_changed">Rota de áudio alterada; interação interrompida.</string>
     <string name="cd_listen">Ouvir comando por voz</string>
     <string name="cd_cancel_listen">Cancelar escuta</string>
     <string name="cd_stop_speech">Parar fala</string>

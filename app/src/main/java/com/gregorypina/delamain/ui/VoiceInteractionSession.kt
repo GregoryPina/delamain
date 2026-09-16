@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.gregorypina.delamain.domain.AudioFocusRequestResult
+import com.gregorypina.delamain.domain.AudioFocusSession
 import com.gregorypina.delamain.domain.InteractionControlIntent
 import com.gregorypina.delamain.domain.InteractionControlRecognizer
 import com.gregorypina.delamain.domain.InteractionCoordinator
@@ -24,6 +26,8 @@ import com.gregorypina.delamain.domain.SpeechVoicePreferenceEvent
 import com.gregorypina.delamain.domain.SpeechVoiceSelection
 import com.gregorypina.delamain.integration.CompositeLocalActionPort
 import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
+import com.gregorypina.delamain.integration.audio.AndroidAudioFocusPort
+import com.gregorypina.delamain.integration.audio.AndroidAudioRouteMonitor
 import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
 import com.gregorypina.delamain.integration.system.AndroidBatteryStatusPort
@@ -83,6 +87,8 @@ class VoiceInteractionSession(
         private set
     lateinit var speechInput: AndroidSpeechInputPort
         private set
+    private lateinit var audioFocusSession: AudioFocusSession
+    private lateinit var audioRouteMonitor: AndroidAudioRouteMonitor
 
     private var preferenceSessionToken = 0L
     private var listenInteractionId by mutableLongStateOf(0L)
@@ -109,11 +115,21 @@ class VoiceInteractionSession(
             preferenceCoordinator.restoreMute(preferenceSessionToken)
             preferenceCoordinator.restorePersonality(preferenceSessionToken)
         }
+        audioFocusSession = AudioFocusSession(AndroidAudioFocusPort(appContext)) {
+            handleAudioInterruption(UserMessageKey.AudioFocusLost)
+        }
+        audioRouteMonitor = AndroidAudioRouteMonitor(
+            appContext,
+            isActive = { speaking || listening || audioFocusSession.isHeld() },
+            onRouteDisrupted = { handleAudioInterruption(UserMessageKey.AudioRouteChanged) },
+        )
+        audioRouteMonitor.start()
         speechOutput = AndroidTextToSpeechPort(
             appContext,
             onState = { state, interactionId ->
                 speechState = state
                 interactionCoordinator.output(state, interactionId)
+                if (state in SPEECH_FOCUS_TERMINAL_STATES) releaseAudioFocus()
             },
             onVoices = { voices ->
                 voiceSelection = voices
@@ -136,6 +152,7 @@ class VoiceInteractionSession(
                 inputState = state
                 interactionCoordinator.input(state, listenInteractionId)
                 updateStatusFromInput(state)
+                if (state in INPUT_FOCUS_TERMINAL_STATES) releaseAudioFocus()
             },
             onText = { text -> submitText(text) },
         )
@@ -144,6 +161,7 @@ class VoiceInteractionSession(
     fun onStop() {
         speechInput.cancel()
         speechOutput.stop()
+        releaseAudioFocus()
         interactionCoordinator.stop()
     }
 
@@ -151,6 +169,8 @@ class VoiceInteractionSession(
         if (!started) return
         speechInput.shutdown()
         speechOutput.shutdown()
+        audioRouteMonitor.stop()
+        releaseAudioFocus()
         preferenceCoordinator.closeSession(preferenceSessionToken)
         interactionCoordinator.stop()
         started = false
@@ -179,6 +199,11 @@ class VoiceInteractionSession(
         if (voiceMuted) {
             interactionCoordinator.stop()
             statusMessage = null
+            return SubmitResult.TextOnly(debugDisplay)
+        }
+        if (!acquireSpeechFocus()) {
+            interactionCoordinator.stop()
+            statusMessage = UserMessageKey.AudioUnavailable
             return SubmitResult.TextOnly(debugDisplay)
         }
         return when (speechOutput.speak(speechText, interactionId)) {
@@ -238,6 +263,7 @@ class VoiceInteractionSession(
             statusMessage = null
         } else {
             speechOutput.stop()
+            releaseAudioFocus()
             interactionCoordinator.stop()
             applyMutePreference(true)
             statusMessage = null
@@ -248,6 +274,7 @@ class VoiceInteractionSession(
         return when (control) {
             InteractionControlIntent.STOP_SPEECH -> {
                 speechOutput.stop()
+                releaseAudioFocus()
                 interactionCoordinator.stop()
                 statusMessage = null
                 SubmitResult.ControlHandled
@@ -255,12 +282,14 @@ class VoiceInteractionSession(
             InteractionControlIntent.CANCEL -> {
                 speechInput.cancel()
                 speechOutput.stop()
+                releaseAudioFocus()
                 interactionCoordinator.stop()
                 statusMessage = UserMessageKey.InteractionCancelled
                 SubmitResult.ControlHandled
             }
             InteractionControlIntent.ENABLE_MUTE -> {
                 speechOutput.stop()
+                releaseAudioFocus()
                 interactionCoordinator.stop()
                 applyMutePreference(true)
                 statusMessage = null
@@ -283,12 +312,17 @@ class VoiceInteractionSession(
     fun toggleListen(requestPermission: () -> Unit): ListenAction {
         if (listening) {
             speechInput.cancel()
+            releaseAudioFocus()
             interactionCoordinator.stop()
             return ListenAction.Cancelled
         }
         if (!speechOutput.stop()) {
             statusMessage = UserMessageKey.CannotStopSpeech
             return ListenAction.Blocked
+        }
+        if (!acquireListeningFocus()) {
+            statusMessage = UserMessageKey.AudioUnavailable
+            return ListenAction.Unavailable
         }
         listenInteractionId = interactionCoordinator.begin()
         return when (speechInput.start()) {
@@ -297,16 +331,19 @@ class VoiceInteractionSession(
                 ListenAction.Started
             }
             SpeechInputStartResult.PermissionRequired -> {
+                releaseAudioFocus()
                 requestPermission()
                 ListenAction.PermissionRequested
             }
             SpeechInputStartResult.Unavailable -> {
+                releaseAudioFocus()
                 statusMessage = UserMessageKey.ListenUnavailable
                 ListenAction.Unavailable
             }
             SpeechInputStartResult.Busy,
             SpeechInputStartResult.Failed,
             -> {
+                releaseAudioFocus()
                 statusMessage = UserMessageKey.ListenFailed
                 ListenAction.Failed
             }
@@ -320,6 +357,7 @@ class VoiceInteractionSession(
 
     fun stopSpeech() {
         speechOutput.stop()
+        releaseAudioFocus()
         interactionCoordinator.stop()
     }
 
@@ -351,6 +389,10 @@ class VoiceInteractionSession(
     fun speakSample(): Boolean {
         speechInput.cancel()
         val interactionId = interactionCoordinator.begin()
+        if (!acquireSpeechFocus()) {
+            interactionCoordinator.error(interactionId)
+            return false
+        }
         return when (
             speechOutput.speak("Olá. Sou a Vexa. Pronta para acompanhar sua viagem.", interactionId)
         ) {
@@ -415,6 +457,24 @@ class VoiceInteractionSession(
         }
     }
 
+    private fun acquireSpeechFocus(): Boolean =
+        audioFocusSession.requestForSpeech() == AudioFocusRequestResult.GRANTED
+
+    private fun acquireListeningFocus(): Boolean =
+        audioFocusSession.requestForListening() == AudioFocusRequestResult.GRANTED
+
+    private fun releaseAudioFocus() {
+        audioFocusSession.abandon()
+    }
+
+    private fun handleAudioInterruption(message: UserMessageKey) {
+        speechInput.cancel()
+        speechOutput.stop()
+        releaseAudioFocus()
+        interactionCoordinator.stop()
+        statusMessage = message
+    }
+
     private fun updateStatusFromInput(state: SpeechInputState) {
         statusMessage = when (state) {
             SpeechInputState.PermissionRequired -> UserMessageKey.MicrophoneDenied
@@ -452,5 +512,24 @@ class VoiceInteractionSession(
         SpeechFailed,
         CannotStopSpeech,
         InteractionCancelled,
+        AudioUnavailable,
+        AudioFocusLost,
+        AudioRouteChanged,
+    }
+
+    private companion object {
+        val SPEECH_FOCUS_TERMINAL_STATES = setOf(
+            SpeechOutputState.Completed,
+            SpeechOutputState.Stopped,
+            SpeechOutputState.Failed,
+        )
+        val INPUT_FOCUS_TERMINAL_STATES = setOf(
+            SpeechInputState.Completed,
+            SpeechInputState.Canceled,
+            SpeechInputState.Failed,
+            SpeechInputState.NoMatch,
+            SpeechInputState.TimedOut,
+            SpeechInputState.Unavailable,
+        )
     }
 }

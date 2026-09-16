@@ -8,7 +8,7 @@ Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. 
 
 ## Próxima ação
 
-TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 (`72b32ce`), TASK-017 (`d1d6d99`), TASK-018 em `codex/task-018-personality` (nome/tom local). TESTES: proprietário acumulará validação em massa. Sem merge em `main`. TASK-019+ não iniciadas.
+TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016–018 em branches. TASK-019 em `codex/task-019-audio-focus` (foco transitório + matriz de rotas). TESTES: proprietário acumulará validação em massa; 019 exige matriz no aparelho. Sem merge em `main`. TASK-020+ não iniciadas.
 
 ## Entregas encerradas
 

@@ -249,4 +249,7 @@ private fun userMessageRes(key: VoiceInteractionSession.UserMessageKey): Int = w
     VoiceInteractionSession.UserMessageKey.SpeechFailed -> R.string.msg_speech_failed
     VoiceInteractionSession.UserMessageKey.CannotStopSpeech -> R.string.msg_cannot_stop_speech
     VoiceInteractionSession.UserMessageKey.InteractionCancelled -> R.string.msg_interaction_cancelled
+    VoiceInteractionSession.UserMessageKey.AudioUnavailable -> R.string.msg_audio_unavailable
+    VoiceInteractionSession.UserMessageKey.AudioFocusLost -> R.string.msg_audio_focus_lost
+    VoiceInteractionSession.UserMessageKey.AudioRouteChanged -> R.string.msg_audio_route_changed
 }
