@@ -26,6 +26,6 @@ Provider retorna somente texto. Nada de tool calling, JSON executável, shell, i
 
 ## Testes e aceite
 
-Comando local e Unknown geram zero chamadas ao provider. Envio explícito gera uma. Cancelar, sair, novo pedido e timeout impedem resposta/TTS antigos. Erro preserva comandos locais e não cria retry automático. Respostas falsas aparecem identificadas como simulação; modo texto da 017 suprime TTS. Personalidade é dado delimitado; nome configurado não vira instrução privilegiada.
+Comando local e Unknown geram zero chamadas ao provider. Envio explícito gera uma. Cancelar, sair, novo pedido e timeout impedem resposta/TTS antigos. Erro preserva comandos locais e não cria retry automático. Respostas falsas aparecem identificadas como simulação; modo mute da 017 suprime TTS automático. Personalidade é dado delimitado; nome configurado não vira instrução privilegiada.
 
 Arquivos: interface/provider fake, coordenador, UI DEV de simulação, testes e docs. Sem INTERNET, SDK de fornecedor ou armazenamento de histórico. Handoff define schema, limites, cancelamento e ponto exato de substituição por adapter real na 021.

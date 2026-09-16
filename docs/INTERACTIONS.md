@@ -1,6 +1,6 @@
 # Roteamento, reflexos e conversa
 
-Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. TASK-011 integrada: escuta por botão envia apenas resultado final ao mesmo motor. Esclarecimento conversacional e IA são futuros. Cancelamento por botão DEV está integrado pela TASK-010; frase “pare de falar” ainda não é comando reconhecido. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
+Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. TASK-011 integrada: escuta por botão envia apenas resultado final ao mesmo motor. Esclarecimento conversacional e IA são futuros. Cancelamento por botão e frases de controle prioritário estão integrados pela TASK-017. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
 
 ## Caminho de uma entrada
 
@@ -26,8 +26,9 @@ Um comando conhecido que falha não deve virar tentativa pela IA. “Não apagar
 | “Abra Spotify” | Comando local | Lista permitida de apps | Implementado TASK-006 |
 | “Bateria” | Consulta local | Nível e carga | Implementado TASK-008 |
 | “Pause a música” | Comando local | Semântica de pausa a definir | Futuro |
-| “Pare de falar” | Controle prioritário | Cancelar TTS e resposta pendente | V0.3 |
-| “Modo silencioso” | Preferência local | Suprimir comentários espontâneos | V0.3 |
+| “Pare de falar” | Controle prioritário | Cancelar TTS e resposta pendente | TASK-017 |
+| “Modo mute” / “ativar voz” | Preferência local | Suprimir TTS automático; respostas permanecem na tela | TASK-017 |
+| “Modo silencioso” (espontâneos) | Preferência local | Suprimir comentários espontâneos futuros | V0.5+ |
 | “Me explique…” | Conversa aberta | API de IA habilitada | V0.4 |
 | Início de sessão de viagem | Evento | Saudação local opcional, uma vez por sessão | V0.5 |
 

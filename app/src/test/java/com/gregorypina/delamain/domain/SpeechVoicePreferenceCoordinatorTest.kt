@@ -50,6 +50,30 @@ class SpeechVoicePreferenceCoordinatorTest {
         val oldSave=c.beginExplicitChange(); val clear=c.beginExplicitChange(); c.clearPreference(clear,s); c.saveConfirmed(oldSave,s,"e","old")
         assertEquals(1,store.clears); assertTrue(store.writes.isEmpty())
     }
+    @Test fun `mute restore and persist respect session token`() = runBlocking {
+        val events = mutableListOf<SpeechVoicePreferenceEvent>()
+        val store = object : SpeechVoicePreferenceStore {
+            var muted = false
+            override suspend fun read(): SpeechVoicePreferenceReadResult = SpeechVoicePreferenceReadResult.Empty
+            override suspend fun write(preference: SpeechVoicePreference) = true
+            override suspend fun clear() = true
+            override suspend fun readMute(): Boolean = muted
+            override suspend fun writeMute(muted: Boolean): Boolean {
+                this.muted = muted
+                return true
+            }
+        }
+        val c = SpeechVoicePreferenceCoordinator(store) { _, e -> events += e }
+        val session = c.openSession()
+        c.restoreMute(session)
+        assertEquals(SpeechVoicePreferenceEvent.MuteRestored(false), events.single())
+        c.persistMute(session, true)
+        assertTrue(store.muted)
+        c.closeSession(session)
+        c.persistMute(session, false)
+        assertTrue(store.muted)
+    }
+
     @Test fun `read and write failures remain distinct`() = runBlocking {
         val events=mutableListOf<SpeechVoicePreferenceEvent>(); val c=SpeechVoicePreferenceCoordinator(FakeStore(SpeechVoicePreferenceReadResult.Failed,false)){_,e->events+=e}; val s=c.openSession()
         c.restore(s,"e",setOf("v")); val ch=c.beginExplicitChange(); c.saveConfirmed(ch,s,"e","v")

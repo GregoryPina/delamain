@@ -1,34 +1,50 @@
-# TASK-017 — interrupção prioritária e respostas em texto
+# TASK-017 — interrupção prioritária e modo mute
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-016. BASE COMMIT a definir no despacho; aplicar [protocolo](NEXT_TASKS.md).
+Status: IMPLEMENTADA em `codex/task-017-mute-controls` (base: TASK-016). Aguardando validação do proprietário. Handoff: `docs/handoffs/TASK-017.md`.
+
+Decisão do proprietário (2026-09-16): **não** haverá “modo somente texto” como produto. O campo TEXTO da 016 é apenas **entrada alternativa**, não um modo de operação. O que faz sentido é **modo mute**: VEXA continua ouvindo, executando comandos e mostrando respostas na tela, mas **não fala** automaticamente.
 
 ## Objetivo e semântica
 
-Separar três intenções: parar fala atual, cancelar interação em andamento e desativar respostas faladas. Não usar volume zero do aparelho para simular silêncio; outras músicas/apps não devem ser alterados.
+Separar quatro intenções distintas:
+
+| Conceito | Efeito |
+| --- | --- |
+| **PARAR** (botão ou “pare de falar”) | Interrompe a fala **atual**; não altera preferência |
+| **CANCELAR** (“cancelar”, “cancela”) | Invalida interação pendente (STT/TTS); não desfaz ação Android já concluída |
+| **Modo mute** | Suprime TTS automático das respostas; texto na tela permanece |
+| **Ativar voz** | Reabilita TTS automático; não repete histórico |
+
+Modo mute **não** é volume zero do aparelho, **não** desliga microfone e **não** remove a entrada TEXTO. Outras apps/músicas não são afetadas.
+
+### Frases propostas (catálogo fechado)
 
 | Entrada completa proposta | Efeito |
 | --- | --- |
-| “pare de falar”, “parar de falar” | Parar TTS; feedback visual, sem nova fala de confirmação |
-| “cancelar”, “cancela” | Invalidar interação pendente, cancelar STT e TTS; não desfazer ação Android já concluída |
-| “respostas em texto”, “desativar voz” | Parar TTS e suprimir próximas falas automáticas de respostas |
-| “ativar voz”, “respostas por voz” | Reabilitar próximas respostas; não reproduzir respostas antigas |
+| “pare de falar”, “parar de falar” | Parar TTS atual; feedback visual, sem nova fala de confirmação |
+| “cancelar”, “cancela” | Invalidar interação pendente |
+| “modo mute”, “silenciar voz”, “desativar voz” | Ativar mute (parar fala atual + suprimir próximas) |
+| “ativar voz”, “sair do mute”, “respostas por voz” | Desativar mute |
 
-Aliases são proposta fechada; aceitar prefixo Vexa/normalização existente. “Não pare de falar”, “explique a expressão pare de falar” e “cancele e abra Spotify” não executam interrupção por substring. Não fazer classificação aproximada de comandos de ação.
+Aliases são proposta fechada; aceitar prefixo Vexa/normalização existente. “Não pare de falar”, “explique a expressão pare de falar” e “cancele e abra Spotify” não executam interrupção por substring.
 
 ## Integração
 
-Controle prioritário antes de consultar engine de ações/IA. Reusar normalização existente sem criar terceiro roteador de linguagem geral. Definir intenção tipada de controle no coordenador; não misturar parar TTS com LocalAction.MediaPrevious/volume. Botões e texto devem compartilhar o mesmo comando interno.
+Controle prioritário antes de consultar engine de ações/IA. Reusar normalização existente. Definir intenção tipada de controle no coordenador/sessão; não misturar parar TTS com `LocalAction.MediaPrevious`/volume. Botões e voz devem compartilhar o mesmo comando interno.
 
-A escuta atual exige botão: dizer “pare de falar” enquanto o mic está desligado não pode ser prometido como interrupção hands-free. Usuário pode tocar OUVIR (já para TTS) ou PARAR. Não implementar captura simultânea/wake word como atalho.
+- Toggle **mute** na UI principal (além de frases), persistido no store da 014 junto com preferência de voz.
+- Valor inicial: voz ligada (comportamento atual).
+- Com mute ativo: OUVIR e TEXTO funcionam; resposta aparece na tela; TTS automático não dispara.
+- **TESTAR VOZ** (DEV) e prévia explícita podem falar mesmo em mute, rotuladas como tal, sem alterar a preferência.
 
-Preferência de respostas faladas persiste no store da 014, com valor inicial ligado para preservar comportamento. Quando desativada, entrada de voz ainda pode funcionar; o resultado fica em texto. TESTAR VOZ é ação explícita de prévia e pode emitir áudio mesmo nesse modo: rotular claramente, sem alterar a preferência. Não chamar isso de “modo silencioso total”.
+A escuta atual exige botão: “pare de falar” com microfone desligado não é interrupção hands-free (usuário usa PARAR ou OUVIR, que já para TTS antes de escutar).
 
 ## Arquivos e testes
 
-Coordenador/contratos de controles, store existente, UI normal/DEV, testes e docs. Sem APIs remotas, mídia nova ou mudanças em permissões.
+Coordenador/sessão, store existente, UI normal/DEV, testes e docs. Sem APIs remotas, mídia nova ou mudanças em permissões.
 
-Testes: stop sem active id é idempotente; resposta assíncrona atrasada não fala após cancelar; desativar durante fala; reativar não repete histórico; negações/texto extra; preferência restaurada; cancelamento não alega desfazer ação já executada; botões/texto produzem mesma transição. Regressões de comandos anteriores preservadas.
+Testes: stop idempotente; resposta assíncrona atrasada não fala após cancelar/mute; mute durante fala; reativar voz não repete histórico; negações; preferência restaurada; botões/voz/frases produzem mesma transição.
 
 ## Aceite
 
-Uma interrupção nunca produz outra fala automática; preferência não mexe em volume global; mensagens distinguem cancelamento de reversão. Proprietário testa com TTS/escuta/texto e reinício. Handoff documenta precedência, aliases exatos, persistência e diferença entre resposta automática e prévia explícita.
+Interrupção nunca produz outra fala automática de confirmação. Mute não altera volume global. Mensagens distinguem cancelamento de reversão e mute de “só digitar”. Proprietário testa com TTS/escuta/TEXTO e reinício. Handoff documenta precedência, aliases, persistência e diferença entre resposta automática e prévia explícita.

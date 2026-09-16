@@ -2,6 +2,7 @@ package com.gregorypina.delamain.integration.voice
 
 import android.content.Context
 import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -17,6 +18,7 @@ private val Context.voicePreferencesDataStore by preferencesDataStore(name = "ve
 internal val voicePreferenceVersionKey = intPreferencesKey("voice_preference_version")
 internal val voiceEngineIdKey = stringPreferencesKey("voice_engine_id")
 internal val voiceIdKey = stringPreferencesKey("voice_id")
+internal val voiceMutedKey = booleanPreferencesKey("voice_muted")
 internal fun clearVoicePreferenceKeys(values: MutablePreferences) {
     values.remove(voicePreferenceVersionKey); values.remove(voiceEngineIdKey); values.remove(voiceIdKey)
 }
@@ -38,6 +40,16 @@ class DataStoreSpeechVoicePreferenceStore(context: Context) : SpeechVoicePrefere
       catch (_: RuntimeException) { false }
     override suspend fun clear(): Boolean = try {
         dataStore.edit(::clearVoicePreferenceKeys); true
+    } catch (e: CancellationException) { throw e }
+      catch (_: IOException) { false }
+      catch (_: RuntimeException) { false }
+    override suspend fun readMute(): Boolean = try {
+        dataStore.data.first()[voiceMutedKey] ?: false
+    } catch (e: CancellationException) { throw e }
+      catch (_: IOException) { false }
+      catch (_: RuntimeException) { false }
+    override suspend fun writeMute(muted: Boolean): Boolean = try {
+        dataStore.edit { it[voiceMutedKey] = muted }; true
     } catch (e: CancellationException) { throw e }
       catch (_: IOException) { false }
       catch (_: RuntimeException) { false }

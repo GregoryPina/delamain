@@ -38,6 +38,14 @@ Microfone → SpeechRecognizer → texto → LocalCommandEngine → ação/respo
 
 TASK-009 implementa apenas a saída de voz (TTS) no painel DEV; STT e wake word ficam para TASKs posteriores.
 
+## ADR-007 — modo mute, não “somente texto”
+
+Decisão do proprietário (2026-09-16): não haverá modo de produto “somente texto”. A entrada TEXTO (TASK-016) é método de comando alternativo ao microfone, sempre disponível, não um modo exclusivo.
+
+**Modo mute** (TASK-017): VEXA continua processando comandos e mostrando respostas na tela, mas suprime TTS automático. Diferente de PARAR (interrompe fala atual) e de volume zero do sistema. Persistência no mesmo store da preferência de voz (TASK-014). Prévia explícita (ex.: TESTAR VOZ no DEV) pode falar mesmo em mute.
+
+“Modo silencioso” em PERSONALITY/INTERACTIONS para comentários espontâneos futuros permanece conceito separado (V0.5+), não confundir com mute operacional.
+
 ## ADR-006 — estabilizar saída antes de captura de voz
 
 Revisão de continuidade em 2026-09-16: preservar aceite funcional da TASK-009, mas tratar semântica assíncrona, descarte e erros em TASK-010 antes do STT. TASK-011 será escuta explícita por botão, uma sessão por vez, sem wake word/loop contínuo, com cancelamento e sem autoescuta do TTS. Personalização da voz é recorte separado, posterior à estabilidade.

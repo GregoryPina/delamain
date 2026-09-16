@@ -38,4 +38,4 @@ Debug e release:
 
 ## Pendências
 
-Validação manual em massa pelo proprietário. Sem merge em `main` até aceite. TASK-017 não iniciada.
+Validação manual em massa pelo proprietário. Sem merge em `main` até aceite. TASK-017 implementada em branch derivada (`codex/task-017-mute-controls`); ver `docs/handoffs/TASK-017.md`.

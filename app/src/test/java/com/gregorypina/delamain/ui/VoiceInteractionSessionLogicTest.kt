@@ -17,6 +17,6 @@ class VoiceInteractionSessionLogicTest {
         val recognized = result as LocalCommandResult.Recognized
         assertEquals(LocalIntent.TIME, recognized.intent)
         assertTrue(recognized.response.isNotBlank())
-        assertTrue(!recognized.response.contains(":"))
+        assertTrue(!recognized.response.startsWith("${recognized.intent}:"))
     }
 }

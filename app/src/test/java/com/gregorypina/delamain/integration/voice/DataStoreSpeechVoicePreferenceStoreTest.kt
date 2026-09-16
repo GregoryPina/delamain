@@ -1,9 +1,12 @@
 package com.gregorypina.delamain.integration.voice
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DataStoreSpeechVoicePreferenceStoreTest {
@@ -22,5 +25,25 @@ class DataStoreSpeechVoicePreferenceStoreTest {
         assertNull(values[voiceEngineIdKey])
         assertNull(values[voiceIdKey])
         assertEquals(7, values[personalityKey])
+    }
+
+    @Test
+    fun `mute key is independent from voice preference keys`() {
+        val values = mutablePreferencesOf(
+            voicePreferenceVersionKey to 1,
+            voiceEngineIdKey to "engine",
+            voiceIdKey to "voice",
+            voiceMutedKey to true,
+        )
+
+        clearVoicePreferenceKeys(values)
+
+        assertTrue(values[voiceMutedKey] == true)
+    }
+
+    @Test
+    fun `mute defaults to false when absent`() {
+        val values = mutablePreferencesOf()
+        assertFalse(values[booleanPreferencesKey("voice_muted")] ?: false)
     }
 }

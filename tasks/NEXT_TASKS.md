@@ -1,6 +1,6 @@
 # Próximas tarefas — guia de despacho
 
-Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional; TASK-014–022 ainda não despachadas. Referência de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb`, branch TASK-012; baseline conjunta de código `7d63e605cc3ad36cc3ded50bd62dfcdff449c207`. Esses hashes NÃO são baselines de execução das tarefas futuras.
+Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional. TASK-014–017 implementadas em branches (`codex/task-014-voice-preference` … `codex/task-017-mute-controls`), aguardando validação em massa; TASK-018+ não iniciadas. Referência histórica de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb` (TASK-012). Baselines de execução futura serão informadas no despacho de cada TASK.
 
 ## Ordem e dependências
 
@@ -10,7 +10,7 @@ Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada 
 | [014](TASK-014.md) | Lembrar a voz escolhida | 013 integrada | Implementação |
 | [015](TASK-015.md) | Coordenar sessão e estados reais do rosto | 013/014 | Implementação |
 | [016](TASK-016.md) | Controles de uso fora do DEV | 015 | Implementação com revisão visual |
-| [017](TASK-017.md) | Parar/cancelar e respostas somente em texto | 016 | Implementação |
+| [017](TASK-017.md) | Parar/cancelar e modo mute (sem TTS automático) | 016 | Implementada; aguardando teste |
 | [018](TASK-018.md) | Nome e tom de personalidade configuráveis | 014/017 | Implementação |
 | [019](TASK-019.md) | Foco de áudio e matriz de rotas | 017; aparelho disponível | Implementação orientada por evidência |
 | [020](TASK-020.md) | Conversa de IA com provider falso | 015/017/018/019 | Implementação sem rede |

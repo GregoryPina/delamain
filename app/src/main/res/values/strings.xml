@@ -4,6 +4,8 @@
     <string name="action_listen">OUVIR</string>
     <string name="action_cancel_listen">CANCELAR</string>
     <string name="action_stop_speech">PARAR</string>
+    <string name="action_enable_mute">MUTE</string>
+    <string name="action_disable_mute">VOZ</string>
     <string name="action_show_text">TEXTO</string>
     <string name="action_hide_text">OCULTAR</string>
     <string name="action_send">ENVIAR</string>
@@ -17,9 +19,12 @@
     <string name="msg_voice_unavailable">Voz indisponível; resposta em texto.</string>
     <string name="msg_speech_failed">Não foi possível iniciar a fala.</string>
     <string name="msg_cannot_stop_speech">Não foi possível interromper a fala.</string>
+    <string name="msg_interaction_cancelled">Interação cancelada.</string>
     <string name="cd_listen">Ouvir comando por voz</string>
     <string name="cd_cancel_listen">Cancelar escuta</string>
     <string name="cd_stop_speech">Parar fala</string>
+    <string name="cd_enable_mute">Ativar modo mute</string>
+    <string name="cd_disable_mute">Reativar respostas por voz</string>
     <string name="cd_show_text">Mostrar entrada de texto</string>
     <string name="cd_hide_text">Ocultar entrada de texto</string>
     <string name="cd_text_input">Campo de comando por texto</string>

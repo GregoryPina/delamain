@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.gregorypina.delamain.domain.InteractionControlIntent
+import com.gregorypina.delamain.domain.InteractionControlRecognizer
 import com.gregorypina.delamain.domain.InteractionCoordinator
 import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
@@ -56,6 +58,8 @@ class VoiceInteractionSession(
         private set
     var preferenceSaved: Boolean by mutableStateOf(false)
         private set
+    var voiceMuted: Boolean by mutableStateOf(false)
+        private set
 
     private val preferenceStore = DataStoreSpeechVoicePreferenceStore(appContext)
     val preferenceCoordinator = SpeechVoicePreferenceCoordinator(preferenceStore) { token, event ->
@@ -89,6 +93,7 @@ class VoiceInteractionSession(
         started = true
         voiceRestored = false
         preferenceSessionToken = preferenceCoordinator.openSession()
+        scope.launch { preferenceCoordinator.restoreMute(preferenceSessionToken) }
         speechOutput = AndroidTextToSpeechPort(
             appContext,
             onState = { state, interactionId ->
@@ -140,6 +145,9 @@ class VoiceInteractionSession(
         speechInput.cancel()
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return SubmitResult.EmptyInput
+        InteractionControlRecognizer.recognize(trimmed)?.let { control ->
+            return handleControl(control)
+        }
         val interactionId = interactionCoordinator.begin()
         val (debugDisplay, speechText, userText) = when (val result = engine.process(trimmed)) {
             is LocalCommandResult.Recognized -> Triple(
@@ -153,6 +161,11 @@ class VoiceInteractionSession(
             }
         }
         lastResponse = userText
+        if (voiceMuted) {
+            interactionCoordinator.stop()
+            statusMessage = null
+            return SubmitResult.TextOnly(debugDisplay)
+        }
         return when (speechOutput.speak(speechText, interactionId)) {
             SpeechOutputResult.Queued -> {
                 statusMessage = null
@@ -169,6 +182,54 @@ class VoiceInteractionSession(
                 SubmitResult.TextOnly(debugDisplay)
             }
         }
+    }
+
+    fun toggleMute() {
+        if (voiceMuted) {
+            applyMutePreference(false)
+            statusMessage = null
+        } else {
+            speechOutput.stop()
+            interactionCoordinator.stop()
+            applyMutePreference(true)
+            statusMessage = null
+        }
+    }
+
+    private fun handleControl(control: InteractionControlIntent): SubmitResult {
+        return when (control) {
+            InteractionControlIntent.STOP_SPEECH -> {
+                speechOutput.stop()
+                interactionCoordinator.stop()
+                statusMessage = null
+                SubmitResult.ControlHandled
+            }
+            InteractionControlIntent.CANCEL -> {
+                speechInput.cancel()
+                speechOutput.stop()
+                interactionCoordinator.stop()
+                statusMessage = UserMessageKey.InteractionCancelled
+                SubmitResult.ControlHandled
+            }
+            InteractionControlIntent.ENABLE_MUTE -> {
+                speechOutput.stop()
+                interactionCoordinator.stop()
+                applyMutePreference(true)
+                statusMessage = null
+                SubmitResult.ControlHandled
+            }
+            InteractionControlIntent.DISABLE_MUTE -> {
+                applyMutePreference(false)
+                statusMessage = null
+                SubmitResult.ControlHandled
+            }
+        }
+    }
+
+    private fun applyMutePreference(muted: Boolean) {
+        if (voiceMuted == muted) return
+        voiceMuted = muted
+        scope.launch { preferenceCoordinator.persistMute(preferenceSessionToken, muted) }
     }
 
     fun toggleListen(requestPermission: () -> Unit): ListenAction {
@@ -282,6 +343,9 @@ class VoiceInteractionSession(
                 preferenceSaved = false
                 preferenceMessage = "Preferência indisponível; usando padrão local."
             }
+            is SpeechVoicePreferenceEvent.MuteRestored -> {
+                voiceMuted = event.muted
+            }
         }
     }
 
@@ -303,6 +367,7 @@ class VoiceInteractionSession(
     sealed interface SubmitResult {
         data class Spoken(val display: String) : SubmitResult
         data class TextOnly(val display: String) : SubmitResult
+        data object ControlHandled : SubmitResult
         data object EmptyInput : SubmitResult
     }
 
@@ -320,5 +385,6 @@ class VoiceInteractionSession(
         VoiceUnavailable,
         SpeechFailed,
         CannotStopSpeech,
+        InteractionCancelled,
     }
 }

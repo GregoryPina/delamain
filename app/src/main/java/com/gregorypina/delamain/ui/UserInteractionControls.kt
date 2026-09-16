@@ -123,6 +123,25 @@ fun UserInteractionControls(
                     Text(stringResource(R.string.action_stop_speech))
                 }
             }
+            val muteDescription = stringResource(
+                if (session.voiceMuted) R.string.cd_disable_mute else R.string.cd_enable_mute,
+            )
+            Button(
+                onClick = {
+                    focusManager.clearFocus()
+                    session.toggleMute()
+                },
+                modifier = Modifier.semantics { contentDescription = muteDescription },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (session.voiceMuted) Color(0xFF5A3A3A) else Color(0xFF3A4450),
+                ),
+            ) {
+                Text(
+                    stringResource(
+                        if (session.voiceMuted) R.string.action_disable_mute else R.string.action_enable_mute,
+                    ),
+                )
+            }
             val textToggleDescription = stringResource(
                 if (textExpanded) R.string.cd_hide_text else R.string.cd_show_text,
             )
@@ -156,7 +175,9 @@ fun UserInteractionControls(
                         onSend = {
                             when (session.submitText(draft)) {
                                 is VoiceInteractionSession.SubmitResult.EmptyInput -> Unit
-                                else -> draft = ""
+                                else -> {
+                                    draft = ""
+                                }
                             }
                             focusManager.clearFocus()
                         },
@@ -199,4 +220,5 @@ private fun userMessageRes(key: VoiceInteractionSession.UserMessageKey): Int = w
     VoiceInteractionSession.UserMessageKey.VoiceUnavailable -> R.string.msg_voice_unavailable
     VoiceInteractionSession.UserMessageKey.SpeechFailed -> R.string.msg_speech_failed
     VoiceInteractionSession.UserMessageKey.CannotStopSpeech -> R.string.msg_cannot_stop_speech
+    VoiceInteractionSession.UserMessageKey.InteractionCancelled -> R.string.msg_interaction_cancelled
 }

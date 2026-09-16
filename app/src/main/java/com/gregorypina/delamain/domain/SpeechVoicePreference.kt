@@ -15,6 +15,8 @@ interface SpeechVoicePreferenceStore {
     suspend fun read(): SpeechVoicePreferenceReadResult
     suspend fun write(preference: SpeechVoicePreference): Boolean
     suspend fun clear(): Boolean
+    suspend fun readMute(): Boolean = false
+    suspend fun writeMute(muted: Boolean): Boolean = true
 }
 sealed interface SpeechVoicePreferenceEvent {
     data class Restore(val preference: SpeechVoicePreference) : SpeechVoicePreferenceEvent
@@ -24,6 +26,7 @@ sealed interface SpeechVoicePreferenceEvent {
     data object Cleared : SpeechVoicePreferenceEvent
     data object SaveFailed : SpeechVoicePreferenceEvent
     data object ClearFailed : SpeechVoicePreferenceEvent
+    data class MuteRestored(val muted: Boolean) : SpeechVoicePreferenceEvent
 }
 
 /** Persistence coordinator. Session tokens prevent a restore from escaping the panel lifetime. */
@@ -71,5 +74,16 @@ class SpeechVoicePreferenceCoordinator(
         } ?: return
         if (change == generation && token == session)
             onEvent(token, if (result) SpeechVoicePreferenceEvent.Cleared else SpeechVoicePreferenceEvent.ClearFailed)
+    }
+
+    suspend fun restoreMute(token: Long) {
+        if (token != session) return
+        onEvent(token, SpeechVoicePreferenceEvent.MuteRestored(store.readMute()))
+    }
+
+    suspend fun persistMute(token: Long, muted: Boolean) {
+        writeMutex.withLock {
+            if (token == session) store.writeMute(muted)
+        }
     }
 }

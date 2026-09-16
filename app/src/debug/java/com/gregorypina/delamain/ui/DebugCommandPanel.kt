@@ -92,7 +92,9 @@ private fun DebugCommandPanelContent(
                 output = result.display
                 problem = "Resposta em texto."
             }
-            VoiceInteractionSession.SubmitResult.EmptyInput -> Unit
+            VoiceInteractionSession.SubmitResult.EmptyInput,
+            VoiceInteractionSession.SubmitResult.ControlHandled,
+            -> Unit
         }
         focus.clearFocus()
     }

@@ -59,11 +59,13 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] TASK-011: STT local por botão integrado; aceite funcional do proprietário
 - [x] TASK-012: comparação de vozes locais por sessão integrada; aceite funcional do proprietário
 - [x] TASK-013: consolidação e integração; cobertura não relatada registrada separadamente
-- [ ] TASK-014: persistência da preferência de voz implementada; aguardando testes/integração
+- [x] TASK-014: persistência da preferência de voz (branch; aguardando validação)
+- [x] TASK-015: coordenação de sessão e rosto por eventos reais (branch; aguardando validação)
+- [x] TASK-016: controles OUVIR/PARAR/TEXTO na tela principal (branch; aguardando validação)
+- [x] TASK-017: interrupção prioritária e modo mute (ADR-007; branch; aguardando validação)
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões
-- [ ] Interrupção de fala, cancelamento e modo silencioso
 - [ ] Validar STT/TTS offline e medir latência por etapa no dispositivo
 
 ## V0.4 — IA

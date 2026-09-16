@@ -1,10 +1,8 @@
 package com.gregorypina.delamain.domain
 
-import java.text.Normalizer
 import java.time.Clock
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class LocalCommandEngine(
     private val clock: Clock = Clock.systemDefaultZone(),
@@ -18,13 +16,13 @@ class LocalCommandEngine(
 
     @Synchronized
     fun process(input: String): LocalCommandResult {
-        val normalized = normalize(input)
+        val normalized = CommandInputNormalizer.normalize(input)
         val intent = when {
-            normalized == ASSISTANT_NAME -> LocalIntent.CALL
-            else -> recognize(stripOptionalPrefix(normalized))
+            normalized == CommandInputNormalizer.ASSISTANT_NAME -> LocalIntent.CALL
+            else -> recognize(CommandInputNormalizer.stripOptionalPrefix(normalized))
         } ?: return LocalCommandResult.Unknown
 
-        val strippedPhrase = stripOptionalPrefix(normalized)
+        val strippedPhrase = CommandInputNormalizer.stripOptionalPrefix(normalized)
         val action = when (intent) {
             LocalIntent.VOLUME_UP -> LocalAction.VolumeUp
             LocalIntent.VOLUME_DOWN -> LocalAction.VolumeDown
@@ -69,9 +67,6 @@ class LocalCommandEngine(
         phrase in MEDIA_PREVIOUS_PHRASES -> LocalIntent.MEDIA_PREVIOUS
         else -> null
     }
-
-    private fun stripOptionalPrefix(phrase: String): String =
-        phrase.removePrefix("$ASSISTANT_NAME ")
 
     private fun nextResponse(intent: LocalIntent): String {
         val variants = responsesFor(intent)
@@ -323,17 +318,7 @@ class LocalCommandEngine(
             text.replace("{$key}", value)
         }
 
-    private fun normalize(input: String): String = Normalizer
-        .normalize(input, Normalizer.Form.NFD)
-        .replace(COMBINING_MARKS, "")
-        .lowercase(Locale.ROOT)
-        .replace(PUNCTUATION_OR_SYMBOLS, " ")
-        .trim()
-        .replace(WHITESPACE, " ")
-
     private companion object {
-        const val ASSISTANT_NAME = "vexa"
-
         const val KEY_BATTERY_UNAVAILABLE = "battery_unavailable"
         const val KEY_BATTERY_CHARGING = "battery_charging"
         const val KEY_BATTERY_LEVEL = "battery_level"
@@ -417,9 +402,6 @@ class LocalCommandEngine(
             }
         }
 
-        val COMBINING_MARKS = Regex("\\p{M}+")
-        val PUNCTUATION_OR_SYMBOLS = Regex("[\\p{P}\\p{S}]+")
-        val WHITESPACE = Regex("\\s+")
         val TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     }
 }
