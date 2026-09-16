@@ -13,7 +13,7 @@ Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 5 concluída: TASK-008 integrada em `main` (`cf67638`).
+Wave 6 em andamento: TASK-009 (TTS) em `codex/tts-voice-output`. ADR-005 registrado.
 
 ## Completed
 
@@ -27,7 +27,7 @@ Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto inativo.
 
 ## In progress
 
-Nenhuma implementação ativa. Próximo recorte: V0.3 (TTS) ou pendências V0.2 (volume no aparelho, play/pause).
+TASK-009: TTS via `TextToSpeech` no painel DEV; STT e wake word ficam para TASK-010+. ADR-005 formaliza SpeechRecognizer + LocalCommandEngine + TTS, sem Google Assistente.
 
 ## Waiting / blocked
 
@@ -51,7 +51,7 @@ Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá
 
 ## Next recommended action
 
-Preparar TASK-009 (TTS) ou fechar pendências V0.2 restantes, conforme prioridade do proprietário. Não ativar roteador remoto nem play/pause como toggle.
+Validar TASK-009 no aparelho (áudio TTS). Depois preparar TASK-010 (STT com SpeechRecognizer). Não ativar roteador remoto nem play/pause como toggle.
 
 ## Warnings
 

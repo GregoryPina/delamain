@@ -19,3 +19,21 @@ Uma TASK externa deverá propor consolidação incremental, aproveitando comport
 O proprietário assumiu builds/testes locais para economizar uso do Work. Astra faz revisão estática e integração, fornece roteiro e registra resultados informados. Não executar testes automaticamente. Código aguardando validação permanece identificado como tal.
 
 A companion passa a se chamar VEXA. TASK-005 altera apenas nome exibido, textos e gatilho digitado; repositório, applicationId, pacotes/classes e assets são preservados. O nome antigo permanece somente como referência histórica/técnica, não como gatilho.
+
+## ADR-005 — voz via APIs nativas do Android
+
+Não desenvolver STT/TTS próprios nesta fase. STT futuro usará `SpeechRecognizer` (on-device quando disponível; senão serviço do sistema). TTS usará `android.speech.tts.TextToSpeech`. Não usar Google Assistente, “Ok Google” nem substituir o Assistente por um wake word do app para **interpretar** comandos — apenas reutilizar a infraestrutura de reconhecimento/fala do aparelho.
+
+Fluxo alvo V0.3:
+
+```text
+Microfone → SpeechRecognizer → texto → LocalCommandEngine → ação/resposta local ou Unknown → TextToSpeech
+```
+
+- Roteamento canônico: **`LocalCommandEngine`** (não `CommandRouter`, que permanece inativo).
+- Gatilho de chamada: **VEXA** (não Delamain).
+- IA/OpenAI: fallback futuro para `Unknown` e conversa aberta; não para comandos locais determinísticos.
+- Wake word contínua: etapa futura, independente do STT inicial.
+- Camadas desacopladas via portas (`SpeechInputPort` futuro, `SpeechOutputPort` agora) para permitir troca de implementação sem reescrever o domínio.
+
+TASK-009 implementa apenas a saída de voz (TTS) no painel DEV; STT e wake word ficam para TASKs posteriores.

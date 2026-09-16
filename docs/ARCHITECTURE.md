@@ -49,7 +49,15 @@ Recebe texto/intenção e tenta primeiro comandos locais determinísticos. Exemp
 Inclui reflexos sociais: saudações e respostas curtas por gatilho também são locais. Um catálogo de frases aplica a [personalidade](PERSONALITY.md) tanto às respostas sociais quanto ao resultado das ações. A personalidade não escolhe permissões nem inventa sucesso. Ver [contrato de interações](INTERACTIONS.md) para precedência, cancelamento, modelos e cenários de aceite.
 
 ### Voice
-Separar wake word, speech-to-text e text-to-speech. A primeira implementação pode usar APIs Android disponíveis; componentes offline serão avaliados antes de adicionar serviços externos.
+Separar wake word, speech-to-text e text-to-speech. STT futuro: `SpeechRecognizer` (on-device quando disponível). TTS: `TextToSpeech` via `SpeechOutputPort` (TASK-009). Não usar Google Assistente para interpretar comandos. Ver ADR-005.
+
+Fluxo alvo V0.3:
+
+```text
+Microfone → SpeechRecognizer → texto → LocalCommandEngine → resposta → TextToSpeech
+```
+
+Wake word contínua permanece etapa futura, independente do STT inicial.
 
 ### AI
 Interface de provider abstrata. A implementação inicial não deve amarrar o domínio a Gemini, OpenAI ou outro fornecedor. O provider poderá ser trocado por configuração.

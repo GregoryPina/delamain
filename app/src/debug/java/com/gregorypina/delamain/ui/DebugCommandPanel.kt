@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,11 +40,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
+import com.gregorypina.delamain.domain.LocalUnknownResponses
+import com.gregorypina.delamain.domain.SpeechOutputPort
 import com.gregorypina.delamain.integration.CompositeLocalActionPort
 import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
 import com.gregorypina.delamain.integration.system.AndroidBatteryStatusPort
+import com.gregorypina.delamain.integration.voice.AndroidTextToSpeechPort
 
 private val DebugPanelBackground = Color(0xEE101820)
 private val DebugPanelAccent = Color(0xFF2E8BFF)
@@ -61,6 +65,16 @@ internal fun DebugCommandPanel() {
             batteryStatusPort = AndroidBatteryStatusPort.from(applicationContext),
         )
     }
+    val speechOutputPort = remember { mutableStateOf<SpeechOutputPort?>(null) }
+    DisposableEffect(applicationContext) {
+        val port = AndroidTextToSpeechPort(applicationContext) { readyPort ->
+            speechOutputPort.value = readyPort
+        }
+        onDispose {
+            port.shutdown()
+            speechOutputPort.value = null
+        }
+    }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Box(
@@ -72,6 +86,7 @@ internal fun DebugCommandPanel() {
         if (expanded) {
             DebugCommandPanelContent(
                 engine = engine,
+                speechOutputPort = speechOutputPort.value,
                 onDismiss = { expanded = false },
                 modifier = Modifier.align(Alignment.TopCenter),
             )
@@ -89,6 +104,7 @@ internal fun DebugCommandPanel() {
 @Composable
 private fun DebugCommandPanelContent(
     engine: LocalCommandEngine,
+    speechOutputPort: SpeechOutputPort?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -97,10 +113,17 @@ private fun DebugCommandPanelContent(
     var output by rememberSaveable { mutableStateOf("Digite um comando local para testar.") }
 
     fun submit() {
-        output = when (val result = engine.process(input)) {
-            is LocalCommandResult.Recognized -> "${result.intent}: ${result.response}"
-            LocalCommandResult.Unknown -> "Comando local não reconhecido."
+        val (display, speechText) = when (val result = engine.process(input)) {
+            is LocalCommandResult.Recognized -> {
+                "${result.intent}: ${result.response}" to result.response
+            }
+            LocalCommandResult.Unknown -> {
+                val unknown = LocalUnknownResponses.next()
+                unknown to unknown
+            }
         }
+        output = display
+        speechOutputPort?.speak(speechText)
         focusManager.clearFocus()
     }
 
