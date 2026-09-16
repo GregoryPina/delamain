@@ -1,61 +1,25 @@
 # TASK-014 — lembrar a voz escolhida
 
-STATUS: IMPLEMENTADA_AGUARDANDO_TESTE. Base exata: `f7e851bc799b018cd58c6f1bf2b15a54511f2c3f`. Nenhum build ou teste foi executado pelo executor, conforme despacho.
+STATUS: IMPLEMENTADA_AGUARDANDO_TESTE. Base original: `f7e851bc799b018cd58c6f1bf2b15a54511f2c3f`. Revisão do PR #5 em `docs/handoffs/PR-005-REVIEW.md` aplicada sem executar build/testes.
 
 ## Implementação
+A escolha explícita é persistida por `TextToSpeech.defaultEngine` + `Voice.name`, versão 1, em Preferences DataStore `vexa_preferences`. Só voz pt-BR instalada e declarada sem rede pode ser restaurada. Preferência incompatível não é sobrescrita pelo fallback. USAR PADRÃO só limpa as chaves de voz depois que o fallback local foi aplicado com sucesso.
 
-A escolha explícita de voz no DEV agora é persistida com Preferences DataStore após `TextToSpeech.setVoice` ser confirmado pelo adapter. O registro usa identidade estável do motor TTS + `Voice.name`; nunca índice/posição da lista. Na abertura do painel, catálogo e preferência são carregados sem bloquear a UI e sem falar automaticamente.
-
-Esquema no arquivo DataStore `vexa_preferences`:
-
-- `voice_preference_version` (Int), versão atual 1;
-- `voice_engine_id` (String), `TextToSpeech.defaultEngine`;
-- `voice_id` (String), `Voice.name`.
-
-Não há áudio ou transcrição persistidos. “USAR PADRÃO” remove somente essas três chaves; futuras preferências no mesmo DataStore são preservadas.
-
-## Restauração, fallback e concorrência
-
-A preferência só é aplicada quando versão, motor e ID coincidem e o ID ainda pertence ao catálogo filtrado pela regra da TASK-012: `pt-BR`, instalado e declarado sem rede. O adapter revalida idioma/país/rede/dados também no `setVoice`. Preferência ausente mantém a alternativa local determinística já escolhida pelo adapter. Preferência incompatível/indisponível é informada e não é sobrescrita pelo fallback. Sem voz local elegível, o comportamento anterior de resposta em texto permanece.
-
-Uma geração é incrementada sincronamente antes de cada escolha explícita. Assim, leitura de startup que termine depois é descartada. Escritas/clear são serializados por `Mutex`; apenas o evento correspondente à escolha explícita mais recente altera o estado exibido. Falha de escrita mantém a voz realmente aplicada e informa “Usando nesta sessão; não foi possível salvar”. Falha de leitura é distinta de falha TTS.
-
-Migração: versão desconhecida é tratada como preferência indisponível, sem apagar ou regravar automaticamente. Não há migração de seleção por índice porque ela nunca é persistida.
-
-## Arquivos e contratos
-
-- `domain/SpeechVoicePreference.kt`: modelo versionado, store fakeável, resultados/eventos e coordenador de concorrência.
-- `domain/SpeechVoiceSelection.kt`: passa a expor `engineId` junto ao catálogo/seleção.
-- `integration/voice/DataStoreSpeechVoicePreferenceStore.kt`: implementação Preferences DataStore e reset restrito às chaves de voz.
-- `integration/voice/AndroidTextToSpeechPort.kt`: restauração por motor+ID, revalidação de elegibilidade e seleção do fallback local.
-- `src/debug/.../DebugCommandPanel.kt`: leitura única por abertura/catálogo, salvar após seleção confirmada e “USAR PADRÃO”.
-- `app/build.gradle.kts`: `androidx.datastore:datastore-preferences:1.2.1`. A documentação oficial foi revalidada no despacho: 1.2.1 é a versão estável atual; o projeto já usa Kotlin 2.0.21, atendendo a exigência de KGP 2.0+ documentada para releases DataStore modernas.
+## Correções da revisão PR #5
+- **R1:** coordinator ganhou token de sessão. `openSession/closeSession` impedem restore/evento antigo de atingir porta de uma reabertura. Uma gravação aceita pode terminar no store após fechar, mas não publica UI na sessão nova.
+- **R2:** estado TTS e mensagem de preferência são linhas separadas; Saved/Restore não ocultam Speaking/Completed/Failed.
+- **R3:** `CancellationException` é propagada em read/write/clear do DataStore; cancelamento não vira ReadFailed/SaveFailed/ClearFailed.
+- **R4:** geração é validada dentro do `Mutex` antes da mutação. Save/clear obsoleto não escreve no disco, inclusive ordem invertida.
+- **USAR PADRÃO:** falha ao aplicar fallback não dispara clear nem anuncia remoção. Falha de seleção e falha de persistência permanecem distintas.
 
 ## Testes criados
+`SpeechVoicePreferenceCoordinatorTest` cobre sessão encerrada/reaberta, restore versus save pendente, save/clear obsoletos em ordem invertida e falhas distintas. Testes do store preservam chave não relacionada; os testes existentes de seleção continuam cobrindo elegibilidade local pt-BR. Nenhum teste foi executado.
 
-`SpeechVoicePreferenceCoordinatorTest`: restauração válida; ID igual em motor diferente; ID removido/inelegível; falha de leitura/escrita; leitura atrasada após escolha; escritas concorrentes serializadas com última escolha prevalecendo; clear; versão incompatível. `DataStoreSpeechVoicePreferenceStoreTest`: reset remove somente as chaves de voz e preserva uma chave futura não relacionada. `SpeechVoiceSelectionTest` existente continua cobrindo exclusão de voz de rede, dados ausentes e outros locales.
-
-TESTES EXECUTADOS: nenhum. Builds e testes foram explicitamente reservados ao proprietário.
-
-## Comandos para o proprietário
-
-No Windows, na raiz do repositório e com JDK/SDK configurados:
-
+## Roteiro acumulado do proprietário
 ```powershell
 .\gradlew.bat testDebugUnitTest assembleDebug assembleRelease
 ```
+Manual: trocar voz e confirmar `(salva)`; fechar/reabrir DEV; reiniciar app; usar padrão e confirmar que a preferência não volta; repetir offline; durante/restaurar voz executar TESTAR VOZ e observar Speaking/Completed/Failed sem a mensagem de preferência ocultar o estado; regressão ENVIAR, PARAR VOZ, OUVIR/CANCELAR ESCUTA e FECHAR.
 
-## Roteiro manual
-
-1. Abrir APK debug → DEV; anotar voz inicial, trocar para outra voz, aguardar indicação `(salva)`, fechar DEV e abrir novamente. Confirmar restauração sem fala automática.
-2. Encerrar o app completamente, abrir novamente → DEV e confirmar a mesma voz.
-3. Com voz salva, tocar “USAR PADRÃO”, fechar/reabrir e reiniciar app. Confirmar que a preferência anterior não volta.
-4. Repetir troca e restauração sem rede. A voz restaurada deve continuar sendo local pt-BR; não aceitar/download voz remota.
-5. Regressão: testar ENVIAR/TTS, TESTAR VOZ, PARAR VOZ, OUVIR/CANCELAR ESCUTA e FECHAR.
-6. Preferência de motor/voz ausente e falhas de store são cobertas por fake; não é necessário remover motor TTS do aparelho.
-
-## Limitações e pendências
-
-Preferences DataStore participa do backup normal do app conforme configuração/plataforma Android; este recorte não implementa política própria de backup/restauração entre aparelhos. Como IDs de motor/voz podem não existir em outro aparelho, uma preferência restaurada por backup só será aplicada se motor+ID ainda forem elegíveis; caso contrário permanece indisponível e o fallback local é usado sem sobrescrevê-la.
-
-A validação funcional, unitária, release e offline ainda depende do proprietário. TASK-015 não foi iniciada.
+## Pendências
+Validação local, release e aparelho continuam com o proprietário. TASK-015 deve partir do HEAD corrigido desta branch, conforme despacho, sem merge da 014.
