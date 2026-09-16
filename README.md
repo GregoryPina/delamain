@@ -41,11 +41,11 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 **Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
 
-O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. A voz padrão ainda precisa ser personalizada. STT, wake word e IA não estão implementados.
+O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. A voz padrão ainda precisa ser personalizada. Na main, STT ainda não está integrado. Nesta branch dependente, TASK-011 adiciona OUVIR no DEV usando reconhecimento local quando disponível (Android 12+), aguardando testes. Wake word e IA continuam futuros.
 
 No APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “abra o spotify”, “próxima música” ou “bateria”. O painel começa fechado e não existe na variante release. As ações ativas usam adapters próprios; o antigo `CommandRouter`/`AndroidCommandExecutor` continua inativo. Builds e testes locais são executados pelo proprietário, não automaticamente pelo Tech Lead.
 
-TASK-010 implementada nesta branch, aguardando testes do proprietário: estado da fala, interrupção, descarte seguro e seleção de voz local pt-BR. Main mantém a versão anteriormente aceita até integração. Próximo passo: [validar a entrega](docs/handoffs/TASK-010.md), antes de STT por botão. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
+TASK-010 implementada nesta branch, aguardando testes do proprietário: estado da fala, interrupção, descarte seguro e seleção de voz local pt-BR. Main mantém a versão anteriormente aceita até integração. Próximo passo: [validar a entrega](docs/handoffs/TASK-010.md), e a [escuta por botão](docs/handoffs/TASK-011.md), implementada na branch TASK-011 sem integração na main. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
 
 ## Como o companion responderá
 

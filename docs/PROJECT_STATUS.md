@@ -21,18 +21,18 @@ Entrada digitada no painel debug → LocalCommandEngine → portas tipadas de vo
 
 - `Dispatched` significa evento de mídia enviado, sem garantir mudança de faixa.
 - Parser remoto e AndroidCommandExecutor continuam inativos. Play/pause e volume percentual não foram ativados.
-- Catálogo fechado; Unknown não chama IA. Sem microfone, wake word ou IA integrada.
+- Catálogo fechado; Unknown não chama IA. Main ainda sem microfone; branch TASK-011 adiciona escuta local por botão. Wake word e IA não implementados.
 - Na branch TASK-010, TTS acompanha fila/início/término/erro, cancela e protege descarte. Main mantém TASK-009 até aceite. Ver [handoff TASK-010](handoffs/TASK-010.md).
 - Voz offline, rotas Bluetooth, limites de volume e comportamento entre aparelhos não estão comprovados pelos relatos resumidos.
 
 ## Plano atual
 
 1. [TASK-010](../tasks/TASK-010.md): estabilizar TTS, resultados, cancelamento e ciclo de vida. Implementada excepcionalmente pelo Astra, aguardando testes locais. 12 testes criados, nenhum executado.
-2. TASK-011: planejar STT por botão, uma frase por sessão, depois da TASK-010. Parar TTS antes de ouvir; resultados finais únicos; fallback remoto somente com escolha explícita.
+2. [TASK-011](handoffs/TASK-011.md): implementada na branch `codex/task-011-push-to-talk`, baseada no HEAD `4d32ce9dac04b54d99e5da119fe070c1199d4b32` da TASK-010/PR #2. Escuta por botão on-device apenas em API31+, sem fallback remoto. Dez testes criados, nenhum executado. Aguardando validação conjunta; não integrar antes de TASK-010.
 3. Personalização de voz em tarefa separada; wake word e IA permanecem posteriores.
 
 ## Operação e memória
 
-Implementação excepcional da TASK-010 encerrada, aguardando validação. Nas próximas tarefas: coordenação local exclusiva do Astra; implementadores externos via proprietário. Builds e testes pelo proprietário. Não criar agentes internos, repetir tarefas encerradas ou executar testes automaticamente.
+Implementações excepcionais TASK-010/011 encerradas, aguardando validação pelo proprietário amanhã. Nas próximas tarefas: coordenação local exclusiva do Astra; implementadores externos via proprietário. Builds e testes pelo proprietário. Não criar agentes internos, repetir tarefas encerradas ou executar testes automaticamente.
 
 Ler [handoff principal](../TECH_LEAD_HANDOFF.md), [auditoria da retomada](handoffs/RETOMADA-2026-09-16.md), [decisões](DECISIONS.md) e [processo de substituição](DEVELOPMENT.md). Histórico anterior preservado no Git e nos handoffs de cada tarefa.

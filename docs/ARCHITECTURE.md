@@ -51,7 +51,7 @@ Recebe texto/intenção e tenta primeiro comandos locais determinísticos. Exemp
 Inclui reflexos sociais: saudações e respostas curtas por gatilho também são locais. Um catálogo de frases aplica a [personalidade](PERSONALITY.md) tanto às respostas sociais quanto ao resultado das ações. A personalidade não escolhe permissões nem inventa sucesso. Ver [contrato de interações](INTERACTIONS.md) para precedência, cancelamento, modelos e cenários de aceite.
 
 ### Voice
-Separar wake word, speech-to-text e text-to-speech. STT futuro: `SpeechRecognizer` (on-device quando disponível). TTS: `TextToSpeech` via `SpeechOutputPort` (TASK-009). Não usar Google Assistente para interpretar comandos. Ver ADR-005.
+Separar wake word, speech-to-text e text-to-speech. TASK-011 em branch dependente (aguardando testes): `SpeechInputSession` + `AndroidSpeechInputPort`, SpeechRecognizer exclusivamente on-device em API31+, ativado por botão DEV. Permissão apenas debug e sob ativação; modelo/serviço ausente mantém texto. Sessão única com timeout 15s; resultado final consumido uma vez após liberação; cancelamento invalida IDs. TTS deve aceitar stop antes da captura. Não há fallback remoto, autoescuta ou loop. TTS: `TextToSpeech` via `SpeechOutputPort` (TASK-009). Não usar Google Assistente para interpretar comandos. Ver ADR-005.
 
 Fluxo alvo V0.3:
 

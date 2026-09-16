@@ -1,5 +1,13 @@
 package com.gregorypina.delamain.ui
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.rememberUpdatedState
+import com.gregorypina.delamain.domain.SpeechInputPort
+import com.gregorypina.delamain.domain.SpeechInputState
+import com.gregorypina.delamain.domain.SpeechInputStartResult
+import com.gregorypina.delamain.integration.voice.AndroidSpeechInputPort
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -136,8 +144,13 @@ private fun DebugCommandPanelContent(
 
     var submissionProblem by remember(speechState) { mutableStateOf<String?>(null) }
 
-    fun submit() {
-        val (display, speechText) = when (val result = engine.process(input)) {
+    var speechInputPort by remember { mutableStateOf<SpeechInputPort?>(null) }
+    var inputState by remember { mutableStateOf(SpeechInputState.Idle) }
+    val currentOutput by rememberUpdatedState(speechOutputPort)
+
+    fun submit(text: String = input) {
+        speechInputPort?.cancel()
+        val (display, speechText) = when (val result = engine.process(text)) {
             is LocalCommandResult.Recognized -> {
                 "${result.intent}: ${result.response}" to result.response
             }
@@ -154,6 +167,40 @@ private fun DebugCommandPanelContent(
         }
         focusManager.clearFocus()
     }
+
+    val onRecognized by rememberUpdatedState<(String) -> Unit> { text ->
+        input = text
+        submit(text)
+    }
+    val context = LocalContext.current.applicationContext
+    val owner = LocalView.current.findViewTreeLifecycleOwner()
+    DisposableEffect(context, owner) {
+        val port = AndroidSpeechInputPort(
+            context,
+            stopOutput = { currentOutput?.stop() ?: false },
+            onState = { inputState = it },
+            onText = { onRecognized(it) },
+        )
+        speechInputPort = port
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) port.cancel()
+        }
+        owner?.lifecycle?.addObserver(observer)
+        onDispose {
+            owner?.lifecycle?.removeObserver(observer)
+            port.shutdown()
+            speechInputPort = null
+        }
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        // Permission is not a pending capture request: the user must tap again.
+        inputState = if (granted) SpeechInputState.Idle else SpeechInputState.PermissionRequired
+    }
+    val listening = inputState in setOf(
+        SpeechInputState.Starting, SpeechInputState.Listening, SpeechInputState.Processing,
+    )
 
     Column(
         modifier = modifier
@@ -186,7 +233,7 @@ private fun DebugCommandPanelContent(
             }) {
                 Text("PARAR VOZ")
             }
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { speechInputPort?.cancel(); onDismiss() }) {
                 Text("FECHAR")
             }
         }
@@ -207,9 +254,41 @@ private fun DebugCommandPanelContent(
             fontSize = 12.sp,
         )
 
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(
+                enabled = speechInputPort != null && speechOutputPort != null,
+                onClick = {
+                    focusManager.clearFocus()
+                    if (listening) speechInputPort?.cancel()
+                    else if (speechInputPort?.start() == SpeechInputStartResult.PermissionRequired) {
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+            ) { Text(if (listening) "CANCELAR ESCUTA" else "OUVIR") }
+            Text(
+                text = when (inputState) {
+                    SpeechInputState.Idle -> "Toque em OUVIR e diga uma frase."
+                    SpeechInputState.Starting -> "Preparando microfone…"
+                    SpeechInputState.Listening -> "Ouvindo…"
+                    SpeechInputState.Processing -> "Reconhecendo…"
+                    SpeechInputState.Completed -> "Frase recebida."
+                    SpeechInputState.Canceled -> "Escuta cancelada."
+                    SpeechInputState.Unavailable -> "Reconhecimento local pt-BR indisponível; use texto."
+                    SpeechInputState.PermissionRequired -> "Permita o microfone para ouvir; texto continua disponível."
+                    SpeechInputState.Failed -> "Não foi possível ouvir. Toque para tentar novamente."
+                    SpeechInputState.NoMatch -> "Não entendi a frase. Toque para tentar novamente."
+                    SpeechInputState.TimedOut -> "Tempo de escuta encerrado."
+                    SpeechInputState.Closed -> "Microfone encerrado."
+                },
+                color = Color.White.copy(alpha = 0.7f),
+                fontSize = 12.sp,
+                modifier = Modifier.weight(1f),
+            )
+        }
+
         OutlinedTextField(
             value = input,
-            onValueChange = { input = it },
+            onValueChange = { speechInputPort?.cancel(); input = it },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Entrada") },
             placeholder = { Text("Ex.: que horas são?") },
