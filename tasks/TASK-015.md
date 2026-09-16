@@ -1,6 +1,6 @@
 # TASK-015 — sessão única e rosto orientado por eventos reais
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-013/014 integradas.
+Status: PLANEJADA, NÃO DESPACHADA. TASK-013 integrada. Exceção autorizada: TASK-014 pode permanecer sem testes/merge; corrigir primeiro achados PR #5 e usar branch dependente conforme [despacho atual](TASK-015-DISPATCH.md).
 BASE COMMIT: fornecido no despacho. Aplicar [protocolo](NEXT_TASKS.md) e ler DESIGN.
 
 ## Problema concreto

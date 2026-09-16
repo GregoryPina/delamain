@@ -96,3 +96,7 @@ Na entrega V0.2-A essa sequência passou usando o JBR instalado; consulte [BUILD
 ## Hardware externo
 
 O monitor automotivo de 7 polegadas utiliza entrada de vídeo composto e será integrado somente depois que o aplicativo estiver funcional no celular. Não introduzir código específico de saída de vídeo na V0.1.
+
+### Testes acumulados — autorização atual
+
+Em 2026-09-16 o proprietário autorizou continuar TASK-014/015 sem validar imediatamente no aparelho. Fazer revisão estática, corrigir achados conhecidos e usar branches/PRs dependentes. Não exigir novo teste manual entre essas duas implementações. Ambas permanecem IMPLEMENTADA_AGUARDANDO_TESTE; não fazer merge em main nem declarar validação por essa autorização. Registrar BASE/HEAD de cada estágio e fornecer roteiro conjunto. A extensão para novas etapas deve continuar explícita no despacho; processo de execução externa permanece.

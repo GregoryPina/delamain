@@ -8,7 +8,9 @@ Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. 
 
 ## Próxima ação
 
-TASK-013 concluída como consolidação; preparar TASK-014 para executor externo: lembrar voz escolhida, com fallback local elegível e preferência distinta da seleção real. Ler [plano de despacho](tasks/NEXT_TASKS.md) e [TASK-014](tasks/TASK-014.md). Informar hash completo publicado após este fechamento, não o hash de uma antiga branch pendente. TASK-014–022 planejadas, não despachadas.
+TASK-014 recebida em PR #5, HEAD `8e4d8bc09e236ec1429f2a6935ba05691eccf21b`, base `f7e851bc799b018cd58c6f1bf2b15a54511f2c3f`. Revisão estática CHANGES REQUIRED em [PR-005-REVIEW](docs/handoffs/PR-005-REVIEW.md): restauração/lifetime, mensagem de preferência ocultando TTS, propagação de cancelamento e escrita obsoleta.
+
+Proprietário autorizou acumular testes e continuar. Entregar [despacho 014 corrigida → 015](tasks/TASK-015-DISPATCH.md) ao executor externo: corrigir #5; então criar branch/PR dependente para coordenador de sessão/rosto. Nenhum teste/build novo executado, nenhum merge da 014, implementação local continua fora do método habitual. Retornar os dois HEADs para revisão conjunta. TASK-016+ não iniciadas.
 
 ## Entregas encerradas
 

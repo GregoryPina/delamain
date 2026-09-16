@@ -1,1 +1,3 @@
 TASK-010–012 integradas em main na baseline `a4789b1c9e3b6a74e325215487c849f133c6fcd3`. Proprietário confirmou microfone, fala, cancelar e trocar voz. TASK-013 fechou consolidação; evidência/limites em docs/handoffs/TASK-013.md. Próxima: preparar despacho externo TASK-014. Unitários novos/release/offline não confirmados separadamente; coordenador não executou testes.
+
+TASK-014 recebida em PR #5, HEAD 8e4d8bc09e236ec1429f2a6935ba05691eccf21b; revisão CHANGES REQUIRED. Proprietário autorizou acumular testes. Continuação externa: corrigir 014 e depois 015 em branch dependente, conforme tasks/TASK-015-DISPATCH.md. Nenhum merge/build/teste desta rodada.

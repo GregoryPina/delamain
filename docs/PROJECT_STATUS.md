@@ -18,6 +18,10 @@ STT somente on-device disponível em API31+, uma frase por toque, timeout 15s e 
 
 ## Próximo passo e responsáveis
 
-Preparar [TASK-014](../tasks/TASK-014.md), persistência da voz, contra baseline completa publicada. TASK-014–022 detalhadas em [plano](../tasks/NEXT_TASKS.md), não despachadas. Nenhum executor ativo; coordenação Astra, execução externa, testes pelo proprietário. Exceção de implementação local anterior encerrada.
+TASK-014 recebida no [PR #5](https://github.com/GregoryPina/delamain/pull/5), HEAD `8e4d8bc09e236ec1429f2a6935ba05691eccf21b`, base correta `f7e851bc799b018cd58c6f1bf2b15a54511f2c3f`. Status IMPLEMENTADA_AGUARDANDO_TESTE; revisão estática CHANGES REQUIRED em [registro](handoffs/PR-005-REVIEW.md). Código não aplicado à main/local; branch remota buscada para leitura.
+
+Proprietário autorizou acumular testes. Próxima entrega externa: corrigir 014 e depois implementar 015 em branch dependente, conforme [despacho](../tasks/TASK-015-DISPATCH.md). Não é necessário aguardar teste manual entre essas fases; achados conhecidos devem ser tratados primeiro. Sem merge até aceite posterior. Coordenador não executou testes/builds.
+
+[TASK-016–022](../tasks/NEXT_TASKS.md) continuam planejadas. Processo normal: Astra coordena/revisa, executor externo implementa, proprietário testa o conjunto quando disponível.
 
 [Retomada](../TECH_LEAD_HANDOFF.md), [decisões](DECISIONS.md), [processo](DEVELOPMENT.md).

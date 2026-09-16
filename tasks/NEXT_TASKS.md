@@ -1,6 +1,6 @@
 # Próximas tarefas — guia de despacho
 
-Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional; TASK-014–022 ainda não despachadas. Referência de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb`, branch TASK-012; baseline conjunta de código `7d63e605cc3ad36cc3ded50bd62dfcdff449c207`. Esses hashes NÃO são baselines de execução das tarefas futuras.
+Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional; TASK-014 recebida em PR #5, com correções solicitadas; despacho para correção 014 e continuação 015 preparado em TASK-015-DISPATCH.md. Demais não despachadas. Referência de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb`, branch TASK-012; baseline conjunta de código `7d63e605cc3ad36cc3ded50bd62dfcdff449c207`. Esses hashes NÃO são baselines de execução das tarefas futuras.
 
 ## Ordem e dependências
 
@@ -8,7 +8,7 @@ Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada 
 | --- | --- | --- | --- |
 | [013](TASK-013.md) | Consolidar validação e corrigir regressões 010–012 | Relato do proprietário sobre PRs #2/#3/#4 | Concluída; ver handoff TASK-013 |
 | [014](TASK-014.md) | Lembrar a voz escolhida | 013 integrada | Implementação |
-| [015](TASK-015.md) | Coordenar sessão e estados reais do rosto | 013/014 | Implementação |
+| [015](TASK-015.md) | Coordenar sessão e estados reais do rosto | 013 + 014 corrigida, ainda não validada | Branch dependente autorizada; ver despacho 015 |
 | [016](TASK-016.md) | Controles de uso fora do DEV | 015 | Implementação com revisão visual |
 | [017](TASK-017.md) | Parar/cancelar e respostas somente em texto | 016 | Implementação |
 | [018](TASK-018.md) | Nome e tom de personalidade configuráveis | 014/017 | Implementação |
