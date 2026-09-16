@@ -1,6 +1,6 @@
 # TASK-011 — escuta por botão
 
-STATUS: IMPLEMENTADA_AGUARDANDO_TESTE.
+STATUS ATUAL: INTEGRADA após aceite funcional do proprietário. Ver [fechamento TASK-013](TASK-013.md). O relato abaixo preserva condições da entrega original, inclusive testes então pendentes.
 BASE COMMIT: `4d32ce9dac04b54d99e5da119fe070c1199d4b32` (PR #2, TASK-010, não integrada).
 Branch: `codex/task-011-push-to-talk`, dependente de `codex/task-010-tts-hardening`. Não integrar antes da validação conjunta e fechamento da TASK-010.
 

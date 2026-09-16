@@ -1,3 +1,1 @@
-TASK-010/011/012 implementadas em branches dependentes, sem merge. Checkout: codex/task-012-voice-preview; base `7517161e13a30ef7702b3f669ee7aba9ca5164a8` da TASK-011/PR #3. Roteiro único: docs/handoffs/TASK-012.md. 29 testes criados, nenhum executado. Proprietário testa amanhã. Exceção de implementação direta não altera método habitual. Ler TECH_LEAD_HANDOFF.md antes de integrar.
-
-Planejamento 013–022 em tasks/NEXT_TASKS.md. Nenhuma dessas tarefas executada. Próximo passo: proprietário testar; coordenador consolidar pela TASK-013.
+TASK-010–012 integradas em main na baseline `a4789b1c9e3b6a74e325215487c849f133c6fcd3`. Proprietário confirmou microfone, fala, cancelar e trocar voz. TASK-013 fechou consolidação; evidência/limites em docs/handoffs/TASK-013.md. Próxima: preparar despacho externo TASK-014. Unitários novos/release/offline não confirmados separadamente; coordenador não executou testes.

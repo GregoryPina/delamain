@@ -39,13 +39,11 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 ## Status
 
-**Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
+Interface e comandos locais aceitos pelo proprietário. TASK-010–012 integradas: fala com interrupção/estados, microfone por botão usando reconhecimento local disponível e comparação de vozes pt-BR instaladas. Proprietário confirmou microfone, fala, cancelar e trocar voz; detalhes e limites em [TASK-013](docs/handoffs/TASK-013.md).
 
-O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. TASK-012 nesta branch permite comparar vozes locais pt-BR instaladas, sem persistir a escolha, aguardando teste. Na main, STT ainda não está integrado. Nesta branch dependente, TASK-011 adiciona OUVIR no DEV usando reconhecimento local quando disponível (Android 12+), aguardando testes. Wake word e IA continuam futuros.
+No APK debug, abra DEV para digitar, OUVIR, PARAR VOZ ou comparar vozes. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device disponível em Android 12+; sem suporte, use texto. A seleção de voz vale apenas para a sessão. Release ainda sem DEV/microfone. IA e wake word não implementados.
 
-No APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “abra o spotify”, “próxima música” ou “bateria”. O painel começa fechado e não existe na variante release. As ações ativas usam adapters próprios; o antigo `CommandRouter`/`AndroidCommandExecutor` continua inativo. Builds e testes locais são executados pelo proprietário, não automaticamente pelo Tech Lead.
-
-TASK-010 implementada nesta branch, aguardando testes do proprietário: estado da fala, interrupção, descarte seguro e seleção de voz local pt-BR. Main mantém a versão anteriormente aceita até integração. Próximo passo: [validar a entrega](docs/handoffs/TASK-010.md), e a [escuta por botão](docs/handoffs/TASK-011.md), implementada na branch TASK-011 sem integração na main. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
+Próximo recorte: [lembrar a voz escolhida](tasks/TASK-014.md), pelo processo normal de executor externo. Builds/testes ficam com o proprietário; os 29 testes novos e release não têm execução confirmada nesta rodada. [Roteiro funcional](docs/handoffs/TASK-012.md).
 
 ## Como o companion responderá
 
@@ -71,6 +69,6 @@ A personalidade aparece desde as respostas prontas. Internet não é requisito p
 - [Desenvolvimento](docs/DEVELOPMENT.md)
 - [Diretrizes para agentes de código](AGENTS.md)
 
-Para testar todas as mudanças desta sessão no mesmo APK: [roteiro consolidado TASK-010–012](docs/handoffs/TASK-012.md). As três entregas permanecem fora da main.
+Para testar todas as mudanças desta sessão no mesmo APK: [roteiro consolidado TASK-010–012](docs/handoffs/TASK-012.md). As três entregas estão integradas à main; roteiro mantido para regressões.
 
 [Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor, ainda não despachado.

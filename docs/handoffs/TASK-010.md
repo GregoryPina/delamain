@@ -1,6 +1,6 @@
 # TASK-010 — estabilização TTS
 
-STATUS: IMPLEMENTADA_AGUARDANDO_TESTE.
+STATUS ATUAL: INTEGRADA após aceite funcional do proprietário. Ver [fechamento TASK-013](TASK-013.md). O relato abaixo preserva condições da entrega original, inclusive testes então pendentes.
 BASE COMMIT: `02f65daf210e1b569c821e66085a9a9c9fa96e21`.
 Branch: `codex/task-010-tts-hardening`. Implementação local pelo Astra excepcionalmente autorizada pelo proprietário em 2026-09-16; método habitual preservado para próximas tarefas. Sem agentes internos. Sem merge em main.
 

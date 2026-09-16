@@ -1,7 +1,7 @@
 # TASK-013 — fechar validação e estabilizar TASK-010–012
 
-Status: PLANEJADA, NÃO DESPACHADA. Tipo: consolidação e correções condicionais.
-BASE COMMIT: a definir pelo coordenador após receber o HEAD testado. Aplicar [protocolo de despacho](NEXT_TASKS.md).
+Status: CONCLUÍDA como consolidação documental e integração por aceite funcional do proprietário. Ver [evidências e limitações](../docs/handoffs/TASK-013.md).
+Referência conferida: `b0ced16610ba65eca731b9695c735818e615b482`; confirmação não incluiu hash do APK instalado. Integração final: `a4789b1c9e3b6a74e325215487c849f133c6fcd3`. As seções abaixo preservam o roteiro da tarefa; conclusão efetiva está no handoff. Aplicar [protocolo de despacho](NEXT_TASKS.md).
 
 ## Problema e resultado
 

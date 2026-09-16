@@ -1,6 +1,6 @@
 # TASK-012 — comparação de vozes locais
 
-STATUS: IMPLEMENTADA_AGUARDANDO_TESTE.
+STATUS ATUAL: INTEGRADA após aceite funcional do proprietário. Ver [fechamento TASK-013](TASK-013.md). O relato abaixo preserva condições da entrega original, inclusive testes então pendentes.
 BASE COMMIT: `7517161e13a30ef7702b3f669ee7aba9ca5164a8` (TASK-011/PR #3).
 Branch: `codex/task-012-voice-preview`; inclui TASK-010/PR #2 e TASK-011/PR #3, todas aguardando validação. Não integrar isoladamente nem antes das dependências.
 

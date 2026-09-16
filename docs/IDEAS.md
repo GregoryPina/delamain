@@ -15,7 +15,7 @@ Backlog exploratório: estas ideias não são compromisso de implementação nem
 
 ## Próximo incremento recomendado
 
-Receber validação do proprietário para TASK-010–012, já implementadas em branches dependentes, e consolidar pela TASK-013. O estado atual está em PROJECT_STATUS.md; [tarefas 013–022](../tasks/NEXT_TASKS.md) detalham a continuação. Ideias desta página não autorizam implementação fora dessas tarefas.
+TASK-010–012 integradas após aceite funcional, consolidação TASK-013 encerrada. Próximo recorte: persistir preferência de voz (TASK-014). O estado atual está em PROJECT_STATUS.md; [tarefas 013–022](../tasks/NEXT_TASKS.md) detalham a continuação. Ideias desta página não autorizam implementação fora dessas tarefas.
 
 ## Decisões em aberto
 

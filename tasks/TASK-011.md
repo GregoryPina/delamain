@@ -1,6 +1,6 @@
 # TASK-011 — escuta local por botão
 
-Status: IMPLEMENTADA_AGUARDANDO_TESTE, excepcionalmente pelo Astra, conforme autorização de continuar em 2026-09-16. Método habitual de executores externos permanece para próximas sessões.
+Status: CONCLUÍDA e integrada em main após aceite funcional do proprietário; ver [TASK-013](../docs/handoffs/TASK-013.md). As seções seguintes preservam a especificação e baseline original.
 BASE COMMIT: `4d32ce9dac04b54d99e5da119fe070c1199d4b32` (TASK-010, PR #2, ainda aguardando teste). Branch: `codex/task-011-push-to-talk`, dependente da TASK-010, sem merge antes de validação de ambas.
 
 ## Recorte
