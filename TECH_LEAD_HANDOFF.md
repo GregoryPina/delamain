@@ -2,7 +2,7 @@
 
 ## Baseline
 
-Repositório: GregoryPina/delamain. Branch de trabalho: `codex/task-010-tts-hardening`; main permanece sem TASK-010.
+Repositório: GregoryPina/delamain. Branch de trabalho: `codex/task-011-push-to-talk`, baseada em `4d32ce9dac04b54d99e5da119fe070c1199d4b32` da TASK-010 (PR #2). Main permanece sem ambas.
 Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, sincronizada com origin/main na retomada. O código TTS entrou em `add292a`; commits seguintes até esta baseline documentam fechamento. A implementação TASK-010 partiu de `02f65daf210e1b569c821e66085a9a9c9fa96e21`; nenhum build/teste novo foi executado.
 
 ## Objetivo e estado
@@ -11,9 +11,9 @@ VEXA já responde por texto e fala no painel DEV. TASK-004 a TASK-009 integradas
 
 ## Próxima ação
 
-Receber validação do proprietário para TASK-010, implementada excepcionalmente pelo Astra na branch indicada. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
+Receber validação conjunta do proprietário para TASK-010 e TASK-011, implementadas excepcionalmente pelo Astra em branches dependentes. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
 
-Depois: TASK-011, STT por botão para uma frase, dependente do fechamento da TASK-010. Personalização da voz é preferência do proprietário e merece recorte separado. Wake word, IA, play/pause e volume percentual continuam futuros.
+TASK-011 já implementada por autorização de continuar nesta sessão: escuta local por botão, API31+, sem fallback remoto, timeout e resultados únicos. Roteiro em docs/handoffs/TASK-011.md; dez testes novos não executados. Fechar TASK-010 antes de integrar TASK-011. Personalização da voz é preferência do proprietário e merece recorte separado. Wake word, IA, play/pause e volume percentual continuam futuros.
 
 ## Achados e limites
 
@@ -25,7 +25,7 @@ Depois: TASK-011, STT por botão para uma frase, dependente do fechamento da TAS
 
 ## Responsáveis e validação
 
-Nenhum executor ativo. O proprietário autorizou Astra implementar apenas TASK-010 como exceção em 2026-09-16. Amanhã e nas próximas tarefas o método habitual permanece: Astra coordena e integra; executores externos recebem TASK + BASE COMMIT exato, entregam branch/PR ou patch. Nunca main/merge pelo executor. Não criar/reativar agentes internos. Proprietário executa builds/testes; coordenador faz revisão estática e registra a origem de cada evidência.
+Nenhum executor ativo. O proprietário autorizou Astra implementar TASK-010 e depois continuar o desenvolvimento nesta sessão como exceção em 2026-09-16. Amanhã e nas próximas tarefas o método habitual permanece: Astra coordena e integra; executores externos recebem TASK + BASE COMMIT exato, entregam branch/PR ou patch. Nunca main/merge pelo executor. Não criar/reativar agentes internos. Proprietário executa builds/testes; coordenador faz revisão estática e registra a origem de cada evidência.
 
 ## Trabalho local preservado
 
