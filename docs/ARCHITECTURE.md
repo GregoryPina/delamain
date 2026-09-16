@@ -14,7 +14,7 @@ Apps: `AndroidLaunchAppActionPort`, allowlist de YouTube, Chrome, Maps, Spotify 
 
 O código em `domain/command/` e `platform/` continua inativo. TASK-003 revisou a sobreposição e TASK-004 corrigiu o parser remoto; capacidades ativas posteriores foram adicionadas ao motor canônico, sem ligá-lo ao executor antigo. Play/pause e volume percentual continuam fora do fluxo ativo.
 
-A entrada manual é fornecida por `DebugCommandPanel` em `src/debug`; `src/release` fornece a mesma função sem conteúdo. Após processar o texto, o painel pede fala via `SpeechOutputPort` + `AndroidTextToSpeechPort`. O resultado atual `Spoken` representa aceite da fila, não término do áudio; eventos do listener ainda são ignorados. TASK-010 tratará isso e descarte/erros antes de STT. O rosto ainda não acompanha automaticamente os eventos de voz.
+A entrada manual é fornecida por `DebugCommandPanel` em `src/debug`; `src/release` fornece a mesma função sem conteúdo. Após processar o texto, o painel pede fala via `SpeechOutputPort` + `AndroidTextToSpeechPort`. Na branch TASK-010 (aguardando testes), `Queued` representa aceite da fila; `SpeechOutputSession` acompanha início/término/erro pelo ID ativo, invalida callbacks cancelados e protege descarte. O adapter serializa eventos na thread principal e seleciona voz pt-BR declarada sem rede. DEV mostra estado, oferece interrupção e libera TTS ao fechar; stop em ON_STOP. `stop()` retorna aceite do motor, não prova de silêncio físico. Main mantém TASK-009 até validação. O rosto ainda não acompanha automaticamente os eventos de voz.
 
 ```text
 Microfone / UI / eventos Android

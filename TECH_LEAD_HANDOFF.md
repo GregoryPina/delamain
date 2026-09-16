@@ -2,8 +2,8 @@
 
 ## Baseline
 
-Repositório: GregoryPina/delamain. Branch: main.
-Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, sincronizada com origin/main na retomada. O código TTS entrou em `add292a`; commits seguintes até esta baseline documentam fechamento. Este handoff é atualização documental posterior, não nova validação de código.
+Repositório: GregoryPina/delamain. Branch de trabalho: `codex/task-010-tts-hardening`; main permanece sem TASK-010.
+Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, sincronizada com origin/main na retomada. O código TTS entrou em `add292a`; commits seguintes até esta baseline documentam fechamento. A implementação TASK-010 partiu de `02f65daf210e1b569c821e66085a9a9c9fa96e21`; nenhum build/teste novo foi executado.
 
 ## Objetivo e estado
 
@@ -11,13 +11,13 @@ VEXA já responde por texto e fala no painel DEV. TASK-004 a TASK-009 integradas
 
 ## Próxima ação
 
-Preparar despacho externo da TASK-010 (estabilização TTS), usando hash completo publicado que contenha a especificação. A tarefa está planejada, não despachada. Antes de iniciar, conferir Git e possíveis novos relatos do proprietário. Não usar automaticamente a baseline desta auditoria para um despacho posterior.
+Receber validação do proprietário para TASK-010, implementada excepcionalmente pelo Astra na branch indicada. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
 
 Depois: TASK-011, STT por botão para uma frase, dependente do fechamento da TASK-010. Personalização da voz é preferência do proprietário e merece recorte separado. Wake word, IA, play/pause e volume percentual continuam futuros.
 
 ## Achados e limites
 
-- TTS: `Spoken` indica aceitação na fila; callbacks atuais de início/término/erro não atualizam estado. Revisar inicialização tardia após descarte, cancelamento e voz disponível/offline.
+- Na branch TASK-010, `Queued` substitui `Spoken`; sessão controla callbacks por pedido, stop/descarte e prontidão. DEV tem status e PARAR VOZ. Voz pt-BR sem rede declarada; teste real ainda pendente. Sem timeout para motor que nunca responde: fechar painel libera instância.
 - TASK-009 foi aceita: não reinterpretar estes riscos de revisão estática como falha reproduzida no aparelho.
 - LocalCommandEngine é canônico; CompositeLocalActionPort reúne adapters ativos. Não ativar domain/command/CommandRouter ou platform/AndroidCommandExecutor.
 - Mídia confirma despacho, não efeito no player. Unknown não dispara IA.
@@ -25,7 +25,7 @@ Depois: TASK-011, STT por botão para uma frase, dependente do fechamento da TAS
 
 ## Responsáveis e validação
 
-Nenhum executor ativo. Astra coordena e integra; executores externos recebem TASK + BASE COMMIT exato, entregam branch/PR ou patch. Nunca main/merge pelo executor. Não criar/reativar agentes internos. Proprietário executa builds/testes; coordenador faz revisão estática e registra a origem de cada evidência.
+Nenhum executor ativo. O proprietário autorizou Astra implementar apenas TASK-010 como exceção em 2026-09-16. Amanhã e nas próximas tarefas o método habitual permanece: Astra coordena e integra; executores externos recebem TASK + BASE COMMIT exato, entregam branch/PR ou patch. Nunca main/merge pelo executor. Não criar/reativar agentes internos. Proprietário executa builds/testes; coordenador faz revisão estática e registra a origem de cada evidência.
 
 ## Trabalho local preservado
 

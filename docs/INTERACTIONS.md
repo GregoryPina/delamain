@@ -1,6 +1,6 @@
 # Roteamento, reflexos e conversa
 
-Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. Esclarecimento conversacional, STT e IA são futuros. Cancelamento robusto de fala está planejado na TASK-010. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
+Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. Esclarecimento conversacional, STT e IA são futuros. Cancelamento por botão DEV está implementado na branch TASK-010, aguardando testes; frase “pare de falar” ainda não é comando reconhecido. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
 
 ## Caminho de uma entrada
 
