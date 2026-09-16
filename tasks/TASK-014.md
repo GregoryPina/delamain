@@ -1,7 +1,7 @@
 # TASK-014 — lembrar a voz escolhida
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-013 integrada e TASK-012 validada.
-BASE COMMIT: preencher no despacho; não reutilizar hash do planejamento. Aplicar [protocolo](NEXT_TASKS.md).
+Status: IMPLEMENTADA_AGUARDANDO_TESTE na branch `codex/task-014-voice-preference`.
+BASE COMMIT: `f7e851bc799b018cd58c6f1bf2b15a54511f2c3f`. Aplicar [protocolo](NEXT_TASKS.md). Handoff: [TASK-014](../docs/handoffs/TASK-014.md).
 
 ## Resultado esperado
 
