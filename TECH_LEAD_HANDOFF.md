@@ -4,11 +4,11 @@
 
 TASK-010–012 integradas em main após aceite funcional do proprietário. Baseline integrada: `a4789b1c9e3b6a74e325215487c849f133c6fcd3`. Este fechamento documental é posterior e não altera código.
 
-Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. Registro completo, hashes e limites em [TASK-013](docs/handoffs/TASK-013.md). Não inferir testes unitários/release/offline a partir desse relato. Relatórios automáticos encontrados são antigos. Nenhum build/teste foi executado pelo coordenador nesta rodada.
+Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. Registro em [TASK-013](docs/handoffs/TASK-013.md).
 
 ## Próxima ação
 
-TASK-013 concluída como consolidação; preparar TASK-014 para executor externo: lembrar voz escolhida, com fallback local elegível e preferência distinta da seleção real. Ler [plano de despacho](tasks/NEXT_TASKS.md) e [TASK-014](tasks/TASK-014.md). Informar hash completo publicado após este fechamento, não o hash de uma antiga branch pendente. TASK-014–022 planejadas, não despachadas.
+TASK-014 corrigida (`codex/task-014-voice-preference`, `8f7da52`). TASK-015 revisada e corrigida (`codex/task-015-session-state`); ver [PR-006-REVIEW](docs/handoffs/PR-006-REVIEW.md). `testDebugUnitTest` + `assembleDebug` + `assembleRelease` verdes nesta rodada. Aguardar validação manual acumulada do proprietário; sem merge em `main`. TASK-016+ não iniciadas.
 
 ## Entregas encerradas
 
@@ -19,12 +19,12 @@ TASK-004–009 também concluídas. Nome/gatilho: VEXA; identificadores técnico
 ## Contratos e limitações
 
 - LocalCommandEngine é canônico; executor remoto e CommandRouter legado não ativados. Mídia confirma despacho, não efeito.
-- DEV concentra interação; release sem painel/microfone. Rosto ainda usa estados demonstrativos, não acompanha voz real.
-- TTS Queued não significa fala concluída. Stop é aceite do motor, não prova silêncio físico. Sem watchdog de TTS ainda; fechar libera.
+- DEV concentra interação; release sem painel/microfone funcional.
+- TTS Queued não significa fala concluída. Stop é aceite do motor, não prova silêncio físico. Watchdog TTS implementado na 015 (fila 10s + limite proporcional); timeout reporta falha, não sucesso.
 - STT: botão, sessão única, 15s, sem fallback remoto. Permissão concedida exige novo toque. Cancelamento invalida callbacks.
-- Voz: seleção só na sessão; rede/dados ausentes excluídos. Persistência é TASK-014.
+- Voz: persistência implementada na 014 (DataStore); seleção offline pt-BR. Rosto acompanha sessão real na 015.
 - Sem wake word, IA, play/pause ou volume percentual no fluxo ativo.
-- Validação offline, rotas Bluetooth, cenários de lifecycle, testes unitários novos e release não confirmados separadamente. Nenhuma falha relatada.
+- Validação offline/lifecycle no aparelho ainda pendente. Testes unitários e builds debug/release verdes na branch 015.
 
 ## Processo
 
