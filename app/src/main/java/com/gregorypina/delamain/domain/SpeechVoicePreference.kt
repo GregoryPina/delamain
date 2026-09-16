@@ -3,26 +3,19 @@ package com.gregorypina.delamain.domain
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-data class SpeechVoicePreference(
-    val engineId: String,
-    val voiceId: String,
-    val version: Int = CURRENT_VERSION,
-) {
+data class SpeechVoicePreference(val engineId: String, val voiceId: String, val version: Int = CURRENT_VERSION) {
     companion object { const val CURRENT_VERSION = 1 }
 }
-
 sealed interface SpeechVoicePreferenceReadResult {
     data class Found(val preference: SpeechVoicePreference) : SpeechVoicePreferenceReadResult
     data object Empty : SpeechVoicePreferenceReadResult
     data object Failed : SpeechVoicePreferenceReadResult
 }
-
 interface SpeechVoicePreferenceStore {
     suspend fun read(): SpeechVoicePreferenceReadResult
     suspend fun write(preference: SpeechVoicePreference): Boolean
     suspend fun clear(): Boolean
 }
-
 sealed interface SpeechVoicePreferenceEvent {
     data class Restore(val preference: SpeechVoicePreference) : SpeechVoicePreferenceEvent
     data object Unavailable : SpeechVoicePreferenceEvent
@@ -33,49 +26,50 @@ sealed interface SpeechVoicePreferenceEvent {
     data object ClearFailed : SpeechVoicePreferenceEvent
 }
 
-/** Coordinates persistence only; TTS application remains in the adapter. */
+/** Persistence coordinator. Session tokens prevent a restore from escaping the panel lifetime. */
 class SpeechVoicePreferenceCoordinator(
     private val store: SpeechVoicePreferenceStore,
-    private val onEvent: (SpeechVoicePreferenceEvent) -> Unit = {},
+    private val onEvent: (Long, SpeechVoicePreferenceEvent) -> Unit = { _, _ -> },
 ) {
     private var generation = 0L
+    private var session = 0L
     private val writeMutex = Mutex()
 
-    /** Call synchronously before applying any explicit user choice. */
-    fun beginExplicitChange(): Long {
-        generation += 1
-        return generation
-    }
+    fun openSession(): Long { session += 1; return session }
+    fun closeSession(token: Long) { if (token == session) session += 1 }
+    fun beginExplicitChange(): Long { generation += 1; return generation }
 
-    suspend fun restore(engineId: String, eligibleVoiceIds: Set<String>) {
+    suspend fun restore(token: Long, engineId: String, eligibleVoiceIds: Set<String>) {
         val startedAt = generation
-        when (val result = store.read()) {
+        val result = store.read()
+        if (token != session || startedAt != generation) return
+        when (result) {
             is SpeechVoicePreferenceReadResult.Found -> {
-                if (startedAt != generation) return
-                val preference = result.preference
-                if (preference.version == SpeechVoicePreference.CURRENT_VERSION &&
-                    preference.engineId == engineId && preference.voiceId in eligibleVoiceIds) {
-                    onEvent(SpeechVoicePreferenceEvent.Restore(preference))
-                } else onEvent(SpeechVoicePreferenceEvent.Unavailable)
+                val p = result.preference
+                if (p.version == SpeechVoicePreference.CURRENT_VERSION && p.engineId == engineId && p.voiceId in eligibleVoiceIds)
+                    onEvent(token, SpeechVoicePreferenceEvent.Restore(p))
+                else onEvent(token, SpeechVoicePreferenceEvent.Unavailable)
             }
             SpeechVoicePreferenceReadResult.Empty -> Unit
-            SpeechVoicePreferenceReadResult.Failed -> if (startedAt == generation) {
-                onEvent(SpeechVoicePreferenceEvent.ReadFailed)
-            }
+            SpeechVoicePreferenceReadResult.Failed -> onEvent(token, SpeechVoicePreferenceEvent.ReadFailed)
         }
     }
 
-    suspend fun saveConfirmed(change: Long, engineId: String, voiceId: String) {
-        val saved = writeMutex.withLock { store.write(SpeechVoicePreference(engineId, voiceId)) }
-        if (change == generation) onEvent(
-            if (saved) SpeechVoicePreferenceEvent.Saved else SpeechVoicePreferenceEvent.SaveFailed,
-        )
+    suspend fun saveConfirmed(change: Long, token: Long, engineId: String, voiceId: String) {
+        val result = writeMutex.withLock {
+            if (change != generation) return@withLock null
+            store.write(SpeechVoicePreference(engineId, voiceId))
+        } ?: return
+        if (change == generation && token == session)
+            onEvent(token, if (result) SpeechVoicePreferenceEvent.Saved else SpeechVoicePreferenceEvent.SaveFailed)
     }
 
-    suspend fun clearPreference(change: Long) {
-        val cleared = writeMutex.withLock { store.clear() }
-        if (change == generation) onEvent(
-            if (cleared) SpeechVoicePreferenceEvent.Cleared else SpeechVoicePreferenceEvent.ClearFailed,
-        )
+    suspend fun clearPreference(change: Long, token: Long) {
+        val result = writeMutex.withLock {
+            if (change != generation) return@withLock null
+            store.clear()
+        } ?: return
+        if (change == generation && token == session)
+            onEvent(token, if (result) SpeechVoicePreferenceEvent.Cleared else SpeechVoicePreferenceEvent.ClearFailed)
     }
 }
