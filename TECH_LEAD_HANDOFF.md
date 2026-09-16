@@ -13,9 +13,11 @@ Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 6 em andamento: TASK-009 (TTS) em `codex/tts-voice-output`. ADR-005 registrado.
+Wave 6 concluída: TASK-009 (TTS) integrada em `main`. Proprietário confirmou áudio; voz do sistema a personalizar depois.
 
 ## Completed
+
+Wave 6 / TASK-009: TTS no painel DEV via `SpeechOutputPort`; ADR-005. Proprietário: “funcionou, ela falou”; voz padrão a trocar depois.
 
 Wave 5 / TASK-008: status da bateria, respostas variadas (≥3) em todo o fluxo local; 42 testes verdes. Proprietário confirmou “testado”.
 
@@ -27,7 +29,7 @@ Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto inativo.
 
 ## In progress
 
-TASK-009: TTS via `TextToSpeech` no painel DEV; STT e wake word ficam para TASK-010+. ADR-005 formaliza SpeechRecognizer + LocalCommandEngine + TTS, sem Google Assistente.
+Nenhuma implementação ativa. Próximo recorte: TASK-010 (STT) ou personalização de voz TTS (feedback do proprietário).
 
 ## Waiting / blocked
 
@@ -43,15 +45,15 @@ Work exclusivo do Astra, sem agentes internos. Builds/testes locais pelo proprie
 
 ## Open decisions
 
-Play/pause como toggle e volume percentual permanecem futuros. TTS/STT é a próxima fase do roadmap (V0.3).
+Play/pause como toggle e volume percentual permanecem futuros. TTS baseline validado; STT é próximo passo V0.3. Voz TTS: trocar engine/tom em etapa futura (proprietário não gostou da voz padrão).
 
 ## Known problems
 
-Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá-lo. Catálogo de frases fechado. Não há voz, STT ou IA.
+Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá-lo. Catálogo de frases fechado. TTS baseline no painel DEV; qualidade da voz pendente. Sem STT, wake word ou IA.
 
 ## Next recommended action
 
-Validar TASK-009 no aparelho (áudio TTS). Depois preparar TASK-010 (STT com SpeechRecognizer). Não ativar roteador remoto nem play/pause como toggle.
+Preparar TASK-010 (STT com SpeechRecognizer). Personalização de voz TTS pode entrar como TASK separada. Não ativar roteador remoto nem play/pause como toggle.
 
 ## Warnings
 

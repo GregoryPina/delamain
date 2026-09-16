@@ -86,3 +86,7 @@ Integrada em `main` (`323298b`). Faixa anterior/próxima via teclas de mídia; r
 ## Wave 5 — TASK-008
 
 Integrada em `main` (`cf67638`). Status da bateria (`status do sistema`, `bateria`, etc.) e ≥3 variantes para todas as respostas locais. Proprietário: “testado”. 42 testes automáticos verdes.
+
+## Wave 6 — TASK-009
+
+Integrada em `main`. TTS via `SpeechOutputPort` + `AndroidTextToSpeechPort` no painel DEV; ADR-005. Proprietário: “funcionou, ela falou”; voz padrão do sistema a trocar depois.

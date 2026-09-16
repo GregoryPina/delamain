@@ -48,7 +48,7 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [ ] Navegação/câmera como intents
 
 ## V0.3 — Voz
-- [ ] TTS
+- [x] TTS (baseline no painel DEV; voz do sistema — personalizar depois)
 - [ ] STT
 - [ ] Wake word
 - [ ] Caminho de baixa latência

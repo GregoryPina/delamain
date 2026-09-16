@@ -1,7 +1,7 @@
 # TASK-009 — TTS com TextToSpeech
 
-Status: implementado, aguardando teste do proprietário.
-Branch: `codex/tts-voice-output`.
+Status: concluída e integrada em `main`. Proprietário confirmou áudio TTS (“funcionou, ela falou”). Voz do sistema a personalizar depois.
+Branch: `codex/tts-voice-output` (merge em `main`).
 ADR: `docs/DECISIONS.md` (ADR-005).
 
 ## Resumo
@@ -22,3 +22,12 @@ ADR: `docs/DECISIONS.md` (ADR-005).
 2. Aguardar ~1s para TTS inicializar.
 3. `Vexa, que horas são?` → ouvir hora falada.
 4. Comando inválido repetido → ouvir variantes de desconhecido.
+
+## Validação do proprietário
+
+- Relato: “funcionou, ela falou”.
+- Voz atual (engine padrão do sistema, `pt-BR`) **não agradou** — trocar em etapa futura (ver pendência abaixo).
+
+## Pendência futura (não bloqueia merge)
+
+Personalização de voz: escolher engine/voz instalada no aparelho, ajustar pitch/rate, ou avaliar pacote de voz dedicado. Hoje `AndroidTextToSpeechPort` usa o TTS padrão do Android sem seleção de voz.
