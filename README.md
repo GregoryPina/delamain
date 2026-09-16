@@ -72,3 +72,5 @@ A personalidade aparece desde as respostas prontas. Internet não é requisito p
 - [Diretrizes para agentes de código](AGENTS.md)
 
 Para testar todas as mudanças desta sessão no mesmo APK: [roteiro consolidado TASK-010–012](docs/handoffs/TASK-012.md). As três entregas permanecem fora da main.
+
+[Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor, ainda não despachado.

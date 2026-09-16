@@ -11,7 +11,7 @@ VEXA já responde por texto e fala no painel DEV. TASK-004 a TASK-009 integradas
 
 ## Próxima ação
 
-Receber validação conjunta do proprietário para TASK-010, TASK-011 e TASK-012, implementadas excepcionalmente pelo Astra em branches dependentes. Roteiro consolidado: docs/handoffs/TASK-012.md. Checkout já contém as três; 29 testes novos criados, nenhum executado. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
+Receber validação conjunta do proprietário para TASK-010, TASK-011 e TASK-012, implementadas excepcionalmente pelo Astra em branches dependentes. Roteiro consolidado: docs/handoffs/TASK-012.md. Checkout já contém as três; 29 testes novos criados, nenhum executado. Status das três: IMPLEMENTADA_AGUARDANDO_TESTE; contratos específicos nos respectivos handoffs. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
 
 TASK-011 já implementada por autorização de continuar nesta sessão: escuta local por botão, API31+, sem fallback remoto, timeout e resultados únicos. Roteiro em docs/handoffs/TASK-011.md; dez testes novos não executados. Fechar TASK-010 antes de integrar TASK-011. TASK-012 já oferece comparação de vozes locais instaladas, apenas na sessão DEV; preferência persistente, engine/pitch/velocidade permanecem futuros. Integração em ordem 010 → 011 → 012, retarget das filhas para main e revisão de diff após cada merge; não integrar automaticamente em branches mães. Wake word, IA, play/pause e volume percentual continuam futuros.
 
@@ -46,3 +46,9 @@ Auditoria: docs/handoffs/RETOMADA-2026-09-16.md. Nenhum build/teste foi executad
 | TASK-012 | https://github.com/GregoryPina/delamain/pull/4 | `7d63e605cc3ad36cc3ded50bd62dfcdff449c207` |
 
 O último commit acima é a baseline de código conjunta; este registro posterior é apenas documental. Nenhum merge/build/teste executado. Ao receber teste, registrar o HEAD efetivamente usado e comparar eventual delta com essa baseline. Não reutilizar os relatos antigos para encerrar as três tarefas.
+
+## Próximas tarefas detalhadas
+
+O proprietário pediu planejamento das TASK-013–022; documentos em tasks/NEXT_TASKS.md com dependências, protocolo de despacho e saída obrigatória. Todas são planejadas, não despachadas. A próxima é TASK-013, depois de receber testes de 010–012. Não usar hashes deste planejamento como base futura: publicar/conferir baseline integrada no despacho.
+
+Sequência: validar/corrigir → voz persistente → sessão/rosto real → controles fora do DEV → interrupção/modo texto → personalidade → áudio/rotas → IA fake → provider real condicionado a decisão. Wake word tem pesquisa separada na 022, sem autorização para captura contínua. A autorização atual é para documentar, não implementar essas tarefas. Processo normal retomado pelo proprietário: testes com ele, coordenação Astra, implementação por executor externo quando despachada.

@@ -36,3 +36,7 @@ Entrada digitada no painel debug → LocalCommandEngine → portas tipadas de vo
 Implementações excepcionais TASK-010/011/012 encerradas, aguardando validação pelo proprietário amanhã. Nas próximas tarefas: coordenação local exclusiva do Astra; implementadores externos via proprietário. Builds e testes pelo proprietário. Não criar agentes internos, repetir tarefas encerradas ou executar testes automaticamente.
 
 Ler [handoff principal](../TECH_LEAD_HANDOFF.md), [auditoria da retomada](handoffs/RETOMADA-2026-09-16.md), [decisões](DECISIONS.md) e [processo de substituição](DEVELOPMENT.md). Histórico anterior preservado no Git e nos handoffs de cada tarefa.
+
+## Planejamento preparado
+
+[TASK-013–022](../tasks/NEXT_TASKS.md) detalhadas a pedido do proprietário, sem execução. Próxima ação continua receber testes e consolidar 010–012 (TASK-013). Documentação posterior não altera a baseline de código `7d63e605cc3ad36cc3ded50bd62dfcdff449c207`. Processo habitual retomado; nenhuma nova tarefa de implementação foi iniciada.

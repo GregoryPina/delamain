@@ -1,5 +1,9 @@
 # Roadmap
 
+## Próximos incrementos detalhados
+
+[TASK-013–022 e protocolo de despacho](../tasks/NEXT_TASKS.md). Planejamento preparado em 2026-09-16; nenhuma dessas tarefas foi implementada/despachada. Primeiro receber validação de 010–012 e fechar TASK-013. Baselines futuras serão definidas após integrar dependências, nunca copiadas de branch pendente por conveniência. IA real exige decisão de provider/custos/credenciais; wake word continua pesquisa.
+
 ## Fase 0 — Fundação
 
 Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010, TASK-011 e TASK-012 implementadas em branches dependentes, aguardando validação conjunta. Evidências em PROJECT_STATUS.md; não houve novos testes nesta auditoria.
