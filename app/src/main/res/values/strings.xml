@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VEXA</string>
+    <string name="action_listen">OUVIR</string>
+    <string name="action_cancel_listen">CANCELAR</string>
+    <string name="action_stop_speech">PARAR</string>
+    <string name="action_show_text">TEXTO</string>
+    <string name="action_hide_text">OCULTAR</string>
+    <string name="action_send">ENVIAR</string>
+    <string name="label_command_input">Comando</string>
+    <string name="hint_command_input">Ex.: Vexa, que horas são?</string>
+    <string name="msg_microphone_denied">Microfone necessário para ouvir. Toque em OUVIR novamente após permitir.</string>
+    <string name="msg_listen_unavailable">Reconhecimento local indisponível neste aparelho. Use o texto.</string>
+    <string name="msg_listen_failed">Não foi possível iniciar a escuta.</string>
+    <string name="msg_listen_timed_out">Nenhuma fala detectada.</string>
+    <string name="msg_no_speech">Não entendi. Tente novamente ou use o texto.</string>
+    <string name="msg_voice_unavailable">Voz indisponível; resposta em texto.</string>
+    <string name="msg_speech_failed">Não foi possível iniciar a fala.</string>
+    <string name="msg_cannot_stop_speech">Não foi possível interromper a fala.</string>
+    <string name="cd_listen">Ouvir comando por voz</string>
+    <string name="cd_cancel_listen">Cancelar escuta</string>
+    <string name="cd_stop_speech">Parar fala</string>
+    <string name="cd_show_text">Mostrar entrada de texto</string>
+    <string name="cd_hide_text">Ocultar entrada de texto</string>
+    <string name="cd_text_input">Campo de comando por texto</string>
+    <string name="cd_send_command">Enviar comando</string>
 </resources>

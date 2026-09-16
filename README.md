@@ -43,7 +43,7 @@ Interface e comandos locais aceitos pelo proprietário. TASK-010–013 integrada
 
 TASK-014 está implementada em branch/PR e aguarda validação do proprietário: a escolha de voz usa Preferences DataStore com identidade do motor + ID estável da voz, restaura somente voz local pt-BR elegível e oferece “USAR PADRÃO” para remover a preferência. Até os testes serem relatados, não considerar a persistência integrada/concluída; detalhes em [TASK-014](docs/handoffs/TASK-014.md).
 
-No APK debug, abra DEV para digitar, OUVIR, PARAR VOZ ou comparar vozes. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device disponível em Android 12+; sem suporte, use texto. Release ainda sem DEV/microfone. IA e wake word não implementados.
+Na tela principal use OUVIR, PARAR (durante a fala) e TEXTO para comandos sem microfone. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device em Android 12+; sem suporte, use texto. No APK debug, o painel DEV continua disponível para diagnóstico e troca de voz. IA e wake word não implementados.
 
 Builds/testes ficam com o proprietário; a implementação TASK-014 adicionou testes de persistência/concorrência, mas nenhum teste foi executado pelo executor.
 

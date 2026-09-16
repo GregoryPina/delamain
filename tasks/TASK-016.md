@@ -1,6 +1,6 @@
 # TASK-016 — interação de uso normal, fora do DEV
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-015 integrada e revisão visual deste recorte pelo coordenador.
+Status: IMPLEMENTADA_AGUARDANDO_TESTE em `codex/task-016-user-controls`. Depende de TASK-015; ver [handoff](../docs/handoffs/TASK-016.md).
 BASE COMMIT: informar no despacho. Aplicar [protocolo](NEXT_TASKS.md) e DESIGN; interface original já aceita deve ser preservada.
 
 ## Objetivo

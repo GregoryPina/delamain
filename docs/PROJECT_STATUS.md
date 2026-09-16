@@ -10,7 +10,7 @@ TASK-010–012: TTS com estados/cancelamento/descarte, escuta local por botão n
 
 ## Em andamento (branches, sem merge em main)
 
-TASK-014: persistência de voz (`codex/task-014-voice-preference`, `8f7da52`). TASK-015: rosto + sessão (`codex/task-015-session-state`); correções em [PR-006-REVIEW](handoffs/PR-006-REVIEW.md). `testDebugUnitTest`, `assembleDebug` e `assembleRelease` verdes na rodada do coordenador. IMPLEMENTADA_AGUARDANDO_TESTE no aparelho.
+TASK-014 (`8f7da52`), TASK-015 (`fd2b3d7`), TASK-016 (`codex/task-016-user-controls`): persistência, rosto/sessão e controles na tela principal. IMPLEMENTADA_AGUARDANDO_TESTE; validação manual acumulada pelo proprietário.
 
 ## Fluxo e limites
 
@@ -20,6 +20,6 @@ STT on-device em API31+, uma frase por toque, timeout 15s. TTS com watchdog (fil
 
 ## Próximo passo
 
-Proprietário validar APK da branch `codex/task-015-session-state` (roteiro em [TASK-015](handoffs/TASK-015.md)). Depois merge 014→015 em `main`.
+Proprietário validar em massa branches 014–016 (roteiros em handoffs). Depois merge em `main`.
 
 [Retomada](../TECH_LEAD_HANDOFF.md), [decisões](DECISIONS.md), [processo](DEVELOPMENT.md).

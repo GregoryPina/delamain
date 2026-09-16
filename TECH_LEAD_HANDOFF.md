@@ -8,7 +8,7 @@ Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. 
 
 ## Próxima ação
 
-TASK-014 corrigida (`codex/task-014-voice-preference`, `8f7da52`). TASK-015 revisada e corrigida (`codex/task-015-session-state`); ver [PR-006-REVIEW](docs/handoffs/PR-006-REVIEW.md). `testDebugUnitTest` + `assembleDebug` + `assembleRelease` verdes nesta rodada. Aguardar validação manual acumulada do proprietário; sem merge em `main`. TASK-016+ não iniciadas.
+TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 implementada em `codex/task-016-user-controls`: controles OUVIR/PARAR/TEXTO na tela principal, sessão compartilhada, microfone no manifest main. TESTES: proprietário acumulará validação em massa; nenhum executado nesta rodada. Sem merge em `main`. TASK-017+ não iniciadas.
 
 ## Entregas encerradas
 
@@ -19,7 +19,7 @@ TASK-004–009 também concluídas. Nome/gatilho: VEXA; identificadores técnico
 ## Contratos e limitações
 
 - LocalCommandEngine é canônico; executor remoto e CommandRouter legado não ativados. Mídia confirma despacho, não efeito.
-- DEV concentra interação; release sem painel/microfone funcional.
+- UI principal com OUVIR/PARAR/TEXTO (016); DEV só em debug para diagnóstico.
 - TTS Queued não significa fala concluída. Stop é aceite do motor, não prova silêncio físico. Watchdog TTS implementado na 015 (fila 10s + limite proporcional); timeout reporta falha, não sucesso.
 - STT: botão, sessão única, 15s, sem fallback remoto. Permissão concedida exige novo toque. Cancelamento invalida callbacks.
 - Voz: persistência implementada na 014 (DataStore); seleção offline pt-BR. Rosto acompanha sessão real na 015.

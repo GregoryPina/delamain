@@ -1,0 +1,324 @@
+package com.gregorypina.delamain.ui
+
+import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.gregorypina.delamain.domain.InteractionCoordinator
+import com.gregorypina.delamain.domain.LocalCommandEngine
+import com.gregorypina.delamain.domain.LocalCommandResult
+import com.gregorypina.delamain.domain.LocalUnknownResponses
+import com.gregorypina.delamain.domain.SpeechInputStartResult
+import com.gregorypina.delamain.domain.SpeechInputState
+import com.gregorypina.delamain.domain.SpeechOutputResult
+import com.gregorypina.delamain.domain.SpeechOutputState
+import com.gregorypina.delamain.domain.SpeechVoicePreferenceCoordinator
+import com.gregorypina.delamain.domain.SpeechVoicePreferenceEvent
+import com.gregorypina.delamain.domain.SpeechVoiceSelection
+import com.gregorypina.delamain.integration.CompositeLocalActionPort
+import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
+import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
+import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
+import com.gregorypina.delamain.integration.system.AndroidBatteryStatusPort
+import com.gregorypina.delamain.integration.voice.AndroidSpeechInputPort
+import com.gregorypina.delamain.integration.voice.AndroidTextToSpeechPort
+import com.gregorypina.delamain.integration.voice.DataStoreSpeechVoicePreferenceStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+/** Single voice/command session shared by the main UI and the debug panel. */
+class VoiceInteractionSession(
+    private val appContext: Context,
+    val interactionCoordinator: InteractionCoordinator,
+    private val scope: CoroutineScope,
+) {
+    val engine: LocalCommandEngine = LocalCommandEngine(
+        actionPort = CompositeLocalActionPort(
+            volumePort = AndroidMediaVolumeActionPort.from(appContext),
+            mediaKeyPort = AndroidMediaKeyActionPort.from(appContext),
+            launchAppPort = AndroidLaunchAppActionPort.from(appContext),
+        ),
+        batteryStatusPort = AndroidBatteryStatusPort.from(appContext),
+    )
+
+    var speechState: SpeechOutputState by mutableStateOf(SpeechOutputState.Preparing)
+        private set
+    var inputState: SpeechInputState by mutableStateOf(SpeechInputState.Idle)
+        private set
+    var voiceSelection: SpeechVoiceSelection by mutableStateOf(SpeechVoiceSelection())
+        private set
+    var statusMessage: UserMessageKey? by mutableStateOf(null)
+        private set
+    var lastResponse: String? by mutableStateOf(null)
+        private set
+    var preferenceMessage: String? by mutableStateOf(null)
+        private set
+    var preferenceSaved: Boolean by mutableStateOf(false)
+        private set
+
+    private val preferenceStore = DataStoreSpeechVoicePreferenceStore(appContext)
+    val preferenceCoordinator = SpeechVoicePreferenceCoordinator(preferenceStore) { token, event ->
+        if (token != preferenceSessionToken) return@SpeechVoicePreferenceCoordinator
+        onPreferenceEvent(event)
+    }
+
+    lateinit var speechOutput: AndroidTextToSpeechPort
+        private set
+    lateinit var speechInput: AndroidSpeechInputPort
+        private set
+
+    private var preferenceSessionToken = 0L
+    private var listenInteractionId by mutableLongStateOf(0L)
+    private var voiceRestored = false
+    private var started = false
+
+    val listening: Boolean
+        get() = inputState in setOf(
+            SpeechInputState.Starting,
+            SpeechInputState.Listening,
+            SpeechInputState.Processing,
+        )
+
+    val speaking: Boolean
+        get() = speechState == SpeechOutputState.Speaking ||
+            speechState == SpeechOutputState.Queued
+
+    fun start() {
+        if (started) return
+        started = true
+        voiceRestored = false
+        preferenceSessionToken = preferenceCoordinator.openSession()
+        speechOutput = AndroidTextToSpeechPort(
+            appContext,
+            onState = { state, interactionId ->
+                speechState = state
+                interactionCoordinator.output(state, interactionId)
+            },
+            onVoices = { voices ->
+                voiceSelection = voices
+                if (!voiceRestored && voices.engineId != null && voices.ids.isNotEmpty()) {
+                    voiceRestored = true
+                    scope.launch {
+                        preferenceCoordinator.restore(
+                            preferenceSessionToken,
+                            voices.engineId!!,
+                            voices.ids.toSet(),
+                        )
+                    }
+                }
+            },
+        )
+        speechInput = AndroidSpeechInputPort(
+            appContext,
+            stopOutput = { speechOutput.stop() },
+            onState = { state ->
+                inputState = state
+                interactionCoordinator.input(state, listenInteractionId)
+                updateStatusFromInput(state)
+            },
+            onText = { text -> submitText(text) },
+        )
+    }
+
+    fun onStop() {
+        speechInput.cancel()
+        speechOutput.stop()
+        interactionCoordinator.stop()
+    }
+
+    fun shutdown() {
+        if (!started) return
+        speechInput.shutdown()
+        speechOutput.shutdown()
+        preferenceCoordinator.closeSession(preferenceSessionToken)
+        interactionCoordinator.stop()
+        started = false
+    }
+
+    fun submitText(text: String): SubmitResult {
+        speechInput.cancel()
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return SubmitResult.EmptyInput
+        val interactionId = interactionCoordinator.begin()
+        val (debugDisplay, speechText, userText) = when (val result = engine.process(trimmed)) {
+            is LocalCommandResult.Recognized -> Triple(
+                "${result.intent}: ${result.response}",
+                result.response,
+                result.response,
+            )
+            LocalCommandResult.Unknown -> {
+                val unknown = LocalUnknownResponses.next()
+                Triple(unknown, unknown, unknown)
+            }
+        }
+        lastResponse = userText
+        return when (speechOutput.speak(speechText, interactionId)) {
+            SpeechOutputResult.Queued -> {
+                statusMessage = null
+                SubmitResult.Spoken(debugDisplay)
+            }
+            SpeechOutputResult.Failed -> {
+                interactionCoordinator.error(interactionId)
+                statusMessage = UserMessageKey.SpeechFailed
+                SubmitResult.TextOnly(debugDisplay)
+            }
+            SpeechOutputResult.Unavailable -> {
+                interactionCoordinator.error(interactionId)
+                statusMessage = UserMessageKey.VoiceUnavailable
+                SubmitResult.TextOnly(debugDisplay)
+            }
+        }
+    }
+
+    fun toggleListen(requestPermission: () -> Unit): ListenAction {
+        if (listening) {
+            speechInput.cancel()
+            interactionCoordinator.stop()
+            return ListenAction.Cancelled
+        }
+        if (!speechOutput.stop()) {
+            statusMessage = UserMessageKey.CannotStopSpeech
+            return ListenAction.Blocked
+        }
+        listenInteractionId = interactionCoordinator.begin()
+        return when (speechInput.start()) {
+            SpeechInputStartResult.Started -> {
+                interactionCoordinator.input(SpeechInputState.Starting, listenInteractionId)
+                ListenAction.Started
+            }
+            SpeechInputStartResult.PermissionRequired -> {
+                requestPermission()
+                ListenAction.PermissionRequested
+            }
+            SpeechInputStartResult.Unavailable -> {
+                statusMessage = UserMessageKey.ListenUnavailable
+                ListenAction.Unavailable
+            }
+            SpeechInputStartResult.Busy,
+            SpeechInputStartResult.Failed,
+            -> {
+                statusMessage = UserMessageKey.ListenFailed
+                ListenAction.Failed
+            }
+        }
+    }
+
+    fun onMicrophonePermissionResult(granted: Boolean) {
+        inputState = if (granted) SpeechInputState.Idle else SpeechInputState.PermissionRequired
+        statusMessage = if (granted) null else UserMessageKey.MicrophoneDenied
+    }
+
+    fun stopSpeech() {
+        speechOutput.stop()
+        interactionCoordinator.stop()
+    }
+
+    fun selectVoice(id: String): Boolean {
+        speechInput.cancel()
+        val change = preferenceCoordinator.beginExplicitChange()
+        val ok = speechOutput.selectVoice(id)
+        preferenceSaved = false
+        if (ok) {
+            val engineId = voiceSelection.engineId
+            if (engineId != null) {
+                scope.launch {
+                    preferenceCoordinator.saveConfirmed(change, preferenceSessionToken, engineId, id)
+                }
+            }
+        }
+        return ok
+    }
+
+    fun selectDefaultVoice(): Boolean {
+        speechInput.cancel()
+        val change = preferenceCoordinator.beginExplicitChange()
+        val ok = speechOutput.selectDefaultVoice()
+        preferenceSaved = false
+        if (ok) scope.launch { preferenceCoordinator.clearPreference(change, preferenceSessionToken) }
+        return ok
+    }
+
+    fun speakSample(): Boolean {
+        speechInput.cancel()
+        val interactionId = interactionCoordinator.begin()
+        return when (
+            speechOutput.speak("Olá. Sou a Vexa. Pronta para acompanhar sua viagem.", interactionId)
+        ) {
+            SpeechOutputResult.Queued -> true
+            else -> {
+                interactionCoordinator.error(interactionId)
+                false
+            }
+        }
+    }
+
+    private fun onPreferenceEvent(event: SpeechVoicePreferenceEvent) {
+        when (event) {
+            is SpeechVoicePreferenceEvent.Restore -> {
+                val ok = speechOutput.restoreVoice(event.preference.engineId, event.preference.voiceId)
+                preferenceSaved = ok
+                preferenceMessage = if (ok) "Voz salva restaurada." else "Preferência indisponível."
+            }
+            SpeechVoicePreferenceEvent.Saved -> {
+                preferenceSaved = true
+                preferenceMessage = "Preferência salva."
+            }
+            SpeechVoicePreferenceEvent.Cleared -> {
+                preferenceSaved = false
+                preferenceMessage = "Preferência removida."
+            }
+            SpeechVoicePreferenceEvent.SaveFailed -> {
+                preferenceSaved = false
+                preferenceMessage = "Usando nesta sessão; não foi possível salvar."
+            }
+            SpeechVoicePreferenceEvent.ClearFailed -> {
+                preferenceMessage = "Não foi possível remover a preferência."
+            }
+            SpeechVoicePreferenceEvent.ReadFailed -> {
+                preferenceMessage = "Não foi possível ler a preferência."
+            }
+            SpeechVoicePreferenceEvent.Unavailable -> {
+                preferenceSaved = false
+                preferenceMessage = "Preferência indisponível; usando padrão local."
+            }
+        }
+    }
+
+    private fun updateStatusFromInput(state: SpeechInputState) {
+        statusMessage = when (state) {
+            SpeechInputState.PermissionRequired -> UserMessageKey.MicrophoneDenied
+            SpeechInputState.Unavailable -> UserMessageKey.ListenUnavailable
+            SpeechInputState.NoMatch -> UserMessageKey.NoSpeechHeard
+            SpeechInputState.TimedOut -> UserMessageKey.ListenTimedOut
+            SpeechInputState.Failed -> UserMessageKey.ListenFailed
+            SpeechInputState.Canceled,
+            SpeechInputState.Completed,
+            SpeechInputState.Idle,
+            -> null
+            else -> statusMessage
+        }
+    }
+
+    sealed interface SubmitResult {
+        data class Spoken(val display: String) : SubmitResult
+        data class TextOnly(val display: String) : SubmitResult
+        data object EmptyInput : SubmitResult
+    }
+
+    enum class ListenAction {
+        Started, Cancelled, PermissionRequested, Unavailable, Failed, Blocked
+    }
+
+    /** String resource keys resolved in composables; avoids Android types in domain session. */
+    enum class UserMessageKey {
+        MicrophoneDenied,
+        ListenUnavailable,
+        ListenFailed,
+        ListenTimedOut,
+        NoSpeechHeard,
+        VoiceUnavailable,
+        SpeechFailed,
+        CannotStopSpeech,
+    }
+}
