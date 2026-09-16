@@ -44,7 +44,7 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] Integrar abertura de aplicativos no fluxo local (TASK-006)
 - [x] Validar abertura de aplicativos no aparelho (proprietário: teste ok)
 - [x] Consulta de hora local
-- [ ] Status do sistema
+- [x] Status do sistema (bateria; TASK-008)
 - [ ] Navegação/câmera como intents
 
 ## V0.3 — Voz

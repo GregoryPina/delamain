@@ -1,6 +1,6 @@
 # TASK-008 — status do sistema e respostas variadas
 
-Status: implementado, aguardando teste do proprietário. `testDebugUnitTest`: 42 testes, 0 falhas.
+Status: concluída e integrada em `main`. Proprietário confirmou “testado”. `testDebugUnitTest`: 42 testes, 0 falhas.
 Branch: `codex/system-status-responses`.
 
 ## Resumo

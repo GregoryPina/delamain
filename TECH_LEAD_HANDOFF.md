@@ -4,8 +4,8 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Baseline integrada: `323298b` (TASK-006 + TASK-007 em `main`).
-HEAD validado pelo proprietário: apps, volume, hora (TASK-006) e faixa anterior/próxima (TASK-007).
+Baseline integrada: `cf67638` (TASK-006 a TASK-008 em `main`).
+HEAD validado pelo proprietário: apps, volume, hora, mídia, bateria e respostas variadas (TASK-006–008).
 
 ## Current objective
 
@@ -13,19 +13,21 @@ Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 4 concluída: TASK-007 integrada em `main` (`323298b`).
+Wave 5 concluída: TASK-008 integrada em `main` (`cf67638`).
 
 ## Completed
 
-Wave 4 / TASK-007: faixa anterior e próxima no fluxo local; 37 testes automáticos verdes. Proprietário confirmou “testado ok” no aparelho.
+Wave 5 / TASK-008: status da bateria, respostas variadas (≥3) em todo o fluxo local; 42 testes verdes. Proprietário confirmou “testado”.
 
-Wave 3 / TASK-006: abertura de apps allowlisted, `<queries>` no manifesto. Proprietário confirmou “teste ok”.
+Wave 4 / TASK-007: faixa anterior/próxima. Proprietário: “testado ok”.
 
-Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto corrigido e inativo.
+Wave 3 / TASK-006: abertura de apps. Proprietário: “teste ok”.
+
+Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto inativo.
 
 ## In progress
 
-TASK-008 em `codex/system-status-responses`: bateria/status do sistema + respostas variadas para resultados de ação. 42 testes automáticos verdes; aguardando validação no aparelho.
+Nenhuma implementação ativa. Próximo recorte: V0.3 (TTS) ou pendências V0.2 (volume no aparelho, play/pause).
 
 ## Waiting / blocked
 
@@ -49,7 +51,7 @@ Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá
 
 ## Next recommended action
 
-Preparar próxima TASK de V0.3 (TTS) ou recorte local pendente (status do sistema), conforme prioridade do proprietário. Não ativar roteador remoto nem play/pause como toggle.
+Preparar TASK-009 (TTS) ou fechar pendências V0.2 restantes, conforme prioridade do proprietário. Não ativar roteador remoto nem play/pause como toggle.
 
 ## Warnings
 

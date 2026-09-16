@@ -82,3 +82,7 @@ Integrada em `main` (`8bd5d7f`). Abertura de apps allowlisted, `<queries>` no ma
 ## Wave 4 — TASK-007
 
 Integrada em `main` (`323298b`). Faixa anterior/próxima via teclas de mídia; resultado `Dispatched` sem alegar troca de faixa. Proprietário: “testado ok”. 37 testes automáticos verdes. Play/pause não implementado (decisão TASK-003).
+
+## Wave 5 — TASK-008
+
+Integrada em `main` (`cf67638`). Status da bateria (`status do sistema`, `bateria`, etc.) e ≥3 variantes para todas as respostas locais. Proprietário: “testado”. 42 testes automáticos verdes.
