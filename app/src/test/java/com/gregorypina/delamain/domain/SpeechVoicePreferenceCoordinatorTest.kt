@@ -1,6 +1,7 @@
 package com.gregorypina.delamain.domain
 
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -53,7 +54,7 @@ class SpeechVoicePreferenceCoordinatorTest {
         }
         val events = mutableListOf<SpeechVoicePreferenceEvent>()
         val coordinator = SpeechVoicePreferenceCoordinator(store, events::add)
-        val restore = async { coordinator.restore("engine", setOf("old", "new")) }
+        val restore = async(start = CoroutineStart.UNDISPATCHED) { coordinator.restore("engine", setOf("old", "new")) }
         val change = coordinator.beginExplicitChange()
         coordinator.saveConfirmed(change, "engine", "new")
         gate.complete(Unit)
@@ -62,18 +63,32 @@ class SpeechVoicePreferenceCoordinatorTest {
     }
 
     @Test fun `serialized writes keep latest explicit preference last`() = runBlocking {
-        val store = FakeStore(SpeechVoicePreferenceReadResult.Empty)
-        val coordinator = SpeechVoicePreferenceCoordinator(store)
+        val firstEntered = CompletableDeferred<Unit>()
+        val releaseFirst = CompletableDeferred<Unit>()
+        val writes = mutableListOf<String>()
+        val store = object : SpeechVoicePreferenceStore {
+            override suspend fun read() = SpeechVoicePreferenceReadResult.Empty
+            override suspend fun write(preference: SpeechVoicePreference): Boolean {
+                if (preference.voiceId == "one") { firstEntered.complete(Unit); releaseFirst.await() }
+                writes += preference.voiceId
+                return true
+            }
+            override suspend fun clear() = true
+        }
+        val events = mutableListOf<SpeechVoicePreferenceEvent>()
+        val coordinator = SpeechVoicePreferenceCoordinator(store, events::add)
         val first = coordinator.beginExplicitChange()
-        val writeOne = async { coordinator.saveConfirmed(first, "engine", "one") }
+        val writeOne = async(start = CoroutineStart.UNDISPATCHED) { coordinator.saveConfirmed(first, "engine", "one") }
+        firstEntered.await()
         val second = coordinator.beginExplicitChange()
         val writeTwo = async { coordinator.saveConfirmed(second, "engine", "two") }
+        releaseFirst.complete(Unit)
         writeOne.await(); writeTwo.await()
-        assertEquals(listOf("one", "two"), store.writes.map { it.voiceId })
-        assertEquals("two", store.writes.last().voiceId)
+        assertEquals(listOf("one", "two"), writes)
+        assertEquals(listOf(SpeechVoicePreferenceEvent.Saved), events)
     }
 
-    @Test fun `use default clears voice preference only through store contract`() = runBlocking {
+    @Test fun `use default clears voice preference through dedicated operation`() = runBlocking {
         val store = FakeStore(SpeechVoicePreferenceReadResult.Empty)
         val events = mutableListOf<SpeechVoicePreferenceEvent>()
         val coordinator = SpeechVoicePreferenceCoordinator(store, events::add)
@@ -98,10 +113,7 @@ class SpeechVoicePreferenceCoordinatorTest {
         val writes = mutableListOf<SpeechVoicePreference>()
         var clears = 0
         override suspend fun read() = readResult
-        override suspend fun write(preference: SpeechVoicePreference): Boolean {
-            writes += preference
-            return writeResult
-        }
+        override suspend fun write(preference: SpeechVoicePreference): Boolean { writes += preference; return writeResult }
         override suspend fun clear(): Boolean { clears += 1; return true }
     }
 }
