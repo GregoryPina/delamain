@@ -36,3 +36,13 @@ Nenhum executor ativo. O proprietário autorizou Astra implementar TASK-010 e de
 Ler AGENTS.md, README, arquitetura, roadmap, estado, decisões e docs/DEVELOPMENT.md. Ler TEMP_LEAD_HANDOFF.md se existir; ele não existia nesta retomada. Registrar nele baseline inicial/final completas, tarefas, commits/PRs, testes realmente executados e por quem, pendências, mudanças locais e próximo passo. Atualizar os parágrafos de estado atual; guardar história nos handoffs, sem acumular próximos passos contraditórios.
 
 Auditoria: docs/handoffs/RETOMADA-2026-09-16.md. Nenhum build/teste foi executado nesta retomada.
+
+## Entregas publicadas desta sessão
+
+| Tarefa | PR draft | Commit de implementação |
+| --- | --- | --- |
+| TASK-010 | https://github.com/GregoryPina/delamain/pull/2 | `4d32ce9dac04b54d99e5da119fe070c1199d4b32` |
+| TASK-011 | https://github.com/GregoryPina/delamain/pull/3 | `7517161e13a30ef7702b3f669ee7aba9ca5164a8` |
+| TASK-012 | https://github.com/GregoryPina/delamain/pull/4 | `7d63e605cc3ad36cc3ded50bd62dfcdff449c207` |
+
+O último commit acima é a baseline de código conjunta; este registro posterior é apenas documental. Nenhum merge/build/teste executado. Ao receber teste, registrar o HEAD efetivamente usado e comparar eventual delta com essa baseline. Não reutilizar os relatos antigos para encerrar as três tarefas.

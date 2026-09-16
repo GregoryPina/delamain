@@ -39,3 +39,7 @@ git switch codex/task-012-voice-preview
 Revisar o HEAD final testado, resolver falhas antes de integrar. PRs dependentes: primeiro TASK-010 → main; depois retarget TASK-011 para main e revisar diff; finalmente retarget TASK-012 para main e revisar diff. Não mesclar a branch filha na mãe automaticamente. Evitar squash das dependências sem conferir ancestralidade/diffs posteriores. Todos os testes e aceites continuam pendentes.
 
 Método habitual de trabalho permanece: Astra coordena, executores externos implementam e proprietário testa. A implementação direta destas três tarefas foi exceção desta sessão. Próximo passo é validar, não ampliar a cadeia sem feedback.
+
+## Referência publicada
+
+[PR #4](https://github.com/GregoryPina/delamain/pull/4), dependente de [PR #3](https://github.com/GregoryPina/delamain/pull/3) e [PR #2](https://github.com/GregoryPina/delamain/pull/2). Baseline conjunta de código: `7d63e605cc3ad36cc3ded50bd62dfcdff449c207`; atualização documental posterior não executa nem altera o código testável.
