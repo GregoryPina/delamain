@@ -45,7 +45,7 @@ O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, vo
 
 No APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “abra o spotify”, “próxima música” ou “bateria”. O painel começa fechado e não existe na variante release. As ações ativas usam adapters próprios; o antigo `CommandRouter`/`AndroidCommandExecutor` continua inativo. Builds e testes locais são executados pelo proprietário, não automaticamente pelo Tech Lead.
 
-Próximo recorte planejado: estabilizar o ciclo de vida e os resultados do TTS antes de STT por botão. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
+TASK-010 implementada nesta branch, aguardando testes do proprietário: estado da fala, interrupção, descarte seguro e seleção de voz local pt-BR. Main mantém a versão anteriormente aceita até integração. Próximo passo: [validar a entrega](docs/handoffs/TASK-010.md), antes de STT por botão. Veja [estado atual](docs/PROJECT_STATUS.md) e [TASK-010](tasks/TASK-010.md).
 
 ## Como o companion responderá
 

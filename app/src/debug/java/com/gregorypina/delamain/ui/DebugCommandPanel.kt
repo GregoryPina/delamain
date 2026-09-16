@@ -33,6 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +46,8 @@ import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
 import com.gregorypina.delamain.domain.LocalUnknownResponses
 import com.gregorypina.delamain.domain.SpeechOutputPort
+import com.gregorypina.delamain.domain.SpeechOutputResult
+import com.gregorypina.delamain.domain.SpeechOutputState
 import com.gregorypina.delamain.integration.CompositeLocalActionPort
 import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
@@ -65,17 +71,28 @@ internal fun DebugCommandPanel() {
             batteryStatusPort = AndroidBatteryStatusPort.from(applicationContext),
         )
     }
-    val speechOutputPort = remember { mutableStateOf<SpeechOutputPort?>(null) }
-    DisposableEffect(applicationContext) {
-        val port = AndroidTextToSpeechPort(applicationContext) { readyPort ->
-            speechOutputPort.value = readyPort
-        }
-        onDispose {
-            port.shutdown()
-            speechOutputPort.value = null
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    var speechOutputPort by remember { mutableStateOf<SpeechOutputPort?>(null) }
+    var speechState by remember { mutableStateOf(SpeechOutputState.Preparing) }
+    val lifecycleOwner = LocalView.current.findViewTreeLifecycleOwner()
+    DisposableEffect(applicationContext, expanded, lifecycleOwner) {
+        if (expanded) {
+            speechState = SpeechOutputState.Preparing
+            val port = AndroidTextToSpeechPort(applicationContext) { speechState = it }
+            speechOutputPort = port
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_STOP) port.stop()
+            }
+            lifecycleOwner?.lifecycle?.addObserver(observer)
+            onDispose {
+                lifecycleOwner?.lifecycle?.removeObserver(observer)
+                port.shutdown()
+                speechOutputPort = null
+            }
+        } else {
+            onDispose { }
         }
     }
-    var expanded by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -86,8 +103,12 @@ internal fun DebugCommandPanel() {
         if (expanded) {
             DebugCommandPanelContent(
                 engine = engine,
-                speechOutputPort = speechOutputPort.value,
-                onDismiss = { expanded = false },
+                speechOutputPort = speechOutputPort,
+                speechState = speechState,
+                onDismiss = {
+                    speechOutputPort?.stop()
+                    expanded = false
+                },
                 modifier = Modifier.align(Alignment.TopCenter),
             )
         } else {
@@ -105,12 +126,15 @@ internal fun DebugCommandPanel() {
 private fun DebugCommandPanelContent(
     engine: LocalCommandEngine,
     speechOutputPort: SpeechOutputPort?,
+    speechState: SpeechOutputState,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
     var input by rememberSaveable { mutableStateOf("") }
     var output by rememberSaveable { mutableStateOf("Digite um comando local para testar.") }
+
+    var submissionProblem by remember(speechState) { mutableStateOf<String?>(null) }
 
     fun submit() {
         val (display, speechText) = when (val result = engine.process(input)) {
@@ -123,7 +147,11 @@ private fun DebugCommandPanelContent(
             }
         }
         output = display
-        speechOutputPort?.speak(speechText)
+        submissionProblem = when (speechOutputPort?.speak(speechText)) {
+            SpeechOutputResult.Queued -> null
+            SpeechOutputResult.Failed -> "Não foi possível iniciar a fala."
+            SpeechOutputResult.Unavailable, null -> "Voz ainda não disponível; resposta em texto."
+        }
         focusManager.clearFocus()
     }
 
@@ -152,10 +180,32 @@ private fun DebugCommandPanelContent(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
+            TextButton(onClick = {
+                submissionProblem = null
+                speechOutputPort?.stop()
+            }) {
+                Text("PARAR VOZ")
+            }
             TextButton(onClick = onDismiss) {
                 Text("FECHAR")
             }
         }
+
+        Text(
+            text = submissionProblem ?: when (speechState) {
+                SpeechOutputState.Preparing -> "Voz: preparando…"
+                SpeechOutputState.Ready -> "Voz: pronta"
+                SpeechOutputState.Unavailable -> "Voz local pt-BR indisponível; resposta em texto."
+                SpeechOutputState.Queued -> "Voz: aguardando início"
+                SpeechOutputState.Speaking -> "Voz: falando"
+                SpeechOutputState.Completed -> "Voz: fala concluída"
+                SpeechOutputState.Stopped -> "Voz: interrupção solicitada"
+                SpeechOutputState.Failed -> "Voz: falha; resposta em texto."
+                SpeechOutputState.Closed -> "Voz: encerrada"
+            },
+            color = Color.White.copy(alpha = 0.7f),
+            fontSize = 12.sp,
+        )
 
         OutlinedTextField(
             value = input,

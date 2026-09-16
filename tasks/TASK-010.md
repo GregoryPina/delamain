@@ -1,7 +1,7 @@
 # TASK-010 — estabilizar a saída de voz
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-009, já integrada e aceita.
-Referência auditada: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`. O despacho deverá informar um BASE COMMIT completo publicado que já contenha esta tarefa.
+Status: IMPLEMENTADA_AGUARDANDO_TESTE na branch `codex/task-010-tts-hardening`, por exceção autorizada ao Astra. Depende de TASK-009, já integrada e aceita. Ver [entrega e roteiro](../docs/handoffs/TASK-010.md).
+BASE COMMIT da implementação: `02f65daf210e1b569c821e66085a9a9c9fa96e21`. Nenhum executor externo foi despachado.
 
 ## Objetivo
 
