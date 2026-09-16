@@ -8,7 +8,7 @@ Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. 
 
 ## Próxima ação
 
-TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 em `codex/task-016-user-controls` (`72b32ce`). TASK-017 em `codex/task-017-mute-controls` (mute + controles prioritários, ADR-007). TESTES: proprietário acumulará validação em massa. Sem merge em `main`. TASK-018+ não iniciadas.
+TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 em `codex/task-016-user-controls` (`72b32ce`). TASK-017 em `codex/task-017-mute-controls` (`d1d6d99`): mute + controles prioritários (ADR-007). TESTES: proprietário acumulará validação em massa. Sem merge em `main`. TASK-018+ não iniciadas.
 
 ## Entregas encerradas
 

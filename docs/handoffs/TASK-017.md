@@ -2,7 +2,7 @@
 
 Status: **implementado, aguardando teste do proprietário**.
 
-Branch: `codex/task-017-mute-controls` (base: `codex/task-016-user-controls`).
+Branch: `codex/task-017-mute-controls` (`d1d6d99`). Base: `codex/task-016-user-controls` (`72b32ce`).
 
 ## Entregue
 
