@@ -41,7 +41,7 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 **Interface V0.1 validada funcionalmente pelo proprietário em 15 de setembro de 2026.**
 
-O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. A voz padrão ainda precisa ser personalizada. Na main, STT ainda não está integrado. Nesta branch dependente, TASK-011 adiciona OUVIR no DEV usando reconhecimento local quando disponível (Android 12+), aguardando testes. Wake word e IA continuam futuros.
+O fluxo ativo no painel DEV inclui reflexos locais, hora, presença informal, volume de mídia, abertura de cinco apps permitidos, faixa anterior/próxima, bateria, respostas variadas e fala por TTS. TASK-006–009 foram integradas e os handoffs registram validação pelo proprietário; o último relato de TTS foi “funcionou, ela falou”. TASK-012 nesta branch permite comparar vozes locais pt-BR instaladas, sem persistir a escolha, aguardando teste. Na main, STT ainda não está integrado. Nesta branch dependente, TASK-011 adiciona OUVIR no DEV usando reconhecimento local quando disponível (Android 12+), aguardando testes. Wake word e IA continuam futuros.
 
 No APK debug, abra `DEV` e envie “Vexa, tá aí?”, “que horas são?”, “abra o spotify”, “próxima música” ou “bateria”. O painel começa fechado e não existe na variante release. As ações ativas usam adapters próprios; o antigo `CommandRouter`/`AndroidCommandExecutor` continua inativo. Builds e testes locais são executados pelo proprietário, não automaticamente pelo Tech Lead.
 
@@ -70,3 +70,5 @@ A personalidade aparece desde as respostas prontas. Internet não é requisito p
 - [Design visual](docs/DESIGN.md)
 - [Desenvolvimento](docs/DEVELOPMENT.md)
 - [Diretrizes para agentes de código](AGENTS.md)
+
+Para testar todas as mudanças desta sessão no mesmo APK: [roteiro consolidado TASK-010–012](docs/handoffs/TASK-012.md). As três entregas permanecem fora da main.

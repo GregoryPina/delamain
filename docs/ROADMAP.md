@@ -2,7 +2,7 @@
 
 ## Fase 0 — Fundação
 
-Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010 e TASK-011 implementadas em branches dependentes, aguardando validação conjunta. Evidências em PROJECT_STATUS.md; não houve novos testes nesta auditoria.
+Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010, TASK-011 e TASK-012 implementadas em branches dependentes, aguardando validação conjunta. Evidências em PROJECT_STATUS.md; não houve novos testes nesta auditoria.
 
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios
@@ -53,7 +53,8 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] TTS (baseline no painel DEV; voz do sistema — personalizar depois)
 - [ ] TASK-010: TTS, callbacks, ciclo de vida e interrupção implementados em branch; aguardando testes e integração
 - [ ] TASK-011: STT local por botão implementado em branch dependente; aguardando testes e fechamento da TASK-010
-- [ ] Personalização de voz em recorte separado
+- [ ] TASK-012: comparar vozes locais na sessão DEV, implementado em branch; aguardando teste
+- [ ] Persistir preferência de voz e avaliar personalização adicional após feedback
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões

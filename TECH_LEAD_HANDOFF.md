@@ -2,7 +2,7 @@
 
 ## Baseline
 
-Repositório: GregoryPina/delamain. Branch de trabalho: `codex/task-011-push-to-talk`, baseada em `4d32ce9dac04b54d99e5da119fe070c1199d4b32` da TASK-010 (PR #2). Main permanece sem ambas.
+Repositório: GregoryPina/delamain. Branch de trabalho: `codex/task-012-voice-preview`, baseada em `7517161e13a30ef7702b3f669ee7aba9ca5164a8` da TASK-011/PR #3, que depende da TASK-010/PR #2. Main permanece sem as três tarefas.
 Baseline auditada em 2026-09-16: `80b48c396d5882d2d3e1cd2e0f8f918a34842a26`, sincronizada com origin/main na retomada. O código TTS entrou em `add292a`; commits seguintes até esta baseline documentam fechamento. A implementação TASK-010 partiu de `02f65daf210e1b569c821e66085a9a9c9fa96e21`; nenhum build/teste novo foi executado.
 
 ## Objetivo e estado
@@ -11,9 +11,9 @@ VEXA já responde por texto e fala no painel DEV. TASK-004 a TASK-009 integradas
 
 ## Próxima ação
 
-Receber validação conjunta do proprietário para TASK-010 e TASK-011, implementadas excepcionalmente pelo Astra em branches dependentes. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
+Receber validação conjunta do proprietário para TASK-010, TASK-011 e TASK-012, implementadas excepcionalmente pelo Astra em branches dependentes. Roteiro consolidado: docs/handoffs/TASK-012.md. Checkout já contém as três; 29 testes novos criados, nenhum executado. Roteiro e contratos em docs/handoffs/TASK-010.md. Status IMPLEMENTADA_AGUARDANDO_TESTE; 12 testes novos não executados. Revisar o HEAD testado antes de integrar; não reenviar implementação a outro executor.
 
-TASK-011 já implementada por autorização de continuar nesta sessão: escuta local por botão, API31+, sem fallback remoto, timeout e resultados únicos. Roteiro em docs/handoffs/TASK-011.md; dez testes novos não executados. Fechar TASK-010 antes de integrar TASK-011. Personalização da voz é preferência do proprietário e merece recorte separado. Wake word, IA, play/pause e volume percentual continuam futuros.
+TASK-011 já implementada por autorização de continuar nesta sessão: escuta local por botão, API31+, sem fallback remoto, timeout e resultados únicos. Roteiro em docs/handoffs/TASK-011.md; dez testes novos não executados. Fechar TASK-010 antes de integrar TASK-011. TASK-012 já oferece comparação de vozes locais instaladas, apenas na sessão DEV; preferência persistente, engine/pitch/velocidade permanecem futuros. Integração em ordem 010 → 011 → 012, retarget das filhas para main e revisão de diff após cada merge; não integrar automaticamente em branches mães. Wake word, IA, play/pause e volume percentual continuam futuros.
 
 ## Achados e limites
 

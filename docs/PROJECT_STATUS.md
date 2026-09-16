@@ -29,10 +29,10 @@ Entrada digitada no painel debug → LocalCommandEngine → portas tipadas de vo
 
 1. [TASK-010](../tasks/TASK-010.md): estabilizar TTS, resultados, cancelamento e ciclo de vida. Implementada excepcionalmente pelo Astra, aguardando testes locais. 12 testes criados, nenhum executado.
 2. [TASK-011](handoffs/TASK-011.md): implementada na branch `codex/task-011-push-to-talk`, baseada no HEAD `4d32ce9dac04b54d99e5da119fe070c1199d4b32` da TASK-010/PR #2. Escuta por botão on-device apenas em API31+, sem fallback remoto. Dez testes criados, nenhum executado. Aguardando validação conjunta; não integrar antes de TASK-010.
-3. Personalização de voz em tarefa separada; wake word e IA permanecem posteriores.
+3. [TASK-012](handoffs/TASK-012.md): comparação de vozes pt-BR locais por sessão DEV, branch `codex/task-012-voice-preview`, base `7517161e13a30ef7702b3f669ee7aba9ca5164a8` (TASK-011/PR #3). Sete testes criados, nenhum executado. Roteiro consolidado nesse handoff. Persistência da escolha, wake word e IA permanecem futuros.
 
 ## Operação e memória
 
-Implementações excepcionais TASK-010/011 encerradas, aguardando validação pelo proprietário amanhã. Nas próximas tarefas: coordenação local exclusiva do Astra; implementadores externos via proprietário. Builds e testes pelo proprietário. Não criar agentes internos, repetir tarefas encerradas ou executar testes automaticamente.
+Implementações excepcionais TASK-010/011/012 encerradas, aguardando validação pelo proprietário amanhã. Nas próximas tarefas: coordenação local exclusiva do Astra; implementadores externos via proprietário. Builds e testes pelo proprietário. Não criar agentes internos, repetir tarefas encerradas ou executar testes automaticamente.
 
 Ler [handoff principal](../TECH_LEAD_HANDOFF.md), [auditoria da retomada](handoffs/RETOMADA-2026-09-16.md), [decisões](DECISIONS.md) e [processo de substituição](DEVELOPMENT.md). Histórico anterior preservado no Git e nos handoffs de cada tarefa.

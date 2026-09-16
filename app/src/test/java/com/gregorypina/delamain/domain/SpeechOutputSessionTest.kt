@@ -186,4 +186,28 @@ class SpeechOutputSessionTest {
         session.initialized(true)
         assertEquals(SpeechOutputState.Closed, session.state)
     }
+    @Test fun `failed voice selection disables speech until explicit successful selection`() {
+        val engine = FakeEngine()
+        val session = SpeechOutputSession(engine)
+        session.initialized(true)
+        session.speak("antiga")
+        val id = engine.requests.last().second
+        session.stop()
+        session.voiceAvailabilityChanged(false)
+        session.completed(id)
+        assertEquals(SpeechOutputResult.Unavailable, session.speak("bloqueada"))
+        assertEquals(1, engine.requests.size)
+        session.voiceAvailabilityChanged(true)
+        assertEquals(SpeechOutputResult.Queued, session.speak("nova"))
+    }
+
+    @Test fun `voice selection cannot resurrect disposed session`() {
+        val states = mutableListOf<SpeechOutputState>()
+        val session = SpeechOutputSession(FakeEngine()) { states += it }
+        session.shutdown()
+        session.voiceAvailabilityChanged(true)
+        assertTrue(states.isEmpty())
+        assertEquals(SpeechOutputState.Closed, session.state)
+        assertEquals(SpeechOutputResult.Unavailable, session.speak("tardia"))
+    }
 }
