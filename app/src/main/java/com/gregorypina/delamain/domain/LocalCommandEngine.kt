@@ -81,20 +81,41 @@ class LocalCommandEngine(
     }
 
     private fun responsesFor(intent: LocalIntent): List<String> = when (intent) {
-        LocalIntent.CALL -> listOf("À disposição.", "Pois não?")
+        LocalIntent.CALL -> listOf(
+            "À disposição.",
+            "Pois não?",
+            "Sim?",
+        )
         LocalIntent.PRESENCE -> if (name == null) {
-            listOf("Sempre a postos.", "Estou aqui.")
+            listOf(
+                "Sempre a postos.",
+                "Estou aqui.",
+                "Presente.",
+            )
         } else {
-            listOf("Sempre a postos, $name.", "Estou aqui, $name.")
+            listOf(
+                "Sempre a postos, $name.",
+                "Estou aqui, $name.",
+                "Presente, $name.",
+            )
         }
         LocalIntent.GREETING -> listOf(
             "Olá. Pronto para a próxima viagem?",
             "Saudações. À disposição.",
+            "Olá. Como posso ajudar?",
         )
-        LocalIntent.THANKS -> listOf("É um prazer.", "Sempre às ordens.")
+        LocalIntent.THANKS -> listOf(
+            "É um prazer.",
+            "Sempre às ordens.",
+            "Por nada.",
+        )
         LocalIntent.TIME -> {
             val time = LocalTime.now(clock).format(TIME_FORMATTER)
-            listOf("São $time.", "Agora são $time.")
+            listOf(
+                "São $time.",
+                "Agora são $time.",
+                "O horário agora é $time.",
+            )
         }
         LocalIntent.BATTERY_STATUS,
         LocalIntent.VOLUME_UP,

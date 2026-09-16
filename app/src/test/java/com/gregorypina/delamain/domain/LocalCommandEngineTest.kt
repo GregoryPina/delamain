@@ -119,9 +119,11 @@ class LocalCommandEngineTest {
         val first = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
         val second = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
         val third = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
+        val fourth = assertRecognized(engine.process("Vexa"), LocalIntent.CALL).response
 
         assertNotEquals(first, second)
-        assertEquals(first, third)
+        assertNotEquals(second, third)
+        assertEquals(first, fourth)
     }
 
     @Test

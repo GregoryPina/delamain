@@ -6,7 +6,7 @@ Consulta local de bateria (recorte de status do sistema) e variantes de resposta
 
 ## Desired behavior
 
-Frases como `status do sistema`, `bateria`, `nível da bateria` retornam percentual e estado de carga via porta injetável. Resultados de volume, apps e mídia usam listas de variantes (mínimo 3 por tipo), com rotação como nos reflexos sociais.
+Frases como `status do sistema`, `bateria`, `nível da bateria` retornam percentual e estado de carga via porta injetável. **Toda** resposta local fora da API de IA — reflexos, hora, bateria e resultados de ação — deve ter **no mínimo 3 variantes**, com rotação sem repetição imediata.
 
 ## Constraints
 

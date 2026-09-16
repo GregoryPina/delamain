@@ -6,8 +6,8 @@ Branch: `codex/system-status-responses`.
 ## Resumo
 
 - `BATTERY_STATUS`: frases fechadas consultam `BatteryStatusPort`; adapter Android lê nível e carga sem permissão extra.
-- `responseFor` e leituras de bateria usam `pickVariant` com ≥3 frases por tipo de resultado.
-- Primeira variante preserva mensagens anteriores para compatibilidade de testes.
+- `responseFor`, bateria e reflexos sociais usam ≥3 variantes cada (chamada, presença, saudação, agradecimento, hora, volume, apps, mídia).
+- Rotação sem repetição imediata via `pickVariant` / `nextResponse`.
 
 ## Frases de bateria
 
