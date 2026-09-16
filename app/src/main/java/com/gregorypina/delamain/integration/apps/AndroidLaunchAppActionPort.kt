@@ -11,9 +11,7 @@ class AndroidLaunchAppActionPort private constructor(
 ) : LocalActionPort {
     override fun execute(action: LocalAction): LocalActionResult = when (action) {
         is LocalAction.OpenApp -> launch(action)
-        LocalAction.VolumeUp,
-        LocalAction.VolumeDown,
-        -> LocalActionResult.Unavailable(action)
+        else -> LocalActionResult.Unavailable(action)
     }
 
     private fun launch(action: LocalAction.OpenApp): LocalActionResult {

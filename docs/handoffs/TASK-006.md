@@ -1,6 +1,6 @@
 # TASK-006 — abertura de aplicativo no fluxo local ativo
 
-Status: validado pelo proprietário em aparelho (abertura do YouTube confirmada após correção de `<queries>` no manifesto).
+Status: concluída e integrada em `main`. Proprietário confirmou “teste ok” para allowlist completa, volume e hora no aparelho.
 Base: `85d249df33d5722cec74532bcee8dd6a58d2b3af`.
 Branch: `codex/open-app-local`.
 Testes automáticos: `testDebugUnitTest` — 32 testes, 0 falhas (após correção do `RecordingActionPort` em `aba7a35`). Validação manual: relato “funcionou” para YouTube.

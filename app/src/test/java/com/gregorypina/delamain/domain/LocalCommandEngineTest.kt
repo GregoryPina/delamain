@@ -391,6 +391,108 @@ class LocalCommandEngineTest {
     }
 
     @Test
+    fun `recognizes allowlisted media track phrases`() {
+        val port = RecordingActionPort()
+        val engine = LocalCommandEngine(actionPort = port)
+
+        listOf(
+            "próxima música",
+            "proxima faixa",
+            "próxima",
+        ).forEach {
+            assertRecognized(engine.process(it), LocalIntent.MEDIA_NEXT)
+        }
+        listOf(
+            "música anterior",
+            "faixa anterior",
+            "anterior",
+        ).forEach {
+            assertRecognized(engine.process(it), LocalIntent.MEDIA_PREVIOUS)
+        }
+
+        assertEquals(
+            listOf(
+                LocalAction.MediaNext,
+                LocalAction.MediaNext,
+                LocalAction.MediaNext,
+                LocalAction.MediaPrevious,
+                LocalAction.MediaPrevious,
+                LocalAction.MediaPrevious,
+            ),
+            port.actions,
+        )
+    }
+
+    @Test
+    fun `accepts assistant prefix for media track commands`() {
+        val port = RecordingActionPort()
+        val result = LocalCommandEngine(actionPort = port).process("Vexa, próxima música")
+
+        assertRecognized(result, LocalIntent.MEDIA_NEXT)
+        assertEquals(listOf(LocalAction.MediaNext), port.actions)
+    }
+
+    @Test
+    fun `reports dispatched media track results without claiming playback change`() {
+        val next = LocalActionResult.Dispatched(LocalAction.MediaNext)
+        val previous = LocalActionResult.Dispatched(LocalAction.MediaPrevious)
+        val engine = LocalCommandEngine(
+            actionPort = RecordingActionPort { action ->
+                when (action) {
+                    LocalAction.MediaNext -> next
+                    LocalAction.MediaPrevious -> previous
+                    else -> error("unexpected action")
+                }
+            },
+        )
+
+        assertEquals(
+            LocalCommandResult.Recognized(
+                LocalIntent.MEDIA_NEXT,
+                "Comando de próxima faixa enviado.",
+                next,
+            ),
+            engine.process("próxima faixa"),
+        )
+        assertEquals(
+            LocalCommandResult.Recognized(
+                LocalIntent.MEDIA_PREVIOUS,
+                "Comando de faixa anterior enviado.",
+                previous,
+            ),
+            engine.process("faixa anterior"),
+        )
+    }
+
+    @Test
+    fun `defaults media track actions to unavailable`() {
+        val result = assertRecognized(
+            LocalCommandEngine().process("próxima música"),
+            LocalIntent.MEDIA_NEXT,
+        )
+
+        assertEquals("Controle de mídia indisponível.", result.response)
+        assertEquals(LocalActionResult.Unavailable(LocalAction.MediaNext), result.actionResult)
+    }
+
+    @Test
+    fun `rejects negative compound and unknown media text without executing actions`() {
+        val port = RecordingActionPort()
+        val engine = LocalCommandEngine(actionPort = port)
+
+        listOf(
+            "não pule a música",
+            "próxima música e aumente o volume",
+            "pule a faixa",
+            "musica",
+        ).forEach { phrase ->
+            assertSame(LocalCommandResult.Unknown, engine.process(phrase))
+        }
+
+        assertTrue(port.actions.isEmpty())
+    }
+
+    @Test
     fun `rejects negative compound and unknown open app text without executing actions`() {
         val port = RecordingActionPort()
         val engine = LocalCommandEngine(actionPort = port)
@@ -423,6 +525,9 @@ class LocalCommandEngineTest {
             when (action) {
                 LocalAction.VolumeUp -> LocalActionResult.Changed(action, before = 4, after = 5)
                 LocalAction.VolumeDown -> LocalActionResult.Changed(action, before = 5, after = 4)
+                LocalAction.MediaNext,
+                LocalAction.MediaPrevious,
+                -> LocalActionResult.Dispatched(action)
                 is LocalAction.OpenApp -> LocalActionResult.Launched(action, action.displayName)
             }
         },

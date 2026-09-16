@@ -26,6 +26,8 @@ class LocalCommandEngine(
         val action = when (intent) {
             LocalIntent.VOLUME_UP -> LocalAction.VolumeUp
             LocalIntent.VOLUME_DOWN -> LocalAction.VolumeDown
+            LocalIntent.MEDIA_NEXT -> LocalAction.MediaNext
+            LocalIntent.MEDIA_PREVIOUS -> LocalAction.MediaPrevious
             LocalIntent.OPEN_APP -> {
                 val target = OPEN_APP_PHRASES[strippedPhrase]
                     ?: return LocalCommandResult.Unknown
@@ -53,6 +55,8 @@ class LocalCommandEngine(
         phrase in TIME_PHRASES -> LocalIntent.TIME
         phrase in VOLUME_UP_PHRASES -> LocalIntent.VOLUME_UP
         phrase in VOLUME_DOWN_PHRASES -> LocalIntent.VOLUME_DOWN
+        phrase in MEDIA_NEXT_PHRASES -> LocalIntent.MEDIA_NEXT
+        phrase in MEDIA_PREVIOUS_PHRASES -> LocalIntent.MEDIA_PREVIOUS
         else -> null
     }
 
@@ -84,6 +88,8 @@ class LocalCommandEngine(
         }
         LocalIntent.VOLUME_UP,
         LocalIntent.VOLUME_DOWN,
+        LocalIntent.MEDIA_NEXT,
+        LocalIntent.MEDIA_PREVIOUS,
         LocalIntent.OPEN_APP,
         -> error("Action responses depend on the observed result")
     }
@@ -92,25 +98,36 @@ class LocalCommandEngine(
         is LocalActionResult.Changed -> when (result.action) {
             LocalAction.VolumeUp -> "Volume aumentado."
             LocalAction.VolumeDown -> "Volume reduzido."
-            is LocalAction.OpenApp -> error("Volume change is not supported for app launch")
+            else -> error("Volume change is not supported for ${result.action}")
         }
         is LocalActionResult.AtLimit -> when (result.action) {
             LocalAction.VolumeUp -> "O volume já está no máximo."
             LocalAction.VolumeDown -> "O volume já está no mínimo."
-            is LocalAction.OpenApp -> error("Volume limit is not supported for app launch")
+            else -> error("Volume limit is not supported for ${result.action}")
         }
         is LocalActionResult.Fixed -> "O volume deste dispositivo é fixo."
         is LocalActionResult.Unavailable -> when (result.action) {
             is LocalAction.OpenApp -> "Abertura de aplicativos indisponível."
+            LocalAction.MediaNext,
+            LocalAction.MediaPrevious,
+            -> "Controle de mídia indisponível."
             else -> "Controle de volume indisponível."
         }
         is LocalActionResult.Denied -> "Sem permissão para ajustar o volume."
         is LocalActionResult.Failure -> when (result.action) {
             is LocalAction.OpenApp -> "Não consegui abrir o aplicativo."
+            LocalAction.MediaNext,
+            LocalAction.MediaPrevious,
+            -> "Não consegui enviar o comando de mídia."
             else -> "Não consegui confirmar o ajuste de volume."
         }
         is LocalActionResult.Launched -> "Abrindo ${result.displayName}."
         is LocalActionResult.NotInstalled -> "${result.displayName} não está instalado."
+        is LocalActionResult.Dispatched -> when (result.action) {
+            LocalAction.MediaNext -> "Comando de próxima faixa enviado."
+            LocalAction.MediaPrevious -> "Comando de faixa anterior enviado."
+            else -> error("Dispatch is not supported for ${result.action}")
+        }
     }
 
     private fun normalize(input: String): String = Normalizer
@@ -149,6 +166,16 @@ class LocalCommandEngine(
             "abaixe o volume",
             "abaixar o volume",
             "baixe o volume",
+        )
+        val MEDIA_NEXT_PHRASES = setOf(
+            "proxima musica",
+            "proxima faixa",
+            "proxima",
+        )
+        val MEDIA_PREVIOUS_PHRASES = setOf(
+            "musica anterior",
+            "faixa anterior",
+            "anterior",
         )
 
         val OPEN_APP_PHRASES: Map<String, Pair<String, String>> = buildMap {

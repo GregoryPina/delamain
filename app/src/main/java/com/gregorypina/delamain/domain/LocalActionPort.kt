@@ -3,6 +3,8 @@ package com.gregorypina.delamain.domain
 sealed interface LocalAction {
     data object VolumeUp : LocalAction
     data object VolumeDown : LocalAction
+    data object MediaNext : LocalAction
+    data object MediaPrevious : LocalAction
     data class OpenApp(
         val packageName: String,
         val displayName: String,
@@ -41,6 +43,8 @@ sealed interface LocalActionResult {
         override val action: LocalAction,
         val displayName: String,
     ) : LocalActionResult
+
+    data class Dispatched(override val action: LocalAction) : LocalActionResult
 }
 
 object UnavailableLocalActionPort : LocalActionPort {

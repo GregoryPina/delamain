@@ -41,6 +41,7 @@ import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
 import com.gregorypina.delamain.integration.CompositeLocalActionPort
 import com.gregorypina.delamain.integration.apps.AndroidLaunchAppActionPort
+import com.gregorypina.delamain.integration.audio.AndroidMediaKeyActionPort
 import com.gregorypina.delamain.integration.audio.AndroidMediaVolumeActionPort
 
 private val DebugPanelBackground = Color(0xEE101820)
@@ -53,6 +54,7 @@ internal fun DebugCommandPanel() {
         LocalCommandEngine(
             actionPort = CompositeLocalActionPort(
                 volumePort = AndroidMediaVolumeActionPort.from(applicationContext),
+                mediaKeyPort = AndroidMediaKeyActionPort.from(applicationContext),
                 launchAppPort = AndroidLaunchAppActionPort.from(applicationContext),
             ),
         )

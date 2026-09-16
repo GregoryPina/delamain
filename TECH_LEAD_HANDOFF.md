@@ -14,15 +14,17 @@ Manter VEXA estável e preparar a próxima capacidade local em recorte pequeno.
 
 ## Current wave
 
-Wave 3 preparada: TASK-006 (abertura de aplicativo no fluxo local ativo). Despacho em `tasks/WAVE-003-DISPATCH.md`.
+Wave 4 em andamento: TASK-007 (faixa anterior/próxima no fluxo local). Branch `codex/media-track-local`.
 
 ## Completed
 
-Wave 2: TASK-004 + TASK-005 integradas pelo PR #1. Roteador remoto passou a reconhecer frases completas; correção de pontuação numérica revisada. Nome exibido e gatilho VEXA implementados; identificadores técnicos preservados. Proprietário respondeu “teste ok” ao roteiro de build e verificações manuais do HEAD indicado. Não forneceu logs, contagem de testes ou detalhes do aparelho; não inferir esses dados. Astra não repetiu testes.
+Wave 3 / TASK-006 integrada em `main` (`8bd5d7f`). Abertura de apps allowlisted, `<queries>` no manifesto, 32 testes automáticos verdes. Proprietário confirmou “teste ok” no aparelho (apps, volume, hora).
+
+Wave 2: TASK-004 + TASK-005 via PR #1. VEXA ativo; roteador remoto corrigido e inativo.
 
 ## In progress
 
-TASK-006 integrada em `main` (`5c00486` + correção de testes). `testDebugUnitTest`: 32 testes, 0 falhas. Proprietário validou YouTube no aparelho; demais apps da allowlist pendentes de teste manual. TASK-007 redigida; pronta para implementação.
+TASK-007 implementada na branch `codex/media-track-local`; aguardando `testDebugUnitTest` e validação no aparelho com app de mídia ativo.
 
 ## Waiting / blocked
 
@@ -38,7 +40,7 @@ Work exclusivo do Astra, sem agentes internos. Builds/testes locais pelo proprie
 
 ## Open decisions
 
-Próximo recorte recomendado: abertura de um aplicativo permitido, com resultado tipado, validação de disponibilidade e falha. Preparar TASK antes de implementar. Mídia e volume percentual permanecem futuros.
+Mídia faixa anterior/próxima em implementação (TASK-007). Play/pause e volume percentual permanecem futuros.
 
 ## Known problems
 
@@ -46,8 +48,8 @@ Executor remoto ainda sem confirmação robusta e pausa como toggle; não ativá
 
 ## Next recommended action
 
-1. Proprietário validar demais apps da allowlist no aparelho.
-2. Implementar TASK-007 (faixa anterior/próxima). Não ativar roteador remoto nem play/pause como toggle.
+1. Executar testes e validar TASK-007 no aparelho com mídia em reprodução.
+2. Integrar branch `codex/media-track-local` após confirmação. Não ativar play/pause como toggle.
 
 ## Warnings
 

@@ -11,10 +11,10 @@ class AndroidMediaVolumeActionPort private constructor(
     private val audioManager: AudioManager?,
 ) : LocalActionPort {
     override fun execute(action: LocalAction): LocalActionResult = when (action) {
-        is LocalAction.OpenApp -> LocalActionResult.Unavailable(action)
         LocalAction.VolumeUp,
         LocalAction.VolumeDown,
         -> executeVolume(action)
+        else -> LocalActionResult.Unavailable(action)
     }
 
     private fun executeVolume(action: LocalAction): LocalActionResult {
@@ -33,12 +33,12 @@ class AndroidMediaVolumeActionPort private constructor(
                 } else {
                     0
                 }
-                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
+                else -> error("Volume port does not handle $action")
             }
             val atLimit = when (action) {
                 LocalAction.VolumeUp -> before >= limit
                 LocalAction.VolumeDown -> before <= limit
-                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
+                else -> error("Volume port does not handle $action")
             }
             if (atLimit) {
                 return LocalActionResult.AtLimit(action, before)
@@ -47,14 +47,14 @@ class AndroidMediaVolumeActionPort private constructor(
             val direction = when (action) {
                 LocalAction.VolumeUp -> AudioManager.ADJUST_RAISE
                 LocalAction.VolumeDown -> AudioManager.ADJUST_LOWER
-                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
+                else -> error("Volume port does not handle $action")
             }
             manager.adjustStreamVolume(AudioManager.STREAM_MUSIC, direction, 0)
             val after = manager.getStreamVolume(AudioManager.STREAM_MUSIC)
             val changedAsRequested = when (action) {
                 LocalAction.VolumeUp -> after > before
                 LocalAction.VolumeDown -> after < before
-                is LocalAction.OpenApp -> error("Volume port does not handle app launch")
+                else -> error("Volume port does not handle $action")
             }
 
             if (changedAsRequested) {
