@@ -54,7 +54,7 @@ class DataStoreSpeechVoicePreferenceStore(context: Context) : SpeechVoicePrefere
     }
 
     override suspend fun clear(): Boolean = try {
-        dataStore.edit(::clearVoicePreferenceKeys)
+        dataStore.edit { values -> clearVoicePreferenceKeys(values) }
         true
     } catch (_: IOException) {
         false
