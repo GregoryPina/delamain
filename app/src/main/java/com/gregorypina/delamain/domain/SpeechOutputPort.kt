@@ -7,14 +7,14 @@ enum class SpeechOutputState {
 }
 
 interface SpeechOutputPort {
-    fun speak(text: String): SpeechOutputResult
+    fun speak(text: String, interactionId: Long = 0L): SpeechOutputResult
     /** True means the engine accepted stop, not proof of silence on the physical output. */
     fun stop(): Boolean
     fun shutdown()
 }
 
 object UnavailableSpeechOutputPort : SpeechOutputPort {
-    override fun speak(text: String) = SpeechOutputResult.Unavailable
+    override fun speak(text: String, interactionId: Long) = SpeechOutputResult.Unavailable
     override fun stop() = true
     override fun shutdown() = Unit
 }

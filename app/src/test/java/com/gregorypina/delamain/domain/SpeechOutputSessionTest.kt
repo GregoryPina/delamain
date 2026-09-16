@@ -28,7 +28,7 @@ class SpeechOutputSessionTest {
     @Test fun `queue acceptance is not speech start or completion`() {
         val engine = FakeEngine()
         val states = mutableListOf<SpeechOutputState>()
-        val session = SpeechOutputSession(engine, states::add)
+        val session = SpeechOutputSession(engine, onState = { state, _ -> states += state })
         session.initialized(true)
         assertEquals(SpeechOutputResult.Queued, session.speak("Olá"))
         assertEquals(SpeechOutputState.Queued, session.state)
@@ -89,7 +89,7 @@ class SpeechOutputSessionTest {
     @Test fun `shutdown before initialization cannot resurrect or notify UI`() {
         val engine = FakeEngine()
         val states = mutableListOf<SpeechOutputState>()
-        val session = SpeechOutputSession(engine, states::add)
+        val session = SpeechOutputSession(engine, onState = { state, _ -> states += state })
         session.shutdown()
         session.initialized(true)
         session.shutdown()
@@ -104,7 +104,7 @@ class SpeechOutputSessionTest {
     @Test fun `shutdown during speech drops late callbacks even if stop throws`() {
         val engine = FakeEngine()
         val states = mutableListOf<SpeechOutputState>()
-        val session = SpeechOutputSession(engine, states::add)
+        val session = SpeechOutputSession(engine, onState = { state, _ -> states += state })
         session.initialized(true)
         session.speak("olá")
         val id = engine.requests.last().second
@@ -203,11 +203,52 @@ class SpeechOutputSessionTest {
 
     @Test fun `voice selection cannot resurrect disposed session`() {
         val states = mutableListOf<SpeechOutputState>()
-        val session = SpeechOutputSession(FakeEngine()) { states += it }
+        val session = SpeechOutputSession(FakeEngine(), onState = { state, _ -> states += state })
         session.shutdown()
         session.voiceAvailabilityChanged(true)
         assertTrue(states.isEmpty())
         assertEquals(SpeechOutputState.Closed, session.state)
         assertEquals(SpeechOutputResult.Unavailable, session.speak("tardia"))
+    }
+
+    @Test fun `callbacks keep the interaction id from speak`() {
+        val engine = FakeEngine()
+        val events = mutableListOf<Pair<SpeechOutputState, Long>>()
+        val session = SpeechOutputSession(engine, onState = { state, id -> events += state to id })
+        session.initialized(true)
+        session.speak("olá", 7L)
+        val utteranceId = engine.requests.last().second
+        session.started(utteranceId)
+        session.completed(utteranceId)
+        assertEquals(
+            listOf(
+                SpeechOutputState.Ready to 0L,
+                SpeechOutputState.Queued to 7L,
+                SpeechOutputState.Speaking to 7L,
+                SpeechOutputState.Completed to 7L,
+            ),
+            events,
+        )
+    }
+
+    @Test fun `queued watchdog reports failure without success`() {
+        val scheduler = object : SpeechOutputWatchdogScheduler {
+            val tasks = mutableListOf<Pair<Long, () -> Unit>>()
+            override fun schedule(delayMs: Long, action: () -> Unit): () -> Unit {
+                tasks += delayMs to action
+                return {}
+            }
+        }
+        val events = mutableListOf<SpeechOutputState>()
+        val session = SpeechOutputSession(
+            FakeEngine(),
+            onState = { state, _ -> events += state },
+            watchdog = SpeechOutputWatchdog(scheduler),
+        )
+        session.initialized(true)
+        session.speak("olá", 3L)
+        scheduler.tasks.single { it.first == SpeechOutputWatchdog.DEFAULT_START_TIMEOUT_MS }.second.invoke()
+        assertEquals(SpeechOutputState.Failed, session.state)
+        assertFalse(events.contains(SpeechOutputState.Completed))
     }
 }

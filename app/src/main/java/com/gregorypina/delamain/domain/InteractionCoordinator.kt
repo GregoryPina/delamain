@@ -13,7 +13,7 @@ class InteractionCoordinator(private val onSnapshot: (InteractionSnapshot) -> Un
     fun begin(): Long { id += 1; boot = false; publish(InteractionFace.IDLE, "ONLINE"); return id }
     fun bootFinished() { if (!closed && id == 0L) { boot=false; publish(InteractionFace.IDLE,"ONLINE") } }
     fun input(state: SpeechInputState, interactionId: Long = id) {
-        if (!active(interactionId)) return
+        if (interactionId == 0L || !active(interactionId)) return
         when(state){
             SpeechInputState.Starting -> publish(InteractionFace.IDLE,"PREPARING")
             SpeechInputState.Listening -> publish(InteractionFace.LISTENING,"LISTENING")
@@ -24,7 +24,7 @@ class InteractionCoordinator(private val onSnapshot: (InteractionSnapshot) -> Un
         }
     }
     fun output(state: SpeechOutputState, interactionId: Long = id) {
-        if (!active(interactionId)) return
+        if (interactionId == 0L || !active(interactionId)) return
         when(state){
             SpeechOutputState.Queued -> publish(InteractionFace.IDLE,"VOICE QUEUED")
             SpeechOutputState.Speaking -> publish(InteractionFace.SPEAKING,"SPEAKING")

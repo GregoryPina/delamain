@@ -8,16 +8,18 @@ TASK-004–009: VEXA, parser legado corrigido e inativo, apps permitidos, volume
 
 TASK-010–012: TTS com estados/cancelamento/descarte, escuta local por botão no DEV e seleção de vozes pt-BR por sessão. PRs #2/#3/#4 integrados. Proprietário confirmou microfone, fala, cancelar e trocar voz. TASK-013 consolidou aceite e integração; [evidência e cobertura](handoffs/TASK-013.md).
 
-Os 29 testes novos foram criados; execução não confirmada. Relatórios unitários/release encontrados são anteriores. Nenhum teste foi executado pelo coordenador. Aceite funcional não comprova todos os cenários offline/lifecycle ou aparelhos.
+## Em andamento (branches, sem merge em main)
+
+TASK-014: persistência de voz (`codex/task-014-voice-preference`, `8f7da52`). TASK-015: rosto + sessão (`codex/task-015-session-state`); correções em [PR-006-REVIEW](handoffs/PR-006-REVIEW.md). `testDebugUnitTest`, `assembleDebug` e `assembleRelease` verdes na rodada do coordenador. IMPLEMENTADA_AGUARDANDO_TESTE no aparelho.
 
 ## Fluxo e limites
 
 Texto ou reconhecimento final no DEV → LocalCommandEngine → portas de ação → resposta escrita/TTS. Apps: YouTube, Chrome, Maps, Spotify, WhatsApp. Mídia confirma envio de evento, não troca efetiva. Unknown permanece local.
 
-STT somente on-device disponível em API31+, uma frase por toque, timeout 15s e sem fallback remoto. Permissão apenas debug; release sem DEV. TTS separa fila/início/término/erro, mas ainda não tem watchdog. Voz escolhida se perde ao fechar painel. Rosto não acompanha a sessão real. Sem IA, wake word, play/pause ou volume percentual ativo.
+STT on-device em API31+, uma frase por toque, timeout 15s. TTS com watchdog (fila 10s + limite proporcional). Voz persistida (014). Rosto acompanha sessão real (015). Sem IA, wake word, play/pause ou volume percentual ativo.
 
-## Próximo passo e responsáveis
+## Próximo passo
 
-Preparar [TASK-014](../tasks/TASK-014.md), persistência da voz, contra baseline completa publicada. TASK-014–022 detalhadas em [plano](../tasks/NEXT_TASKS.md), não despachadas. Nenhum executor ativo; coordenação Astra, execução externa, testes pelo proprietário. Exceção de implementação local anterior encerrada.
+Proprietário validar APK da branch `codex/task-015-session-state` (roteiro em [TASK-015](handoffs/TASK-015.md)). Depois merge 014→015 em `main`.
 
 [Retomada](../TECH_LEAD_HANDOFF.md), [decisões](DECISIONS.md), [processo](DEVELOPMENT.md).

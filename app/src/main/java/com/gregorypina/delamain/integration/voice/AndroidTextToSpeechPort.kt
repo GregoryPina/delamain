@@ -11,6 +11,8 @@ import com.gregorypina.delamain.domain.SpeechOutputEngine
 import com.gregorypina.delamain.domain.SpeechOutputPort
 import com.gregorypina.delamain.domain.SpeechOutputSession
 import com.gregorypina.delamain.domain.SpeechOutputState
+import com.gregorypina.delamain.domain.SpeechOutputWatchdog
+import com.gregorypina.delamain.domain.SpeechOutputWatchdogScheduler
 import com.gregorypina.delamain.domain.SpeechVoiceCandidate
 import com.gregorypina.delamain.domain.SpeechVoiceSelection
 import com.gregorypina.delamain.domain.localBrazilianVoices
@@ -19,8 +21,9 @@ import java.util.Locale
 /** Construct and call on the main thread; binder callbacks are posted to that thread. */
 class AndroidTextToSpeechPort(
     context: Context,
-    onState: (SpeechOutputState) -> Unit = {},
+    onState: (SpeechOutputState, Long) -> Unit = { _, _ -> },
     private val onVoices: (SpeechVoiceSelection) -> Unit = {},
+    watchdog: SpeechOutputWatchdog? = null,
 ) : SpeechOutputPort {
     private val handler = Handler(Looper.getMainLooper())
     private var textToSpeech: TextToSpeech? = null
@@ -43,7 +46,7 @@ class AndroidTextToSpeechPort(
             textToSpeech = null
             tts?.shutdown()
         }
-    }, onState)
+    }, onState, watchdog ?: SpeechOutputWatchdog(handlerScheduler(handler)))
 
     init {
         checkMainThread()
@@ -62,7 +65,7 @@ class AndroidTextToSpeechPort(
         }
     }
 
-    override fun speak(text: String) = onMain { session.speak(text) }
+    override fun speak(text: String, interactionId: Long) = onMain { session.speak(text, interactionId) }
     override fun stop() = onMain { session.stop() }
     override fun shutdown() = onMain {
         if (!closed) {
@@ -141,4 +144,12 @@ class AndroidTextToSpeechPort(
     private fun dispatch(action: () -> Unit) { handler.post { if (!closed) action() } }
     private fun checkMainThread() = check(Looper.myLooper() == Looper.getMainLooper())
     private inline fun <T> onMain(action: () -> T): T { checkMainThread(); return action() }
+
+    private fun handlerScheduler(handler: Handler): SpeechOutputWatchdogScheduler =
+        SpeechOutputWatchdogScheduler { delayMs, action ->
+            val runnable = Runnable { action() }
+            handler.postDelayed(runnable, delayMs)
+            val cancel = { handler.removeCallbacks(runnable) }
+            cancel
+        }
 }
