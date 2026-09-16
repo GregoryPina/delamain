@@ -26,14 +26,14 @@ Migração: versão desconhecida é tratada como preferência indisponível, sem
 
 - `domain/SpeechVoicePreference.kt`: modelo versionado, store fakeável, resultados/eventos e coordenador de concorrência.
 - `domain/SpeechVoiceSelection.kt`: passa a expor `engineId` junto ao catálogo/seleção.
-- `integration/voice/DataStoreSpeechVoicePreferenceStore.kt`: implementação Preferences DataStore.
+- `integration/voice/DataStoreSpeechVoicePreferenceStore.kt`: implementação Preferences DataStore e reset restrito às chaves de voz.
 - `integration/voice/AndroidTextToSpeechPort.kt`: restauração por motor+ID, revalidação de elegibilidade e seleção do fallback local.
 - `src/debug/.../DebugCommandPanel.kt`: leitura única por abertura/catálogo, salvar após seleção confirmada e “USAR PADRÃO”.
 - `app/build.gradle.kts`: `androidx.datastore:datastore-preferences:1.2.1`. A documentação oficial foi revalidada no despacho: 1.2.1 é a versão estável atual; o projeto já usa Kotlin 2.0.21, atendendo a exigência de KGP 2.0+ documentada para releases DataStore modernas.
 
 ## Testes criados
 
-`SpeechVoicePreferenceCoordinatorTest`: restauração válida; ID igual em motor diferente; ID removido/inelegível; falha de leitura/escrita; leitura atrasada após escolha; escritas concorrentes serializadas com última escolha prevalecendo; clear; versão incompatível. `SpeechVoiceSelectionTest` existente continua cobrindo exclusão de voz de rede, dados ausentes e outros locales.
+`SpeechVoicePreferenceCoordinatorTest`: restauração válida; ID igual em motor diferente; ID removido/inelegível; falha de leitura/escrita; leitura atrasada após escolha; escritas concorrentes serializadas com última escolha prevalecendo; clear; versão incompatível. `DataStoreSpeechVoicePreferenceStoreTest`: reset remove somente as chaves de voz e preserva uma chave futura não relacionada. `SpeechVoiceSelectionTest` existente continua cobrindo exclusão de voz de rede, dados ausentes e outros locales.
 
 TESTES EXECUTADOS: nenhum. Builds e testes foram explicitamente reservados ao proprietário.
 
