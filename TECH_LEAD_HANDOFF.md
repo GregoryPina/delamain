@@ -4,8 +4,8 @@
 
 Repository: GregoryPina/delamain
 Branch: main
-Baseline integrada: `cf67638` (TASK-006 a TASK-008 em `main`).
-HEAD validado pelo proprietário: apps, volume, hora, mídia, bateria e respostas variadas (TASK-006–008).
+Baseline integrada: `1d6ae3b` (TASK-006 a TASK-009 em `main`).
+HEAD validado pelo proprietário: apps, volume, hora, mídia, bateria, respostas variadas e TTS no painel DEV (TASK-006–009).
 
 ## Current objective
 

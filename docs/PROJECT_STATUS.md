@@ -89,4 +89,4 @@ Integrada em `main` (`cf67638`). Status da bateria (`status do sistema`, `bateri
 
 ## Wave 6 — TASK-009
 
-Integrada em `main`. TTS via `SpeechOutputPort` + `AndroidTextToSpeechPort` no painel DEV; ADR-005. Proprietário: “funcionou, ela falou”; voz padrão do sistema a trocar depois.
+Integrada em `main` (`1d6ae3b`). TTS via `SpeechOutputPort` + `AndroidTextToSpeechPort` no painel DEV; ADR-005. Proprietário: “funcionou, ela falou”; voz padrão do sistema a trocar depois.
