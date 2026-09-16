@@ -3,7 +3,6 @@ package com.gregorypina.delamain.domain
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-/** Stable persisted identity. Voice IDs are meaningful only inside the engine that owns them. */
 data class SpeechVoicePreference(
     val engineId: String,
     val voiceId: String,
@@ -34,13 +33,19 @@ sealed interface SpeechVoicePreferenceEvent {
     data object ClearFailed : SpeechVoicePreferenceEvent
 }
 
-/** User actions advance generation before I/O, preventing a late startup read from winning. */
+/** Coordinates persistence only; TTS application remains in the adapter. */
 class SpeechVoicePreferenceCoordinator(
     private val store: SpeechVoicePreferenceStore,
     private val onEvent: (SpeechVoicePreferenceEvent) -> Unit = {},
 ) {
     private var generation = 0L
     private val writeMutex = Mutex()
+
+    /** Call synchronously before applying any explicit user choice. */
+    fun beginExplicitChange(): Long {
+        generation += 1
+        return generation
+    }
 
     suspend fun restore(engineId: String, eligibleVoiceIds: Set<String>) {
         val startedAt = generation
@@ -60,20 +65,16 @@ class SpeechVoicePreferenceCoordinator(
         }
     }
 
-    suspend fun saveConfirmed(engineId: String, voiceId: String) {
-        generation += 1
-        val mine = generation
+    suspend fun saveConfirmed(change: Long, engineId: String, voiceId: String) {
         val saved = writeMutex.withLock { store.write(SpeechVoicePreference(engineId, voiceId)) }
-        if (mine == generation) onEvent(
+        if (change == generation) onEvent(
             if (saved) SpeechVoicePreferenceEvent.Saved else SpeechVoicePreferenceEvent.SaveFailed,
         )
     }
 
-    suspend fun useDefault() {
-        generation += 1
-        val mine = generation
+    suspend fun clearPreference(change: Long) {
         val cleared = writeMutex.withLock { store.clear() }
-        if (mine == generation) onEvent(
+        if (change == generation) onEvent(
             if (cleared) SpeechVoicePreferenceEvent.Cleared else SpeechVoicePreferenceEvent.ClearFailed,
         )
     }
