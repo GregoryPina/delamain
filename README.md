@@ -39,11 +39,13 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 ## Status
 
-Interface e comandos locais aceitos pelo proprietário. TASK-010–012 integradas: fala com interrupção/estados, microfone por botão usando reconhecimento local disponível e comparação de vozes pt-BR instaladas. Proprietário confirmou microfone, fala, cancelar e trocar voz; detalhes e limites em [TASK-013](docs/handoffs/TASK-013.md).
+Interface e comandos locais aceitos pelo proprietário. TASK-010–013 integradas: fala com interrupção/estados, microfone por botão usando reconhecimento local disponível e comparação de vozes pt-BR instaladas. Proprietário confirmou microfone, fala, cancelar e trocar voz; detalhes e limites em [TASK-013](docs/handoffs/TASK-013.md).
 
-No APK debug, abra DEV para digitar, OUVIR, PARAR VOZ ou comparar vozes. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device disponível em Android 12+; sem suporte, use texto. A seleção de voz vale apenas para a sessão. Release ainda sem DEV/microfone. IA e wake word não implementados.
+TASK-014 está implementada em branch/PR e aguarda validação do proprietário: a escolha de voz usa Preferences DataStore com identidade do motor + ID estável da voz, restaura somente voz local pt-BR elegível e oferece “USAR PADRÃO” para remover a preferência. Até os testes serem relatados, não considerar a persistência integrada/concluída; detalhes em [TASK-014](docs/handoffs/TASK-014.md).
 
-Próximo recorte: [lembrar a voz escolhida](tasks/TASK-014.md), pelo processo normal de executor externo. Builds/testes ficam com o proprietário; os 29 testes novos e release não têm execução confirmada nesta rodada. [Roteiro funcional](docs/handoffs/TASK-012.md).
+No APK debug, abra DEV para digitar, OUVIR, PARAR VOZ ou comparar vozes. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device disponível em Android 12+; sem suporte, use texto. Release ainda sem DEV/microfone. IA e wake word não implementados.
+
+Builds/testes ficam com o proprietário; a implementação TASK-014 adicionou testes de persistência/concorrência, mas nenhum teste foi executado pelo executor.
 
 ## Como o companion responderá
 
@@ -69,6 +71,6 @@ A personalidade aparece desde as respostas prontas. Internet não é requisito p
 - [Desenvolvimento](docs/DEVELOPMENT.md)
 - [Diretrizes para agentes de código](AGENTS.md)
 
-Para testar todas as mudanças desta sessão no mesmo APK: [roteiro consolidado TASK-010–012](docs/handoffs/TASK-012.md). As três entregas estão integradas à main; roteiro mantido para regressões.
+Para testar mudanças de voz e regressões de TASK-010–014, consulte o [handoff TASK-014](docs/handoffs/TASK-014.md) e o [roteiro consolidado anterior](docs/handoffs/TASK-012.md).
 
-[Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor, ainda não despachado.
+[Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor; TASK-015+ não iniciadas.

@@ -2,11 +2,11 @@
 
 ## Próximos incrementos detalhados
 
-[TASK-013–022 e protocolo de despacho](../tasks/NEXT_TASKS.md). Planejamento preparado em 2026-09-16; TASK-013 consolidada, demais tarefas ainda não despachadas. TASK-010–013 encerradas por aceite funcional registrado; próxima: TASK-014. Baselines futuras serão definidas após integrar dependências, nunca copiadas de branch pendente por conveniência. IA real exige decisão de provider/custos/credenciais; wake word continua pesquisa.
+[TASK-013–022 e protocolo de despacho](../tasks/NEXT_TASKS.md). Planejamento preparado em 2026-09-16; TASK-013 consolidada. TASK-014 está implementada em branch/PR, aguardando testes do proprietário; tarefas posteriores não foram iniciadas. Baselines futuras serão definidas após integrar dependências, nunca copiadas de branch pendente por conveniência. IA real exige decisão de provider/custos/credenciais; wake word continua pesquisa.
 
 ## Fase 0 — Fundação
 
-Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010–012 integradas após proprietário confirmar microfone, fala, cancelar e trocar voz; TASK-013 consolidada. Evidências em PROJECT_STATUS.md; não houve novos testes nesta auditoria.
+Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010–012 integradas após proprietário confirmar microfone, fala, cancelar e trocar voz; TASK-013 consolidada. TASK-014 implementada, sem validação ainda. Evidências em PROJECT_STATUS.md e handoffs; não houve novos testes nesta implementação.
 
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios
@@ -59,7 +59,7 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] TASK-011: STT local por botão integrado; aceite funcional do proprietário
 - [x] TASK-012: comparação de vozes locais por sessão integrada; aceite funcional do proprietário
 - [x] TASK-013: consolidação e integração; cobertura não relatada registrada separadamente
-- [ ] Persistir preferência de voz e avaliar personalização adicional após feedback
+- [ ] TASK-014: persistência da preferência de voz implementada; aguardando testes/integração
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões
