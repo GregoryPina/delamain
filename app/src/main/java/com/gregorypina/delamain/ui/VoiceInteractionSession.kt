@@ -11,6 +11,10 @@ import com.gregorypina.delamain.domain.InteractionCoordinator
 import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
 import com.gregorypina.delamain.domain.LocalUnknownResponses
+import com.gregorypina.delamain.domain.PersonalityConfig
+import com.gregorypina.delamain.domain.PersonalityPreference
+import com.gregorypina.delamain.domain.PersonalityPreview
+import com.gregorypina.delamain.domain.PersonalityTone
 import com.gregorypina.delamain.domain.SpeechInputStartResult
 import com.gregorypina.delamain.domain.SpeechInputState
 import com.gregorypina.delamain.domain.SpeechOutputResult
@@ -60,6 +64,14 @@ class VoiceInteractionSession(
         private set
     var voiceMuted: Boolean by mutableStateOf(false)
         private set
+    var personalityTone: PersonalityTone by mutableStateOf(PersonalityTone.WARM)
+        private set
+    var personalityDisplayName: String? by mutableStateOf(null)
+        private set
+    var personalityMessage: String? by mutableStateOf(null)
+        private set
+    var personalityPreview: String? by mutableStateOf(null)
+        private set
 
     private val preferenceStore = DataStoreSpeechVoicePreferenceStore(appContext)
     val preferenceCoordinator = SpeechVoicePreferenceCoordinator(preferenceStore) { token, event ->
@@ -93,7 +105,10 @@ class VoiceInteractionSession(
         started = true
         voiceRestored = false
         preferenceSessionToken = preferenceCoordinator.openSession()
-        scope.launch { preferenceCoordinator.restoreMute(preferenceSessionToken) }
+        scope.launch {
+            preferenceCoordinator.restoreMute(preferenceSessionToken)
+            preferenceCoordinator.restorePersonality(preferenceSessionToken)
+        }
         speechOutput = AndroidTextToSpeechPort(
             appContext,
             onState = { state, interactionId ->
@@ -182,6 +197,39 @@ class VoiceInteractionSession(
                 SubmitResult.TextOnly(debugDisplay)
             }
         }
+    }
+
+    fun selectPersonalityTone(tone: PersonalityTone) {
+        personalityTone = tone
+        personalityPreview = null
+        engine.applyPersonality(PersonalityConfig.sanitize(personalityDisplayName, tone))
+    }
+
+    fun savePersonality(nameDraft: String) {
+        val config = PersonalityConfig.sanitize(nameDraft, personalityTone)
+        personalityDisplayName = config.displayName
+        personalityPreview = null
+        engine.applyPersonality(config)
+        scope.launch {
+            preferenceCoordinator.persistPersonality(
+                preferenceSessionToken,
+                PersonalityPreference(config.displayName, config.tone),
+            )
+        }
+    }
+
+    fun previewPersonality(nameDraft: String) {
+        personalityPreview = PersonalityPreview.sample(
+            PersonalityConfig.sanitize(nameDraft, personalityTone),
+        )
+    }
+
+    fun resetPersonality() {
+        personalityTone = PersonalityTone.WARM
+        personalityDisplayName = null
+        personalityPreview = null
+        engine.applyPersonality(PersonalityConfig())
+        scope.launch { preferenceCoordinator.clearPersonality(preferenceSessionToken) }
     }
 
     fun toggleMute() {
@@ -345,6 +393,24 @@ class VoiceInteractionSession(
             }
             is SpeechVoicePreferenceEvent.MuteRestored -> {
                 voiceMuted = event.muted
+            }
+            is SpeechVoicePreferenceEvent.PersonalityRestored -> {
+                val config = event.preference.toConfig()
+                personalityTone = config.tone
+                personalityDisplayName = config.displayName
+                engine.applyPersonality(config)
+            }
+            SpeechVoicePreferenceEvent.PersonalitySaved -> {
+                personalityMessage = "Preferências de personalidade salvas."
+            }
+            SpeechVoicePreferenceEvent.PersonalityCleared -> {
+                personalityMessage = "Personalidade restaurada ao padrão."
+            }
+            SpeechVoicePreferenceEvent.PersonalitySaveFailed -> {
+                personalityMessage = "Não foi possível salvar a personalidade."
+            }
+            SpeechVoicePreferenceEvent.PersonalityClearFailed -> {
+                personalityMessage = "Não foi possível restaurar a personalidade."
             }
         }
     }

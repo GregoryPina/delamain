@@ -18,7 +18,7 @@ A entrada passa por `VoiceInteractionSession` (TASK-016), compartilhada entre a 
 
 Após TASK-010, `Queued` representa aceite da fila; `SpeechOutputSession` acompanha início/término/erro pelo `interactionId` ativo, invalida callbacks cancelados e protege descarte. Watchdog TTS (TASK-015) cobre fila e duração proporcional. O adapter serializa eventos na thread principal e seleciona voz pt-BR declarada sem rede. `stop()` retorna aceite do motor, não prova de silêncio físico.
 
-Persistência: `DataStoreSpeechVoicePreferenceStore` guarda engine/voice (TASK-014) e `voice_muted` (TASK-017) em `vexa_preferences`. `SpeechVoicePreferenceCoordinator` serializa restore/save com tokens de sessão. `InteractionCoordinator` (TASK-015) publica rosto/HUD a partir de eventos reais de STT/TTS. TASK-010–012 integradas em main; 014–017 em branches aguardando validação — ver handoffs.
+Persistência: `DataStoreSpeechVoicePreferenceStore` guarda engine/voice (TASK-014), `voice_muted` (TASK-017) e personalidade (`personality_display_name`, `personality_tone`, TASK-018) em `vexa_preferences`. `SpeechVoicePreferenceCoordinator` serializa restore/save com tokens de sessão. `LocalPhraseBank` fornece variantes por tom sem alterar fatos tipados. `InteractionCoordinator` (TASK-015) publica rosto/HUD a partir de eventos reais de STT/TTS. TASK-010–012 integradas em main; 014–018 em branches aguardando validação — ver handoffs.
 
 ```text
 Microfone / UI / eventos Android

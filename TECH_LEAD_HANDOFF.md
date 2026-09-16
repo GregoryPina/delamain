@@ -8,7 +8,7 @@ Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. 
 
 ## Próxima ação
 
-TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 em `codex/task-016-user-controls` (`72b32ce`). TASK-017 em `codex/task-017-mute-controls` (`d1d6d99`): mute + controles prioritários (ADR-007). TESTES: proprietário acumulará validação em massa. Sem merge em `main`. TASK-018+ não iniciadas.
+TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016 (`72b32ce`), TASK-017 (`d1d6d99`), TASK-018 em `codex/task-018-personality` (nome/tom local). TESTES: proprietário acumulará validação em massa. Sem merge em `main`. TASK-019+ não iniciadas.
 
 ## Entregas encerradas
 
@@ -19,7 +19,7 @@ TASK-004–009 também concluídas. Nome/gatilho: VEXA; identificadores técnico
 ## Contratos e limitações
 
 - LocalCommandEngine é canônico; executor remoto e CommandRouter legado não ativados. Mídia confirma despacho, não efeito.
-- UI principal com OUVIR/PARAR/TEXTO/MUTE (016/017); DEV só em debug para diagnóstico e prévia de voz.
+- UI principal com OUVIR/PARAR/TEXTO/MUTE/TOM (016–018); DEV só em debug para diagnóstico e prévia de voz.
 - Controles prioritários (017): `InteractionControlRecognizer` antes do motor; parar/cancelar/mute por frase ou botão; mute persiste em `voice_muted` (ADR-007).
 - TTS Queued não significa fala concluída. Stop é aceite do motor, não prova silêncio físico. Watchdog TTS implementado na 015 (fila 10s + limite proporcional); timeout reporta falha, não sucesso.
 - STT: botão, sessão única, 15s, sem fallback remoto. Permissão concedida exige novo toque. Cancelamento invalida callbacks.

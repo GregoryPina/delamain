@@ -48,7 +48,9 @@ fun UserInteractionControls(
 ) {
     val focusManager = LocalFocusManager.current
     var textExpanded by rememberSaveable { mutableStateOf(false) }
+    var personalityExpanded by rememberSaveable { mutableStateOf(false) }
     var draft by rememberSaveable { mutableStateOf("") }
+    var nameDraft by rememberSaveable { mutableStateOf(session.personalityDisplayName.orEmpty()) }
     val permission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted -> session.onMicrophonePermissionResult(granted) }
@@ -157,6 +159,32 @@ fun UserInteractionControls(
                     fontSize = 12.sp,
                 )
             }
+            val personalityToggleDescription = stringResource(
+                if (personalityExpanded) R.string.cd_hide_personality else R.string.cd_show_personality,
+            )
+            TextButton(
+                onClick = { personalityExpanded = !personalityExpanded },
+                modifier = Modifier.semantics { contentDescription = personalityToggleDescription },
+            ) {
+                Text(
+                    text = stringResource(
+                        if (personalityExpanded) {
+                            R.string.action_hide_personality
+                        } else {
+                            R.string.action_show_personality
+                        },
+                    ),
+                    color = Accent,
+                    fontSize = 12.sp,
+                )
+            }
+        }
+        AnimatedVisibility(visible = personalityExpanded) {
+            PersonalitySettings(
+                session = session,
+                nameDraft = nameDraft,
+                onNameChange = { nameDraft = it },
+            )
         }
         AnimatedVisibility(visible = textExpanded) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

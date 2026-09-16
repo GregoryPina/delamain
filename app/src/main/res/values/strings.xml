@@ -29,4 +29,25 @@
     <string name="cd_hide_text">Ocultar entrada de texto</string>
     <string name="cd_text_input">Campo de comando por texto</string>
     <string name="cd_send_command">Enviar comando</string>
+    <string name="action_show_personality">TOM</string>
+    <string name="action_hide_personality">OCULTAR TOM</string>
+    <string name="label_personality_name">Nome de tratamento</string>
+    <string name="hint_personality_name">Opcional</string>
+    <string name="tone_warm">Atual</string>
+    <string name="tone_direct">Direto</string>
+    <string name="action_save_personality">SALVAR</string>
+    <string name="action_preview_personality">PRÉVIA</string>
+    <string name="action_reset_personality">PADRÃO</string>
+    <string name="personality_preview">Exemplo: %1$s</string>
+    <string name="msg_personality_saved">Preferências de personalidade salvas.</string>
+    <string name="msg_personality_reset">Personalidade restaurada ao padrão.</string>
+    <string name="msg_personality_save_failed">Não foi possível salvar a personalidade.</string>
+    <string name="cd_show_personality">Mostrar ajustes de personalidade</string>
+    <string name="cd_hide_personality">Ocultar ajustes de personalidade</string>
+    <string name="cd_personality_name">Nome de tratamento opcional</string>
+    <string name="cd_tone_warm">Tom atual</string>
+    <string name="cd_tone_direct">Tom direto</string>
+    <string name="cd_save_personality">Salvar personalidade</string>
+    <string name="cd_preview_personality">Prévia do tom</string>
+    <string name="cd_reset_personality">Restaurar personalidade padrão</string>
 </resources>

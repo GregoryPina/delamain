@@ -16,8 +16,9 @@ TASK-010–012: TTS com estados/cancelamento/descarte, escuta local por botão n
 | 015 | `codex/task-015-session-state` (`fd2b3d7`) | `InteractionCoordinator`, rosto por eventos reais, watchdog TTS | IMPLEMENTADA_AGUARDANDO_TESTE |
 | 016 | `codex/task-016-user-controls` (`72b32ce`) | `VoiceInteractionSession` compartilhada, OUVIR/PARAR/TEXTO na tela principal | IMPLEMENTADA_AGUARDANDO_TESTE |
 | 017 | `codex/task-017-mute-controls` | Controles prioritários (parar/cancelar) e modo mute (ADR-007) | IMPLEMENTADA_AGUARDANDO_TESTE |
+| 018 | `codex/task-018-personality` | Nome de tratamento e tom (Atual/Direto) | IMPLEMENTADA_AGUARDANDO_TESTE |
 
-Validação manual acumulada pelo proprietário. Roteiros em `docs/handoffs/TASK-014.md` … `TASK-017.md`.
+Validação manual acumulada pelo proprietário. Roteiros em `docs/handoffs/TASK-014.md` … `TASK-018.md`.
 
 ## Fluxo e limites
 
@@ -27,6 +28,6 @@ STT on-device em API31+, uma frase por toque, timeout 15s. TTS com watchdog (fil
 
 ## Próximo passo
 
-Proprietário validar em massa branches 014–017. Depois merge sequencial em `main` (014 → 015 → 016 → 017).
+Proprietário validar em massa branches 014–018. Depois merge sequencial em `main` (014 → … → 018).
 
 [Retomada](../TECH_LEAD_HANDOFF.md), [decisões](DECISIONS.md), [processo](DEVELOPMENT.md).

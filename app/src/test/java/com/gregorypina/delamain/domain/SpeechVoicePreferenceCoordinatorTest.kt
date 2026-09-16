@@ -1,5 +1,7 @@
 package com.gregorypina.delamain.domain
 
+import com.gregorypina.delamain.domain.PersonalityPreference
+import com.gregorypina.delamain.domain.PersonalityTone
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
@@ -72,6 +74,32 @@ class SpeechVoicePreferenceCoordinatorTest {
         c.closeSession(session)
         c.persistMute(session, false)
         assertTrue(store.muted)
+    }
+
+    @Test fun `personality clear does not touch voice preference`() = runBlocking {
+        val store = object : SpeechVoicePreferenceStore {
+            var personality = PersonalityPreference("Ana", PersonalityTone.DIRECT)
+            override suspend fun read(): SpeechVoicePreferenceReadResult =
+                SpeechVoicePreferenceReadResult.Found(SpeechVoicePreference("e", "v"))
+            override suspend fun write(preference: SpeechVoicePreference) = true
+            override suspend fun clear() = true
+            override suspend fun readPersonality(): PersonalityPreferenceReadResult =
+                PersonalityPreferenceReadResult.Found(personality)
+            override suspend fun writePersonality(preference: PersonalityPreference): Boolean {
+                personality = preference
+                return true
+            }
+            override suspend fun clearPersonality(): Boolean {
+                personality = PersonalityPreference()
+                return true
+            }
+        }
+        val events = mutableListOf<SpeechVoicePreferenceEvent>()
+        val c = SpeechVoicePreferenceCoordinator(store) { _, e -> events += e }
+        val session = c.openSession()
+        c.clearPersonality(session)
+        assertEquals(listOf(SpeechVoicePreferenceEvent.PersonalityCleared), events)
+        assertEquals(PersonalityPreference(), store.personality)
     }
 
     @Test fun `read and write failures remain distinct`() = runBlocking {

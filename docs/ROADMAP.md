@@ -63,6 +63,7 @@ Conclusão funcional baseada no relato do proprietário em 15 de setembro de 202
 - [x] TASK-015: coordenação de sessão e rosto por eventos reais (branch; aguardando validação)
 - [x] TASK-016: controles OUVIR/PARAR/TEXTO na tela principal (branch; aguardando validação)
 - [x] TASK-017: interrupção prioritária e modo mute (ADR-007; branch; aguardando validação)
+- [x] TASK-018: nome e tom de personalidade local (branch; aguardando validação)
 - [ ] Wake word
 - [ ] Caminho de baixa latência
 - [ ] Tratamento de erro/permissões

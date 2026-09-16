@@ -1,18 +1,24 @@
 package com.gregorypina.delamain.domain
 
 import java.time.Clock
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 class LocalCommandEngine(
     private val clock: Clock = Clock.systemDefaultZone(),
     configuredName: String? = null,
+    tone: PersonalityTone = PersonalityTone.WARM,
     private val actionPort: LocalActionPort = UnavailableLocalActionPort,
     private val batteryStatusPort: BatteryStatusPort = UnavailableBatteryStatusPort,
 ) {
-    private val name = configuredName?.trim()?.takeIf(String::isNotEmpty)
+    private var personality = PersonalityConfig.sanitize(configuredName, tone)
     private val nextVariantByIntent = mutableMapOf<LocalIntent, Int>()
     private val nextVariantByResponseKey = mutableMapOf<String, Int>()
+
+    @Synchronized
+    fun applyPersonality(config: PersonalityConfig) {
+        personality = config
+    }
+
+    fun currentPersonality(): PersonalityConfig = personality
 
     @Synchronized
     fun process(input: String): LocalCommandResult {
@@ -75,79 +81,19 @@ class LocalCommandEngine(
         return variants[nextIndex]
     }
 
-    private fun responsesFor(intent: LocalIntent): List<String> = when (intent) {
-        LocalIntent.CALL -> listOf(
-            "À disposição.",
-            "Pois não?",
-            "Sim?",
-        )
-        LocalIntent.PRESENCE -> if (name == null) {
-            listOf(
-                "Sempre a postos.",
-                "Estou aqui.",
-                "Presente.",
-            )
-        } else {
-            listOf(
-                "Sempre a postos, $name.",
-                "Estou aqui, $name.",
-                "Presente, $name.",
-            )
-        }
-        LocalIntent.GREETING -> listOf(
-            "Olá. Pronto para a próxima viagem?",
-            "Saudações. À disposição.",
-            "Olá. Como posso ajudar?",
-        )
-        LocalIntent.THANKS -> listOf(
-            "É um prazer.",
-            "Sempre às ordens.",
-            "Por nada.",
-        )
-        LocalIntent.TIME -> {
-            val time = LocalTime.now(clock).format(TIME_FORMATTER)
-            listOf(
-                "São $time.",
-                "Agora são $time.",
-                "O horário agora é $time.",
-            )
-        }
-        LocalIntent.BATTERY_STATUS,
-        LocalIntent.VOLUME_UP,
-        LocalIntent.VOLUME_DOWN,
-        LocalIntent.MEDIA_NEXT,
-        LocalIntent.MEDIA_PREVIOUS,
-        LocalIntent.OPEN_APP,
-        -> error("Action responses depend on the observed result")
-    }
+    private fun responsesFor(intent: LocalIntent): List<String> =
+        LocalPhraseBank.intentVariants(intent, personality.tone, personality.displayName, clock)
 
     private fun responseForBattery(status: BatteryStatus?): String = when (status) {
-        null -> pickVariant(
-            KEY_BATTERY_UNAVAILABLE,
-            listOf(
-                "Não consigo ler a bateria neste momento.",
-                "O status da bateria está indisponível agora.",
-                "Sem leitura de bateria por enquanto.",
-            ),
-        )
+        null -> pickVariant(KEY_BATTERY_UNAVAILABLE)
         else -> if (status.isCharging) {
             pickVariant(
                 KEY_BATTERY_CHARGING,
-                listOf(
-                    "Bateria em {percent}% e carregando.",
-                    "Restam {percent}% de bateria, carregando agora.",
-                    "{percent}% de bateria, com carga em andamento.",
-                ),
                 mapOf("percent" to status.levelPercent.toString()),
             )
         } else {
             pickVariant(
                 KEY_BATTERY_LEVEL,
-                listOf(
-                    "Bateria em {percent}%.",
-                    "Restam {percent}% de bateria.",
-                    "Nível de bateria: {percent}%.",
-                ),
                 mapOf("percent" to status.levelPercent.toString()),
             )
         }
@@ -155,159 +101,51 @@ class LocalCommandEngine(
 
     private fun responseFor(result: LocalActionResult): String = when (result) {
         is LocalActionResult.Changed -> when (result.action) {
-            LocalAction.VolumeUp -> pickVariant(
-                KEY_VOLUME_UP_CHANGED,
-                listOf(
-                    "Volume aumentado.",
-                    "Subi o volume.",
-                    "Volume um pouco mais alto.",
-                ),
-            )
-            LocalAction.VolumeDown -> pickVariant(
-                KEY_VOLUME_DOWN_CHANGED,
-                listOf(
-                    "Volume reduzido.",
-                    "Abaixei o volume.",
-                    "Volume um pouco mais baixo.",
-                ),
-            )
+            LocalAction.VolumeUp -> pickVariant(KEY_VOLUME_UP_CHANGED)
+            LocalAction.VolumeDown -> pickVariant(KEY_VOLUME_DOWN_CHANGED)
             else -> error("Volume change is not supported for ${result.action}")
         }
         is LocalActionResult.AtLimit -> when (result.action) {
-            LocalAction.VolumeUp -> pickVariant(
-                KEY_VOLUME_UP_AT_LIMIT,
-                listOf(
-                    "O volume já está no máximo.",
-                    "Não há mais volume para aumentar.",
-                    "Já estamos no volume máximo.",
-                ),
-            )
-            LocalAction.VolumeDown -> pickVariant(
-                KEY_VOLUME_DOWN_AT_LIMIT,
-                listOf(
-                    "O volume já está no mínimo.",
-                    "Não há mais volume para reduzir.",
-                    "Já estamos no volume mínimo.",
-                ),
-            )
+            LocalAction.VolumeUp -> pickVariant(KEY_VOLUME_UP_AT_LIMIT)
+            LocalAction.VolumeDown -> pickVariant(KEY_VOLUME_DOWN_AT_LIMIT)
             else -> error("Volume limit is not supported for ${result.action}")
         }
-        is LocalActionResult.Fixed -> pickVariant(
-            KEY_VOLUME_FIXED,
-            listOf(
-                "O volume deste dispositivo é fixo.",
-                "Este aparelho não permite ajuste de volume.",
-                "O volume aqui é fixo, não consigo alterar.",
-            ),
-        )
+        is LocalActionResult.Fixed -> pickVariant(KEY_VOLUME_FIXED)
         is LocalActionResult.Unavailable -> when (result.action) {
-            is LocalAction.OpenApp -> pickVariant(
-                KEY_APP_UNAVAILABLE,
-                listOf(
-                    "Abertura de aplicativos indisponível.",
-                    "Não consigo abrir aplicativos agora.",
-                    "O recurso de abrir apps está indisponível.",
-                ),
-            )
+            is LocalAction.OpenApp -> pickVariant(KEY_APP_UNAVAILABLE)
             LocalAction.MediaNext,
             LocalAction.MediaPrevious,
-            -> pickVariant(
-                KEY_MEDIA_UNAVAILABLE,
-                listOf(
-                    "Controle de mídia indisponível.",
-                    "Não consigo controlar a mídia agora.",
-                    "Os comandos de mídia estão indisponíveis.",
-                ),
-            )
-            else -> pickVariant(
-                KEY_VOLUME_UNAVAILABLE,
-                listOf(
-                    "Controle de volume indisponível.",
-                    "Não consigo ajustar o volume agora.",
-                    "O controle de volume está indisponível.",
-                ),
-            )
+            -> pickVariant(KEY_MEDIA_UNAVAILABLE)
+            else -> pickVariant(KEY_VOLUME_UNAVAILABLE)
         }
-        is LocalActionResult.Denied -> pickVariant(
-            KEY_VOLUME_DENIED,
-            listOf(
-                "Sem permissão para ajustar o volume.",
-                "Não tenho permissão para mudar o volume.",
-                "O sistema não autorizou o ajuste de volume.",
-            ),
-        )
+        is LocalActionResult.Denied -> pickVariant(KEY_VOLUME_DENIED)
         is LocalActionResult.Failure -> when (result.action) {
-            is LocalAction.OpenApp -> pickVariant(
-                KEY_APP_FAILURE,
-                listOf(
-                    "Não consegui abrir o aplicativo.",
-                    "A abertura do aplicativo falhou.",
-                    "Não foi possível iniciar o aplicativo.",
-                ),
-            )
+            is LocalAction.OpenApp -> pickVariant(KEY_APP_FAILURE)
             LocalAction.MediaNext,
             LocalAction.MediaPrevious,
-            -> pickVariant(
-                KEY_MEDIA_FAILURE,
-                listOf(
-                    "Não consegui enviar o comando de mídia.",
-                    "O comando de mídia não foi enviado.",
-                    "Falha ao enviar o comando de mídia.",
-                ),
-            )
-            else -> pickVariant(
-                KEY_VOLUME_FAILURE,
-                listOf(
-                    "Não consegui confirmar o ajuste de volume.",
-                    "O volume não respondeu como esperado.",
-                    "Não houve confirmação do ajuste de volume.",
-                ),
-            )
+            -> pickVariant(KEY_MEDIA_FAILURE)
+            else -> pickVariant(KEY_VOLUME_FAILURE)
         }
         is LocalActionResult.Launched -> pickVariant(
             KEY_APP_LAUNCHED,
-            listOf(
-                "Abrindo {app}.",
-                "Iniciando {app}.",
-                "Vou abrir o {app}.",
-            ),
             mapOf("app" to result.displayName),
         )
         is LocalActionResult.NotInstalled -> pickVariant(
             KEY_APP_NOT_INSTALLED,
-            listOf(
-                "{app} não está instalado.",
-                "Não encontrei o {app} neste aparelho.",
-                "Parece que o {app} não está instalado.",
-            ),
             mapOf("app" to result.displayName),
         )
         is LocalActionResult.Dispatched -> when (result.action) {
-            LocalAction.MediaNext -> pickVariant(
-                KEY_MEDIA_NEXT_DISPATCHED,
-                listOf(
-                    "Comando de próxima faixa enviado.",
-                    "Pedido de próxima faixa encaminhado.",
-                    "Solicitei a próxima faixa.",
-                ),
-            )
-            LocalAction.MediaPrevious -> pickVariant(
-                KEY_MEDIA_PREVIOUS_DISPATCHED,
-                listOf(
-                    "Comando de faixa anterior enviado.",
-                    "Pedido de faixa anterior encaminhado.",
-                    "Solicitei a faixa anterior.",
-                ),
-            )
+            LocalAction.MediaNext -> pickVariant(KEY_MEDIA_NEXT_DISPATCHED)
+            LocalAction.MediaPrevious -> pickVariant(KEY_MEDIA_PREVIOUS_DISPATCHED)
             else -> error("Dispatch is not supported for ${result.action}")
         }
     }
 
     private fun pickVariant(
         key: String,
-        variants: List<String>,
         args: Map<String, String> = emptyMap(),
     ): String {
+        val variants = LocalPhraseBank.variants(key, personality.tone)
         val nextIndex = nextVariantByResponseKey.getOrDefault(key, 0) % variants.size
         nextVariantByResponseKey[key] = (nextIndex + 1) % variants.size
         return applyTemplate(variants[nextIndex], args)
@@ -318,7 +156,7 @@ class LocalCommandEngine(
             text.replace("{$key}", value)
         }
 
-    private companion object {
+    internal companion object {
         const val KEY_BATTERY_UNAVAILABLE = "battery_unavailable"
         const val KEY_BATTERY_CHARGING = "battery_charging"
         const val KEY_BATTERY_LEVEL = "battery_level"
@@ -402,6 +240,5 @@ class LocalCommandEngine(
             }
         }
 
-        val TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     }
 }

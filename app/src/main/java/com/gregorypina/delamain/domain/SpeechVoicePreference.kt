@@ -17,6 +17,9 @@ interface SpeechVoicePreferenceStore {
     suspend fun clear(): Boolean
     suspend fun readMute(): Boolean = false
     suspend fun writeMute(muted: Boolean): Boolean = true
+    suspend fun readPersonality(): PersonalityPreferenceReadResult = PersonalityPreferenceReadResult.Empty
+    suspend fun writePersonality(preference: PersonalityPreference): Boolean = true
+    suspend fun clearPersonality(): Boolean = true
 }
 sealed interface SpeechVoicePreferenceEvent {
     data class Restore(val preference: SpeechVoicePreference) : SpeechVoicePreferenceEvent
@@ -27,6 +30,11 @@ sealed interface SpeechVoicePreferenceEvent {
     data object SaveFailed : SpeechVoicePreferenceEvent
     data object ClearFailed : SpeechVoicePreferenceEvent
     data class MuteRestored(val muted: Boolean) : SpeechVoicePreferenceEvent
+    data class PersonalityRestored(val preference: PersonalityPreference) : SpeechVoicePreferenceEvent
+    data object PersonalitySaved : SpeechVoicePreferenceEvent
+    data object PersonalityCleared : SpeechVoicePreferenceEvent
+    data object PersonalitySaveFailed : SpeechVoicePreferenceEvent
+    data object PersonalityClearFailed : SpeechVoicePreferenceEvent
 }
 
 /** Persistence coordinator. Session tokens prevent a restore from escaping the panel lifetime. */
@@ -85,5 +93,46 @@ class SpeechVoicePreferenceCoordinator(
         writeMutex.withLock {
             if (token == session) store.writeMute(muted)
         }
+    }
+
+    suspend fun restorePersonality(token: Long) {
+        if (token != session) return
+        when (val result = store.readPersonality()) {
+            is PersonalityPreferenceReadResult.Found ->
+                onEvent(token, SpeechVoicePreferenceEvent.PersonalityRestored(result.preference))
+            PersonalityPreferenceReadResult.Empty ->
+                onEvent(token, SpeechVoicePreferenceEvent.PersonalityRestored(PersonalityPreference()))
+            PersonalityPreferenceReadResult.Failed -> Unit
+        }
+    }
+
+    suspend fun persistPersonality(token: Long, preference: PersonalityPreference): Boolean {
+        val saved = writeMutex.withLock {
+            if (token != session) return@withLock false
+            store.writePersonality(preference)
+        }
+        if (token == session) {
+            onEvent(
+                token,
+                if (saved) SpeechVoicePreferenceEvent.PersonalitySaved
+                else SpeechVoicePreferenceEvent.PersonalitySaveFailed,
+            )
+        }
+        return saved
+    }
+
+    suspend fun clearPersonality(token: Long): Boolean {
+        val cleared = writeMutex.withLock {
+            if (token != session) return@withLock false
+            store.clearPersonality()
+        }
+        if (token == session) {
+            onEvent(
+                token,
+                if (cleared) SpeechVoicePreferenceEvent.PersonalityCleared
+                else SpeechVoicePreferenceEvent.PersonalityClearFailed,
+            )
+        }
+        return cleared
     }
 }

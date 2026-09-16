@@ -1,6 +1,6 @@
 # TASK-018 — preferências de personalidade local
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-014/017. BASE COMMIT a definir; aplicar [protocolo](NEXT_TASKS.md), PERSONALITY e INTERACTIONS.
+Status: IMPLEMENTADA em `codex/task-018-personality` (base: TASK-017). Aguardando validação do proprietário. Handoff: `docs/handoffs/TASK-018.md`.
 
 ## Resultado para o proprietário
 

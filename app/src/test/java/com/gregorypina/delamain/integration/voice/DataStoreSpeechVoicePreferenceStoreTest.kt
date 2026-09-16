@@ -46,4 +46,23 @@ class DataStoreSpeechVoicePreferenceStoreTest {
         val values = mutablePreferencesOf()
         assertFalse(values[booleanPreferencesKey("voice_muted")] ?: false)
     }
+
+    @Test
+    fun `personality reset preserves voice and mute keys`() {
+        val values = mutablePreferencesOf(
+            voicePreferenceVersionKey to 1,
+            voiceEngineIdKey to "engine",
+            voiceIdKey to "voice",
+            voiceMutedKey to true,
+            personalityDisplayNameKey to "Ana",
+            personalityToneKey to 1,
+        )
+
+        clearPersonalityKeys(values)
+
+        assertEquals("engine", values[voiceEngineIdKey])
+        assertTrue(values[voiceMutedKey] == true)
+        assertNull(values[personalityDisplayNameKey])
+        assertNull(values[personalityToneKey])
+    }
 }
