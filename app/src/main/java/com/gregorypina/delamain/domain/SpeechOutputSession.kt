@@ -27,6 +27,15 @@ class SpeechOutputSession(
         publish(if (available) SpeechOutputState.Ready else SpeechOutputState.Unavailable)
     }
 
+    /** Called after stopping output and applying a voice selection on the engine. */
+    fun voiceAvailabilityChanged(available: Boolean) {
+        if (closed) return
+        activeId = null
+        initialized = true
+        ready = available
+        publish(if (available) SpeechOutputState.Ready else SpeechOutputState.Unavailable)
+    }
+
     override fun speak(text: String): SpeechOutputResult {
         if (closed || !ready) return SpeechOutputResult.Unavailable
         // Invalidate before touching the engine: stop can itself trigger callbacks.

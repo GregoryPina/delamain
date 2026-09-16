@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.gregorypina.delamain.domain.LocalCommandEngine
 import com.gregorypina.delamain.domain.LocalCommandResult
 import com.gregorypina.delamain.domain.LocalUnknownResponses
+import com.gregorypina.delamain.domain.SpeechVoiceSelection
 import com.gregorypina.delamain.domain.SpeechOutputPort
 import com.gregorypina.delamain.domain.SpeechOutputResult
 import com.gregorypina.delamain.domain.SpeechOutputState
@@ -80,13 +81,19 @@ internal fun DebugCommandPanel() {
         )
     }
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var speechOutputPort by remember { mutableStateOf<SpeechOutputPort?>(null) }
+    var speechOutputPort by remember { mutableStateOf<AndroidTextToSpeechPort?>(null) }
+    var voiceSelection by remember { mutableStateOf(SpeechVoiceSelection()) }
     var speechState by remember { mutableStateOf(SpeechOutputState.Preparing) }
     val lifecycleOwner = LocalView.current.findViewTreeLifecycleOwner()
     DisposableEffect(applicationContext, expanded, lifecycleOwner) {
         if (expanded) {
             speechState = SpeechOutputState.Preparing
-            val port = AndroidTextToSpeechPort(applicationContext) { speechState = it }
+            voiceSelection = SpeechVoiceSelection()
+            val port = AndroidTextToSpeechPort(
+                applicationContext,
+                onState = { speechState = it },
+                onVoices = { voiceSelection = it },
+            )
             speechOutputPort = port
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_STOP) port.stop()
@@ -113,6 +120,8 @@ internal fun DebugCommandPanel() {
                 engine = engine,
                 speechOutputPort = speechOutputPort,
                 speechState = speechState,
+                voiceSelection = voiceSelection,
+                onSelectVoice = { id -> speechOutputPort?.selectVoice(id) ?: false },
                 onDismiss = {
                     speechOutputPort?.stop()
                     expanded = false
@@ -135,6 +144,8 @@ private fun DebugCommandPanelContent(
     engine: LocalCommandEngine,
     speechOutputPort: SpeechOutputPort?,
     speechState: SpeechOutputState,
+    voiceSelection: SpeechVoiceSelection,
+    onSelectVoice: (String) -> Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -253,6 +264,37 @@ private fun DebugCommandPanelContent(
             color = Color.White.copy(alpha = 0.7f),
             fontSize = 12.sp,
         )
+
+        if (voiceSelection.ids.isNotEmpty()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (voiceSelection.selectedId == null) "Voz não selecionada" else
+                        "Voz ${voiceSelection.ids.indexOf(voiceSelection.selectedId) + 1}" +
+                        " de ${voiceSelection.ids.size} (sessão)",
+                    color = Color.White.copy(alpha = 0.7f),
+                    fontSize = 12.sp,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = {
+                    speechInputPort?.cancel()
+                    voiceSelection.nextId()?.let { id ->
+                        submissionProblem = if (onSelectVoice(id)) null else "Não foi possível trocar a voz."
+                    }
+                }) { Text("TROCAR VOZ") }
+                TextButton(
+                    enabled = voiceSelection.selectedId != null,
+                    onClick = {
+                        speechInputPort?.cancel()
+                        submissionProblem = when (speechOutputPort?.speak(
+                            "Olá. Sou a Vexa. Pronta para acompanhar sua viagem.",
+                        )) {
+                            SpeechOutputResult.Queued -> null
+                            else -> "Não foi possível reproduzir o exemplo."
+                        }
+                    },
+                ) { Text("TESTAR VOZ") }
+            }
+        }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(

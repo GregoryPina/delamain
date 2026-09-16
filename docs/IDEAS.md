@@ -15,9 +15,7 @@ Backlog exploratório: estas ideias não são compromisso de implementação nem
 
 ## Próximo incremento recomendado
 
-O proprietário validou funcionalmente a interface V0.1 em 15 de setembro de 2026. A **V0.2-A** já possui núcleo local, testes e entrada de debug compilados. O próximo passo é validar o painel no aparelho e então avançar para ações locais permitidas antes de adicionar microfone ou custos de API.
-
-O wrapper foi restaurado e os builds debug/release passaram pelos agentes. O relato original da V0.1 não identifica o aparelho utilizado; a validação manual do novo painel está registrada como pendência em PROJECT_STATUS.md.
+Receber validação do proprietário para TASK-010–012, já implementadas em branches dependentes, e consolidar pela TASK-013. O estado atual está em PROJECT_STATUS.md; [tarefas 013–022](../tasks/NEXT_TASKS.md) detalham a continuação. Ideias desta página não autorizam implementação fora dessas tarefas.
 
 ## Decisões em aberto
 
