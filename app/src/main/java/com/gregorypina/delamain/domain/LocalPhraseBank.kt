@@ -14,6 +14,19 @@ internal object LocalPhraseBank {
         displayName: String?,
         clock: Clock,
     ): List<String> = when (intent) {
+        LocalIntent.HELP -> toneVariants(
+            tone,
+            warm = listOf(
+                "À disposição. Experimente: que horas são, bateria, aumente o volume ou abra Spotify.",
+                "Posso ajudar com comandos locais. Diga: próxima música, música anterior ou diminua o volume.",
+                "Meu repertório é local. Experimente: bateria, abra Maps ou modo mute. Para voltar à fala, diga ativar voz.",
+            ),
+            direct = listOf(
+                "Comandos: que horas são, bateria, aumente o volume, abra Spotify.",
+                "Experimente: próxima música, música anterior ou diminua o volume.",
+                "Comandos: abra Maps, modo mute ou ativar voz.",
+            ),
+        )
         LocalIntent.CALL -> toneVariants(
             tone,
             warm = listOf("À disposição.", "Pois não?", "Sim?"),

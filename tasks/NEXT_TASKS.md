@@ -1,6 +1,6 @@
 # Próximas tarefas — guia de despacho
 
-Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional. TASK-014–017 implementadas em branches (`codex/task-014-voice-preference` … `codex/task-017-mute-controls`), aguardando validação em massa; TASK-018+ não iniciadas. Referência histórica de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb` (TASK-012). Baselines de execução futura serão informadas no despacho de cada TASK.
+Planejamento de 2026-09-16, solicitado pelo proprietário. TASK-013 consolidada após aceite funcional. TASK-014–019 implementadas; estabilização e ajuda local em `codex/stabilize-014-019`, aguardando testes. Ver `docs/handoffs/STABILIZATION-014-019.md` e `tasks/SCRIPTED-BEFORE-AI.md`. Referência histórica de leitura: `985af5faf0119a20ff19d32f49ed77f02c1fa1bb` (TASK-012). Baselines de execução futura serão informadas no despacho de cada TASK.
 
 ## Ordem e dependências
 

@@ -111,9 +111,10 @@ class VoiceInteractionSession(
         started = true
         voiceRestored = false
         preferenceSessionToken = preferenceCoordinator.openSession()
+        val openingToken = preferenceSessionToken
         scope.launch {
-            preferenceCoordinator.restoreMute(preferenceSessionToken)
-            preferenceCoordinator.restorePersonality(preferenceSessionToken)
+            preferenceCoordinator.restoreMute(openingToken)
+            preferenceCoordinator.restorePersonality(openingToken)
         }
         audioFocusSession = AudioFocusSession(AndroidAudioFocusPort(appContext)) {
             handleAudioInterruption(UserMessageKey.AudioFocusLost)
@@ -212,11 +213,13 @@ class VoiceInteractionSession(
                 SubmitResult.Spoken(debugDisplay)
             }
             SpeechOutputResult.Failed -> {
+                releaseAudioFocus()
                 interactionCoordinator.error(interactionId)
                 statusMessage = UserMessageKey.SpeechFailed
                 SubmitResult.TextOnly(debugDisplay)
             }
             SpeechOutputResult.Unavailable -> {
+                releaseAudioFocus()
                 interactionCoordinator.error(interactionId)
                 statusMessage = UserMessageKey.VoiceUnavailable
                 SubmitResult.TextOnly(debugDisplay)
@@ -225,20 +228,24 @@ class VoiceInteractionSession(
     }
 
     fun selectPersonalityTone(tone: PersonalityTone) {
+        preferenceCoordinator.beginPersonalityChange()
         personalityTone = tone
         personalityPreview = null
         engine.applyPersonality(PersonalityConfig.sanitize(personalityDisplayName, tone))
     }
 
     fun savePersonality(nameDraft: String) {
+        val change = preferenceCoordinator.beginPersonalityChange()
+        val token = preferenceSessionToken
         val config = PersonalityConfig.sanitize(nameDraft, personalityTone)
         personalityDisplayName = config.displayName
         personalityPreview = null
         engine.applyPersonality(config)
         scope.launch {
             preferenceCoordinator.persistPersonality(
-                preferenceSessionToken,
+                token,
                 PersonalityPreference(config.displayName, config.tone),
+                change,
             )
         }
     }
@@ -250,11 +257,13 @@ class VoiceInteractionSession(
     }
 
     fun resetPersonality() {
+        val change = preferenceCoordinator.beginPersonalityChange()
+        val token = preferenceSessionToken
         personalityTone = PersonalityTone.WARM
         personalityDisplayName = null
         personalityPreview = null
         engine.applyPersonality(PersonalityConfig())
-        scope.launch { preferenceCoordinator.clearPersonality(preferenceSessionToken) }
+        scope.launch { preferenceCoordinator.clearPersonality(token, change) }
     }
 
     fun toggleMute() {
@@ -304,9 +313,10 @@ class VoiceInteractionSession(
     }
 
     private fun applyMutePreference(muted: Boolean) {
-        if (voiceMuted == muted) return
         voiceMuted = muted
-        scope.launch { preferenceCoordinator.persistMute(preferenceSessionToken, muted) }
+        val change = preferenceCoordinator.beginMuteChange()
+        val token = preferenceSessionToken
+        scope.launch { preferenceCoordinator.persistMute(token, muted, change) }
     }
 
     fun toggleListen(requestPermission: () -> Unit): ListenAction {
@@ -398,6 +408,7 @@ class VoiceInteractionSession(
         ) {
             SpeechOutputResult.Queued -> true
             else -> {
+                releaseAudioFocus()
                 interactionCoordinator.error(interactionId)
                 false
             }

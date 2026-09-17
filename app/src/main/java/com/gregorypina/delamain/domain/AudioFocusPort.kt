@@ -30,12 +30,14 @@ class AudioFocusSession(
     private val onFocusLost: () -> Unit,
 ) {
     private var heldMode: AudioFocusMode? = null
+    private var generation = 0L
 
     fun requestForSpeech(): AudioFocusRequestResult = request(AudioFocusMode.SPEECH_OUTPUT)
 
     fun requestForListening(): AudioFocusRequestResult = request(AudioFocusMode.SPEECH_INPUT)
 
     fun abandon() {
+        generation += 1
         if (heldMode != null || port.isHeld()) {
             port.abandon()
             heldMode = null
@@ -46,13 +48,17 @@ class AudioFocusSession(
 
     private fun request(mode: AudioFocusMode): AudioFocusRequestResult {
         abandon()
-        val result = port.request(mode) { handleLoss() }
+        val requestGeneration = generation
+        val result = port.request(mode) {
+            if (requestGeneration == generation) handleLoss()
+        }
         if (result == AudioFocusRequestResult.GRANTED) heldMode = mode
         return result
     }
 
     private fun handleLoss() {
         if (heldMode == null && !port.isHeld()) return
+        generation += 1
         heldMode = null
         port.abandon()
         onFocusLost()

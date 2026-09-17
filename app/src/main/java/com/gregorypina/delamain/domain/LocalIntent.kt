@@ -2,6 +2,7 @@ package com.gregorypina.delamain.domain
 
 enum class LocalIntent {
     CALL,
+    HELP,
     PRESENCE,
     GREETING,
     THANKS,

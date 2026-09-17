@@ -10,6 +10,45 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SpeechVoicePreferenceCoordinatorTest {
+    @Test fun `late mute read cannot undo explicit choice`() = runBlocking {
+        val gate = CompletableDeferred<Unit>()
+        val events = mutableListOf<SpeechVoicePreferenceEvent>()
+        val store = object : SpeechVoicePreferenceStore {
+            override suspend fun read() = SpeechVoicePreferenceReadResult.Empty
+            override suspend fun write(preference: SpeechVoicePreference) = true
+            override suspend fun clear() = true
+            override suspend fun readMute(): Boolean { gate.await(); return false }
+        }
+        val coordinator = SpeechVoicePreferenceCoordinator(store) { _, event -> events += event }
+        val token = coordinator.openSession()
+        val read = async(start = CoroutineStart.UNDISPATCHED) { coordinator.restoreMute(token) }
+        coordinator.beginMuteChange()
+        gate.complete(Unit)
+        read.await()
+        assertTrue(events.isEmpty())
+    }
+
+    @Test fun `late personality read cannot undo explicit choice`() = runBlocking {
+        val gate = CompletableDeferred<Unit>()
+        val events = mutableListOf<SpeechVoicePreferenceEvent>()
+        val store = object : SpeechVoicePreferenceStore {
+            override suspend fun read() = SpeechVoicePreferenceReadResult.Empty
+            override suspend fun write(preference: SpeechVoicePreference) = true
+            override suspend fun clear() = true
+            override suspend fun readPersonality(): PersonalityPreferenceReadResult {
+                gate.await()
+                return PersonalityPreferenceReadResult.Empty
+            }
+        }
+        val coordinator = SpeechVoicePreferenceCoordinator(store) { _, event -> events += event }
+        val token = coordinator.openSession()
+        val read = async(start = CoroutineStart.UNDISPATCHED) { coordinator.restorePersonality(token) }
+        coordinator.beginPersonalityChange()
+        gate.complete(Unit)
+        read.await()
+        assertTrue(events.isEmpty())
+    }
+
     @Test fun `valid preference restores only in current session`() = runBlocking {
         val events = mutableListOf<SpeechVoicePreferenceEvent>()
         val c = SpeechVoicePreferenceCoordinator(FakeStore(SpeechVoicePreferenceReadResult.Found(SpeechVoicePreference("e","v")))) { _, e -> events += e }

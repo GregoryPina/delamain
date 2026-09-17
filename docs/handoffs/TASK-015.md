@@ -34,4 +34,4 @@ Mesmo comando acima para reproduzir build local.
 
 ## Pendências
 
-Aceite funcional do proprietário. Sem merge em `main` até confirmação. TASK-016 não iniciada.
+Aceite funcional do proprietário. Sem merge em `main` até confirmação. Registro histórico desta entrega; TASK-016–019 implementadas posteriormente. Estado atual em docs/PROJECT_STATUS.md.

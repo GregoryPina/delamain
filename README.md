@@ -39,14 +39,11 @@ O projeto será preparado neste repositório para que possa ser aberto no Androi
 
 ## Status
 
-Interface e comandos locais aceitos pelo proprietário. TASK-010–013 integradas: fala com interrupção/estados, microfone por botão usando reconhecimento local disponível e comparação de vozes pt-BR instaladas. Proprietário confirmou microfone, fala, cancelar e trocar voz; detalhes e limites em [TASK-013](docs/handoffs/TASK-013.md).
+TASK-004–013 integradas com aceite funcional anterior. TASK-014–019 implementadas em sequência de branches: persistência de voz, rosto por eventos, controles principais, mute, nome/tom e foco de áudio. Ainda aguardam validação no aparelho e integração.
 
-TASK-014 está implementada em branch/PR e aguarda validação do proprietário: a escolha de voz usa Preferences DataStore com identidade do motor + ID estável da voz, restaura somente voz local pt-BR elegível e oferece “USAR PADRÃO” para remover a preferência. Até os testes serem relatados, não considerar a persistência integrada/concluída; detalhes em [TASK-014](docs/handoffs/TASK-014.md).
+A entrega atual `codex/stabilize-014-019` acrescenta correções de concorrência/estado/foco e ajuda local (“o que você sabe fazer?”). [Estado coordenado](docs/PROJECT_STATUS.md) e [roteiro único de teste](docs/handoffs/STABILIZATION-014-019.md) são as referências atuais. Nenhum build/teste executado nesta rodada; resultados anteriores não validam o patch.
 
-Na tela principal use OUVIR, PARAR (durante a fala) e TEXTO para comandos sem microfone. Depois de permitir o microfone, toque OUVIR novamente. Escuta exige serviço on-device em Android 12+; sem suporte, use texto. No APK debug, o painel DEV continua disponível para diagnóstico e troca de voz. IA e wake word não implementados.
-
-Builds/testes ficam com o proprietário; a implementação TASK-014 adicionou testes de persistência/concorrência, mas nenhum teste foi executado pelo executor.
-
+Na tela principal: OUVIR, PARAR, TEXTO, MUTE/VOZ e TOM. Depois de permitir o microfone, toque OUVIR novamente. STT local exige suporte no aparelho; sem suporte, use texto. DEV só no debug. IA e wake word não implementados.
 ## Como o companion responderá
 
 - **Reflexos locais:** gatilhos conhecidos escolhem frases prontas e executam ações permitidas, sem consultar IA.
@@ -73,4 +70,4 @@ A personalidade aparece desde as respostas prontas. Internet não é requisito p
 
 Para testar mudanças de voz e regressões de TASK-010–014, consulte o [handoff TASK-014](docs/handoffs/TASK-014.md) e o [roteiro consolidado anterior](docs/handoffs/TASK-012.md).
 
-[Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor; TASK-015+ não iniciadas.
+[Próximas tarefas detalhadas (013–022)](tasks/NEXT_TASKS.md): planejamento para coordenador/executor; TASK-014–019 implementadas; estabilização em validação.

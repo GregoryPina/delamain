@@ -72,6 +72,13 @@ fun DelamainApp() {
                 delay(2200)
                 coordinator.bootFinished()
             }
+            LaunchedEffect(snapshot.face, snapshot.interactionId) {
+                if (snapshot.face == InteractionFace.ERROR) {
+                    val failedInteraction = snapshot.interactionId
+                    delay(3000)
+                    coordinator.expireError(failedInteraction)
+                }
+            }
             DisposableEffect(voiceSession, coordinator, owner) {
                 voiceSession.start()
                 val observer = LifecycleEventObserver { _, event ->

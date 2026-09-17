@@ -1,6 +1,6 @@
 # Roteamento, reflexos e conversa
 
-Contrato alvo para V0.2–V0.4. Hoje o painel DEV recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. TASK-011 integrada: escuta por botão envia apenas resultado final ao mesmo motor. Esclarecimento conversacional e IA são futuros. Cancelamento por botão e frases de controle prioritário estão integrados pela TASK-017. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
+Contrato alvo para V0.2–V0.4. Na branch acumulada, a tela principal e o painel DEV compartilham a sessão que recebe texto e responde com reflexos, hora, volume, apps permitidos, próxima/anterior e bateria; TTS lê a resposta. Unknown permanece local. TASK-011 integrada: escuta por botão envia apenas resultado final ao mesmo motor. Esclarecimento conversacional e IA são futuros. Cancelamento por botão e frases de controle prioritário estão implementados em branch pela TASK-017, ainda aguardando integração. A sequência abaixo descreve o contrato alvo, não funcionalidades todas concluídas.
 
 ## Caminho de uma entrada
 
@@ -68,3 +68,7 @@ O provider devolve texto e, quando suportado, uma proposta estruturada. O domín
 - Cancelamento impede fala tardia e ação ainda não iniciada; não promete desfazer ação concluída.
 - Evento repetido respeita intervalo, limite de sessão e modo silencioso.
 - Ação fora da lista permitida é recusada, mesmo se proposta pela IA.
+
+## Ajuda local implementada (aguardando teste)
+
+Frases completas de ajuda e comandos retornam exemplos locais por tom. Não executam exemplos nem consultam IA. Detalhes em [evolução scriptada](../tasks/SCRIPTED-BEFORE-AI.md).

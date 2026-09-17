@@ -16,11 +16,13 @@ class AndroidAudioFocusPort(context: Context) : AudioFocusPort {
     private val audioManager = context.applicationContext.getSystemService(AudioManager::class.java)
     private var activeRequest: AudioFocusRequest? = null
     private var lossCallback: (() -> Unit)? = null
+    private var generation = 0L
 
     override fun request(mode: AudioFocusMode, onLoss: () -> Unit): AudioFocusRequestResult {
         abandon()
         val manager = audioManager ?: return AudioFocusRequestResult.FAILED
         lossCallback = onLoss
+        val requestGeneration = generation
         val attributes = when (mode) {
             AudioFocusMode.SPEECH_OUTPUT -> AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ASSISTANT)
@@ -35,6 +37,7 @@ class AndroidAudioFocusPort(context: Context) : AudioFocusPort {
             .setAudioAttributes(attributes)
             .setAcceptsDelayedFocusGain(false)
             .setOnAudioFocusChangeListener { change ->
+                if (requestGeneration != generation) return@setOnAudioFocusChangeListener
                 when (change) {
                     AudioManager.AUDIOFOCUS_LOSS,
                     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
@@ -54,6 +57,7 @@ class AndroidAudioFocusPort(context: Context) : AudioFocusPort {
     }
 
     override fun abandon() {
+        generation += 1
         val manager = audioManager
         val request = activeRequest
         activeRequest = null

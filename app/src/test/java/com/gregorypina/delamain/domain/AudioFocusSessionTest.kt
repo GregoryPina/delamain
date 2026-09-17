@@ -7,6 +7,31 @@ import org.junit.Test
 
 class AudioFocusSessionTest {
     @Test
+    fun `old focus loss cannot stop a newer acquisition`() {
+        val callbacks = mutableListOf<() -> Unit>()
+        var held = false
+        val port = object : AudioFocusPort {
+            override fun request(mode: AudioFocusMode, onLoss: () -> Unit): AudioFocusRequestResult {
+                callbacks += onLoss
+                held = true
+                return AudioFocusRequestResult.GRANTED
+            }
+            override fun abandon() { held = false }
+            override fun isHeld() = held
+        }
+        var losses = 0
+        val session = AudioFocusSession(port) { losses++ }
+        session.requestForSpeech()
+        session.requestForListening()
+        callbacks.first().invoke()
+        assertEquals(0, losses)
+        assertTrue(session.isHeld())
+        callbacks.last().invoke()
+        assertEquals(1, losses)
+        assertFalse(session.isHeld())
+    }
+
+    @Test
     fun `granted request holds focus until abandon`() {
         val port = FakeAudioFocusPort()
         val session = AudioFocusSession(port) {}

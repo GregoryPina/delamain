@@ -61,6 +61,7 @@ class LocalCommandEngine(
     }
 
     private fun recognize(phrase: String): LocalIntent? = when {
+        phrase in HELP_PHRASES -> LocalIntent.HELP
         phrase in OPEN_APP_PHRASES -> LocalIntent.OPEN_APP
         phrase in PRESENCE_PHRASES -> LocalIntent.PRESENCE
         phrase in GREETING_PHRASES -> LocalIntent.GREETING
@@ -157,6 +158,7 @@ class LocalCommandEngine(
         }
 
     internal companion object {
+        val HELP_PHRASES = setOf("ajuda", "comandos", "o que voce sabe fazer", "o que voce pode fazer", "quais comandos", "quais sao os comandos")
         const val KEY_BATTERY_UNAVAILABLE = "battery_unavailable"
         const val KEY_BATTERY_CHARGING = "battery_charging"
         const val KEY_BATTERY_LEVEL = "battery_level"

@@ -10,7 +10,7 @@ class InteractionCoordinator(private val onSnapshot: (InteractionSnapshot) -> Un
     private var closed = false
     private var snapshot = InteractionSnapshot()
     fun current() = snapshot
-    fun begin(): Long { id += 1; boot = false; publish(InteractionFace.IDLE, "ONLINE"); return id }
+    fun begin(): Long { if (closed) return id; id += 1; boot = false; publish(InteractionFace.IDLE, "ONLINE"); return id }
     fun bootFinished() { if (!closed && id == 0L) { boot=false; publish(InteractionFace.IDLE,"ONLINE") } }
     fun input(state: SpeechInputState, interactionId: Long = id) {
         if (interactionId == 0L || !active(interactionId)) return

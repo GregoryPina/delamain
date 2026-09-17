@@ -1,6 +1,6 @@
 # TASK-015 — sessão única e rosto orientado por eventos reais
 
-Status: PLANEJADA, NÃO DESPACHADA. Depende de TASK-013/014 integradas.
+Status: IMPLEMENTADA em branch; revisão e teste acumulados. Estado atual em docs/PROJECT_STATUS.md.
 BASE COMMIT: fornecido no despacho. Aplicar [protocolo](NEXT_TASKS.md) e ler DESIGN.
 
 ## Problema concreto

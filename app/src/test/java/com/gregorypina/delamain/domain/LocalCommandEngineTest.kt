@@ -11,6 +11,19 @@ import org.junit.Test
 
 class LocalCommandEngineTest {
     @Test
+    fun `help recognizes only complete phrases and never executes examples`() {
+        val engine = LocalCommandEngine(actionPort = object : LocalActionPort {
+            override fun execute(action: LocalAction): LocalActionResult = error("Help must not execute an action")
+        })
+        listOf("VEXA, o que você sabe fazer?", "ajuda", "comandos").forEach {
+            assertRecognized(engine.process(it), LocalIntent.HELP)
+        }
+        listOf("não quero ajuda", "ajuda e abra Spotify", "quais comandos e aumente o volume").forEach {
+            assertSame(LocalCommandResult.Unknown, engine.process(it))
+        }
+    }
+
+    @Test
     fun `recognizes bare assistant name as call`() {
         val result = LocalCommandEngine().process("Vexa!")
 

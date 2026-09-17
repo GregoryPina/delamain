@@ -36,4 +36,4 @@ Correção: `InteractionCoordinator` ignora `interactionId == 0L` em `input`/`ou
 
 ## Pendências
 
-Validação manual acumulada pelo proprietário (roteiro em `docs/handoffs/TASK-015.md`). Sem merge em `main` até aceite. TASK-016 não iniciada.
+Validação manual acumulada pelo proprietário (roteiro em `docs/handoffs/TASK-015.md`). Sem merge em `main` até aceite. Registro histórico desta entrega; TASK-016–019 implementadas posteriormente. Estado atual em docs/PROJECT_STATUS.md.

@@ -163,7 +163,10 @@ fun UserInteractionControls(
                 if (personalityExpanded) R.string.cd_hide_personality else R.string.cd_show_personality,
             )
             TextButton(
-                onClick = { personalityExpanded = !personalityExpanded },
+                onClick = {
+                    if (!personalityExpanded) nameDraft = session.personalityDisplayName.orEmpty()
+                    personalityExpanded = !personalityExpanded
+                },
                 modifier = Modifier.semantics { contentDescription = personalityToggleDescription },
             ) {
                 Text(

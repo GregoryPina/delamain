@@ -1,34 +1,22 @@
 # Estado do projeto
 
-Atualizado em 2026-09-16. Baseline integrada: `a4789b1c9e3b6a74e325215487c849f133c6fcd3`; documentação de fechamento posterior.
+Atualizado em 2026-09-17. Baseline funcional integrada: TASK-004–013, aceite anterior do proprietário para microfone/fala/cancelar/trocar voz. Main conhecida: `140f14e`; nenhuma integração nova nesta rodada.
 
-## Entregas integradas
+## Conjunto em validação
 
-TASK-004–009: VEXA, parser legado corrigido e inativo, apps permitidos, volume, hora, mídia anterior/próxima, bateria, variantes e TTS inicial. Evidências históricas nos handoffs correspondentes.
+014: voz persistente. 015: rosto por eventos e watchdog. 016: OUVIR/PARAR/TEXTO na tela principal. 017: mute e controles prioritários. 018: nome/tom. 019: foco e monitor de rotas.
 
-TASK-010–012: TTS com estados/cancelamento/descarte, escuta local por botão no DEV e seleção de vozes pt-BR por sessão. PRs #2/#3/#4 integrados. Proprietário confirmou microfone, fala, cancelar e trocar voz. TASK-013 consolidou aceite e integração; [evidência e cobertura](handoffs/TASK-013.md).
+Base acumulada: `1b0bf1d71092dee40600a6c88c346ea2250674dc`, branch `codex/task-019-audio-focus`.
+Correções e ajuda local: `codex/stabilize-014-019`. Status IMPLEMENTADA_AGUARDANDO_TESTE, sem merge.
 
-## Em andamento (branches, sem merge em main)
-
-| TASK | Branch | Entrega | Status |
-| --- | --- | --- | --- |
-| 014 | `codex/task-014-voice-preference` (`8f7da52`) | Persistência de voz (DataStore) | IMPLEMENTADA_AGUARDANDO_TESTE |
-| 015 | `codex/task-015-session-state` (`fd2b3d7`) | `InteractionCoordinator`, rosto por eventos reais, watchdog TTS | IMPLEMENTADA_AGUARDANDO_TESTE |
-| 016 | `codex/task-016-user-controls` (`72b32ce`) | `VoiceInteractionSession` compartilhada, OUVIR/PARAR/TEXTO na tela principal | IMPLEMENTADA_AGUARDANDO_TESTE |
-| 017 | `codex/task-017-mute-controls` | Controles prioritários (parar/cancelar) e modo mute (ADR-007) | IMPLEMENTADA_AGUARDANDO_TESTE |
-| 018 | `codex/task-018-personality` | Nome de tratamento e tom (Atual/Direto) | IMPLEMENTADA_AGUARDANDO_TESTE |
-| 019 | `codex/task-019-audio-focus` | Foco de áudio transitório e matriz de rotas | IMPLEMENTADA_AGUARDANDO_TESTE |
-
-Validação manual acumulada pelo proprietário. Roteiros em `docs/handoffs/TASK-014.md` … `TASK-019.md`.
-
-## Fluxo e limites
-
-Entrada (OUVIR, TEXTO ou DEV) → `InteractionControlRecognizer` (parar/cancelar/mute) → `LocalCommandEngine` → portas de ação → resposta na tela; TTS automático salvo se mute desligado. Apps: YouTube, Chrome, Maps, Spotify, WhatsApp. Mídia confirma envio de evento, não troca efetiva. Unknown permanece local.
-
-STT on-device em API31+, uma frase por toque, timeout 15s. TTS com watchdog (fila 10s + limite proporcional). Voz e mute persistidos no mesmo DataStore (014/017). Rosto acompanha sessão real (015). Prévia explícita (TESTAR VOZ no DEV) fala mesmo em mute. Sem IA, wake word, play/pause ou volume percentual ativo.
+[Revisão, limitações e roteiro único](handoffs/STABILIZATION-014-019.md). Relatórios anteriores: 116 testes sem falhas; não validam as mudanças novas. Nesta rodada nenhum build/teste executado.
 
 ## Próximo passo
 
-Proprietário validar em massa branches 014–019 (019 exige matriz de rotas no aparelho). Depois merge sequencial em `main`.
+Proprietário testa APK acumulado. Coordenador registra resultado, corrige falhas e revisa bases intermediárias antes de integração. Pendências estáticas estão no handoff, sem afirmar aprovação integral. IA (020/021) não iniciada. [Evolução scriptada](../tasks/SCRIPTED-BEFORE-AI.md) define recortes sem rede; somente ajuda implementada nesta rodada.
+
+## Contratos
+
+Motor ativo LocalCommandEngine, ações permitidas; legado inativo. Sem IA, wake word, GPS, play/pause ou volume percentual ativo. STT on-device depende do aparelho; sem fallback remoto. Mute suprime TTS automático, prévia explícita pode falar. Release possui controles principais, sem DEV. Áudio externo ainda exige matriz no aparelho.
 
 [Retomada](../TECH_LEAD_HANDOFF.md), [decisões](DECISIONS.md), [processo](DEVELOPMENT.md).

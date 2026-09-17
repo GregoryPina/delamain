@@ -2,11 +2,10 @@
 
 ## Próximos incrementos detalhados
 
-[TASK-013–022 e protocolo de despacho](../tasks/NEXT_TASKS.md). Planejamento preparado em 2026-09-16; TASK-013 consolidada. TASK-014 está implementada em branch/PR, aguardando testes do proprietário; tarefas posteriores não foram iniciadas. Baselines futuras serão definidas após integrar dependências, nunca copiadas de branch pendente por conveniência. IA real exige decisão de provider/custos/credenciais; wake word continua pesquisa.
-
+Atualização 2026-09-17: TASK-014–019 implementadas em branches, sem merge e sem aceite manual do conjunto. Correções e ajuda local na branch `codex/stabilize-014-019`, aguardando teste. [Roteiro e limitações](handoffs/STABILIZATION-014-019.md). [Evolução scriptada antes da IA](../tasks/SCRIPTED-BEFORE-AI.md). TASK-020–022 permanecem planejadas. Testes acumulados autorizados não dispensam revisão e aceite antes de merge.
 ## Fase 0 — Fundação
 
-Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010–012 integradas após proprietário confirmar microfone, fala, cancelar e trocar voz; TASK-013 consolidada. TASK-014 implementada, sem validação ainda. Evidências em PROJECT_STATUS.md e handoffs; não houve novos testes nesta implementação.
+Situação em 16 de setembro de 2026: TASK-006–009 integradas e aceitas pelo proprietário; apps, mídia próxima/anterior, bateria, variantes e TTS DEV disponíveis. TASK-010–012 integradas após proprietário confirmar microfone, fala, cancelar e trocar voz; TASK-013 consolidada. TASK-014–019 implementadas em branches, sem validação manual do conjunto. Evidências em PROJECT_STATUS.md e handoffs; não houve novos testes nesta implementação.
 
 - [x] Criar repositório
 - [x] Documentar objetivo e princípios

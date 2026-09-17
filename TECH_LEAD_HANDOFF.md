@@ -1,34 +1,17 @@
 # Tech Lead handoff
 
-## Baseline e estado
+## Retomada de 2026-09-17
 
-TASK-010–012 integradas em main após aceite funcional do proprietário. Baseline integrada: `a4789b1c9e3b6a74e325215487c849f133c6fcd3`. Este fechamento documental é posterior e não altera código.
+Base recebida: `1b0bf1d71092dee40600a6c88c346ea2250674dc`, TASK-019 acumulando 014–018; árvore inicialmente limpa. Main conhecida `140f14e`, sem merge nesta rodada. Não havia TEMP_LEAD_HANDOFF da rodada anterior; histórico reconstruído a partir de Git e handoffs, sem inventar autoria/validação.
 
-Proprietário: “Testei o conjunto: microfone, fala, cancelar e trocar voz”. Registro em [TASK-013](docs/handoffs/TASK-013.md).
+Branch atual de entrega: `codex/stabilize-014-019`. Proprietário autorizou nesta conversa implementação direta das correções e incremento local antes da IA. Isso não muda a regra geral de executores externos e ausência de agentes internos. Builds/testes continuam com proprietário.
 
 ## Próxima ação
 
-TASK-014/015 em branches (`8f7da52`, `fd2b3d7`). TASK-016–018 em branches. TASK-019 em `codex/task-019-audio-focus` (foco transitório + matriz de rotas). TESTES: proprietário acumulará validação em massa; 019 exige matriz no aparelho. Sem merge em `main`. TASK-020+ não iniciadas.
+Entregar o [roteiro único](docs/handoffs/STABILIZATION-014-019.md), obter HEAD testado e resultados; tratar pendências da revisão antes de integrar. 014–019 estão implementadas, não validadas no aparelho. Novas correções e comando HELP aguardam testes. Relatórios anteriores de 116 testes não validam esta branch após o patch.
 
-## Entregas encerradas
+Não repetir despacho antigo para iniciar 015/016: já existem. Não promover IA antes de estabilização. [Recortes scriptados](tasks/SCRIPTED-BEFORE-AI.md): ajuda feita; demais são propostas com aceite, não promessas de implementação.
 
-PR #2: TTS, interrupção/callbacks/ciclo de vida. PR #3: escuta por botão, local em API31+ quando disponível. PR #4: comparação de vozes pt-BR instaladas, escolha por sessão. Integração em ordem 010 → 011 → 012, sem squash. Não reaplicar esses patches.
+## Limites preservados
 
-TASK-004–009 também concluídas. Nome/gatilho: VEXA; identificadores técnicos delamain preservados.
-
-## Contratos e limitações
-
-- LocalCommandEngine é canônico; executor remoto e CommandRouter legado não ativados. Mídia confirma despacho, não efeito.
-- UI principal com OUVIR/PARAR/TEXTO/MUTE/TOM (016–018); DEV só em debug para diagnóstico e prévia de voz.
-- Controles prioritários (017): `InteractionControlRecognizer` antes do motor; parar/cancelar/mute por frase ou botão; mute persiste em `voice_muted` (ADR-007).
-- TTS Queued não significa fala concluída. Stop é aceite do motor, não prova silêncio físico. Watchdog TTS implementado na 015 (fila 10s + limite proporcional); timeout reporta falha, não sucesso.
-- STT: botão, sessão única, 15s, sem fallback remoto. Permissão concedida exige novo toque. Cancelamento invalida callbacks.
-- Voz: persistência implementada na 014 (DataStore); seleção offline pt-BR. Rosto acompanha sessão real na 015.
-- Sem wake word, IA, play/pause ou volume percentual no fluxo ativo.
-- Validação offline/lifecycle no aparelho ainda pendente. Testes unitários (100) e builds debug/release verdes na branch 017.
-
-## Processo
-
-Exceção de implementação direta pelo Astra encerrou com 010–012. Processo normal: coordenador planeja/revisa/integra; proprietário encaminha tarefa ao executor externo e executa testes. Não criar agentes internos, executar testes automaticamente ou iniciar 014 localmente sem nova autorização.
-
-Ao substituir: ler AGENTS/README/arquitetura/roadmap/estado/decisões, este arquivo e TEMP_LEAD_HANDOFF.md se existir. Registrar baselines inicial/final, evidências, PRs, mudanças locais e próximo passo. Preservar trabalho alheio; o STL não rastreado visto anteriormente não apareceu no status desta retomada, nenhuma ação foi feita nele.
+Motor local canônico, sem executor legado/IA/wake word. Release com controles principais desde 016, sem DEV. Mute não desliga microfone. IDs de interação e sessão são distintos. Não afirmar Bluetooth/offline plenamente validado. Sem merge/force push/descarte de trabalho.

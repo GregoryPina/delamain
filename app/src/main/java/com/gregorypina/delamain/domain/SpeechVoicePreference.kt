@@ -44,11 +44,15 @@ class SpeechVoicePreferenceCoordinator(
 ) {
     private var generation = 0L
     private var session = 0L
+    private var muteGeneration = 0L
+    private var personalityGeneration = 0L
     private val writeMutex = Mutex()
 
     fun openSession(): Long { session += 1; return session }
     fun closeSession(token: Long) { if (token == session) session += 1 }
     fun beginExplicitChange(): Long { generation += 1; return generation }
+    fun beginMuteChange(): Long = ++muteGeneration
+    fun beginPersonalityChange(): Long = ++personalityGeneration
 
     suspend fun restore(token: Long, engineId: String, eligibleVoiceIds: Set<String>) {
         val startedAt = generation
@@ -86,18 +90,26 @@ class SpeechVoicePreferenceCoordinator(
 
     suspend fun restoreMute(token: Long) {
         if (token != session) return
-        onEvent(token, SpeechVoicePreferenceEvent.MuteRestored(store.readMute()))
+        val revision = muteGeneration
+        if (revision != 0L) return // An explicit choice in this coordinator already owns session state.
+        val muted = store.readMute()
+        if (token == session && revision == muteGeneration)
+            onEvent(token, SpeechVoicePreferenceEvent.MuteRestored(muted))
     }
 
-    suspend fun persistMute(token: Long, muted: Boolean) {
+    suspend fun persistMute(token: Long, muted: Boolean, change: Long = beginMuteChange()) {
         writeMutex.withLock {
-            if (token == session) store.writeMute(muted)
+            if (token == session && change == muteGeneration) store.writeMute(muted)
         }
     }
 
     suspend fun restorePersonality(token: Long) {
         if (token != session) return
-        when (val result = store.readPersonality()) {
+        val revision = personalityGeneration
+        if (revision != 0L) return
+        val result = store.readPersonality()
+        if (token != session || revision != personalityGeneration) return
+        when (result) {
             is PersonalityPreferenceReadResult.Found ->
                 onEvent(token, SpeechVoicePreferenceEvent.PersonalityRestored(result.preference))
             PersonalityPreferenceReadResult.Empty ->
@@ -106,12 +118,12 @@ class SpeechVoicePreferenceCoordinator(
         }
     }
 
-    suspend fun persistPersonality(token: Long, preference: PersonalityPreference): Boolean {
+    suspend fun persistPersonality(token: Long, preference: PersonalityPreference, change: Long = beginPersonalityChange()): Boolean {
         val saved = writeMutex.withLock {
-            if (token != session) return@withLock false
+            if (token != session || change != personalityGeneration) return@withLock false
             store.writePersonality(preference)
         }
-        if (token == session) {
+        if (token == session && change == personalityGeneration) {
             onEvent(
                 token,
                 if (saved) SpeechVoicePreferenceEvent.PersonalitySaved
@@ -121,12 +133,12 @@ class SpeechVoicePreferenceCoordinator(
         return saved
     }
 
-    suspend fun clearPersonality(token: Long): Boolean {
+    suspend fun clearPersonality(token: Long, change: Long = beginPersonalityChange()): Boolean {
         val cleared = writeMutex.withLock {
-            if (token != session) return@withLock false
+            if (token != session || change != personalityGeneration) return@withLock false
             store.clearPersonality()
         }
-        if (token == session) {
+        if (token == session && change == personalityGeneration) {
             onEvent(
                 token,
                 if (cleared) SpeechVoicePreferenceEvent.PersonalityCleared
